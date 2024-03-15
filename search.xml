@@ -5,16 +5,16 @@
     <url>/2024/03/15/hello-world/</url>
     <content><![CDATA[<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
+<p>More info: <a class="link"   href="https://hexo.io/docs/writing.html" >Writing<i class="fas fa-external-link-alt"></i></a></p>
 <h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
+<p>More info: <a class="link"   href="https://hexo.io/docs/server.html" >Server<i class="fas fa-external-link-alt"></i></a></p>
 <h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
+<p>More info: <a class="link"   href="https://hexo.io/docs/generating.html" >Generating<i class="fas fa-external-link-alt"></i></a></p>
 <h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+<p>More info: <a class="link"   href="https://hexo.io/docs/one-command-deployment.html" >Deployment<i class="fas fa-external-link-alt"></i></a></p>
 ]]></content>
       <tags>
         <tag>blog</tag>
@@ -26,7 +26,7 @@
     <url>/2024/03/15/new/index/</url>
     <content><![CDATA[<h4 id="基础信息"><a href="#基础信息" class="headerlink" title="基础信息"></a>基础信息</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">靶机ip 192.168.64.75</span><br><span class="line">攻击机ip 192.168.64.3</span><br></pre></td></tr></table></figure>
 
-<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>扫描到3个端口</p>
+<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>扫描到3个端口，21端口，22端口和80端口</p>
 <img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2020.08.29.png"   alt="d" style="zoom:50%;" >
 
 ]]></content>
@@ -40,11 +40,11 @@
     <url>/2024/03/14/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A0/</url>
     <content><![CDATA[<h3 id="1-pe文件格式详解"><a href="#1-pe文件格式详解" class="headerlink" title="1.pe文件格式详解"></a>1.pe文件格式详解</h3><h4 id="1-头部"><a href="#1-头部" class="headerlink" title="1.头部"></a>1.头部</h4><h5 id="1-DOS头"><a href="#1-DOS头" class="headerlink" title="1.DOS头"></a>1.DOS头</h5><p>重要的是MZ头部（4D 5A），还有e_lfanew（指向PE头的其实位置）</p>
 <h5 id="2-PE头部IMAGE-NT-HEADER"><a href="#2-PE头部IMAGE-NT-HEADER" class="headerlink" title="2.PE头部IMAGE_NT_HEADER"></a>2.PE头部IMAGE_NT_HEADER</h5><p>50 45 00 00PE头部标识符</p>
-<h5 id="3-文件头IMAGE-FILE-HEADER"><a href="#3-文件头IMAGE-FILE-HEADER" class="headerlink" title="3.文件头IMAGE_FILE_HEADER"></a>3.文件头IMAGE_FILE_HEADER</h5><p>结构体固定大小20字节<br>起始位置取决于PE头的起始位置<br><img src="https://cdn.nlark.com/yuque/0/2023/jpeg/40549096/1703746344858-ab831996-6bb6-479b-996f-60e03e4e5f5d.jpeg"><br>节表个数在文件头里找到</p>
-<h5 id="4-可选头IMAGE-OPTIONAL-HEADER"><a href="#4-可选头IMAGE-OPTIONAL-HEADER" class="headerlink" title="4.可选头IMAGE_OPTIONAL_HEADER"></a>4.可选头IMAGE_OPTIONAL_HEADER</h5><p>结构体大小在文件头中已经决定好了<br>可选头是文件头的补充，主要用来管理PE文件被操作系统装载时所需要的信息<br><img src="https://cdn.nlark.com/yuque/0/2023/jpeg/40549096/1703747021723-e4ccacc3-35b2-466e-8b2e-bea454421533.jpeg"></p>
-<h5 id="5-节表详细IMAGE-SECTION-HEADER"><a href="#5-节表详细IMAGE-SECTION-HEADER" class="headerlink" title="5.节表详细IMAGE_SECTION_HEADER"></a>5.节表详细IMAGE_SECTION_HEADER</h5><p>节的个数以及在文件头中给出<br>每个结构体固定大小40字节<br><img src="https://cdn.nlark.com/yuque/0/2023/jpeg/40549096/1703747416589-5e640e58-4a28-4bce-aa97-3f56eb1c66e7.jpeg"></p>
+<h5 id="3-文件头IMAGE-FILE-HEADER"><a href="#3-文件头IMAGE-FILE-HEADER" class="headerlink" title="3.文件头IMAGE_FILE_HEADER"></a>3.文件头IMAGE_FILE_HEADER</h5><p>结构体固定大小20字节<br>起始位置取决于PE头的起始位置<br><img   src="https://cdn.nlark.com/yuque/0/2023/jpeg/40549096/1703746344858-ab831996-6bb6-479b-996f-60e03e4e5f5d.jpeg" ><br>节表个数在文件头里找到</p>
+<h5 id="4-可选头IMAGE-OPTIONAL-HEADER"><a href="#4-可选头IMAGE-OPTIONAL-HEADER" class="headerlink" title="4.可选头IMAGE_OPTIONAL_HEADER"></a>4.可选头IMAGE_OPTIONAL_HEADER</h5><p>结构体大小在文件头中已经决定好了<br>可选头是文件头的补充，主要用来管理PE文件被操作系统装载时所需要的信息<br><img   src="https://cdn.nlark.com/yuque/0/2023/jpeg/40549096/1703747021723-e4ccacc3-35b2-466e-8b2e-bea454421533.jpeg" ></p>
+<h5 id="5-节表详细IMAGE-SECTION-HEADER"><a href="#5-节表详细IMAGE-SECTION-HEADER" class="headerlink" title="5.节表详细IMAGE_SECTION_HEADER"></a>5.节表详细IMAGE_SECTION_HEADER</h5><p>节的个数以及在文件头中给出<br>每个结构体固定大小40字节<br><img   src="https://cdn.nlark.com/yuque/0/2023/jpeg/40549096/1703747416589-5e640e58-4a28-4bce-aa97-3f56eb1c66e7.jpeg" ></p>
 <h5 id="6-PE文件格式的三种地址"><a href="#6-PE文件格式的三种地址" class="headerlink" title="6.PE文件格式的三种地址"></a>6.PE文件格式的三种地址</h5><p>VA：虚拟地址，PE文件被win加载到<strong>内存</strong>后的地址<br>RVA：相对虚拟地址，VA相对于<strong>映射基地址（也就是ImageBase)<strong>的</strong>偏移地址</strong><br>FOA：文件偏移地址，相对于PE文件在磁盘文件开头的偏移地址，c32中看到的就是FOA<br>VA&#x3D;RVA+ImageBase<br>FOA和RVA，对齐值相同时是一样的<br>对齐值不同时<br>也就是 FOA&#x3D;该数据的RVA-该数据所在节的起始RVA+该数据所在节的起始FOA</p>
-<h4 id="2-数据目录相关内容"><a href="#2-数据目录相关内容" class="headerlink" title="2.数据目录相关内容"></a>2.数据目录相关内容</h4><h5 id="1-导入表"><a href="#1-导入表" class="headerlink" title="1.导入表"></a>1.导入表</h5><p>导入表结构体数据目录项的RVA和大小豆都被保存在<strong>可选头的数据目录</strong>中<br><img src="https://cdn.nlark.com/yuque/0/2023/jpeg/40549096/1703748504562-384be541-7428-4154-aaab-edc6d1145428.jpeg"><br>PE文件没被装载前，OFT和FT指向相同的内容，被装载后FT指向的地方<strong>保存导入函数的实际地址</strong><br>IMAGE_THUNK_DATA<br>Function，导入函数的序号<br>AddressofData，指向IMAGE_IMPORT_BY_NAME结构体的RVA，当最高位为1时才有效<br>IMAGE_IMPORT_BY_NAME<br>hint，导出函数表的索引号<br>Name，导入函数的名称</p>
+<h4 id="2-数据目录相关内容"><a href="#2-数据目录相关内容" class="headerlink" title="2.数据目录相关内容"></a>2.数据目录相关内容</h4><h5 id="1-导入表"><a href="#1-导入表" class="headerlink" title="1.导入表"></a>1.导入表</h5><p>导入表结构体数据目录项的RVA和大小豆都被保存在<strong>可选头的数据目录</strong>中<br><img   src="https://cdn.nlark.com/yuque/0/2023/jpeg/40549096/1703748504562-384be541-7428-4154-aaab-edc6d1145428.jpeg" ><br>PE文件没被装载前，OFT和FT指向相同的内容，被装载后FT指向的地方<strong>保存导入函数的实际地址</strong><br>IMAGE_THUNK_DATA<br>Function，导入函数的序号<br>AddressofData，指向IMAGE_IMPORT_BY_NAME结构体的RVA，当最高位为1时才有效<br>IMAGE_IMPORT_BY_NAME<br>hint，导出函数表的索引号<br>Name，导入函数的名称</p>
 ]]></content>
   </entry>
 </search>
