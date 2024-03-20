@@ -222,7 +222,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Sun Mar 17 2024 01:42:38 GMT+0800">2024-03-17</span>
+                <span class="datetime" data-updated="Thu Mar 21 2024 01:09:27 GMT+0800">2024-03-21</span>
             </span>
         
 
@@ -313,7 +313,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wfuzz -u &#x27;http://192.168.64.77/access.php?FUZZ=rabbit.jpg&#x27; -w /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt --hh=12</span><br></pre></td></tr></table></figure>
 
 <p>果然得到了一个参数‘id’，然后看到了图片</p>
-<p><img   src="/Users/lingtian/Library/Application%20Support/typora-user-images/image-20240316200947799.png"  alt="image-20240316200947799"></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240316200944.png" ></p>
 <p>再看看这时的源码，然后就联想到命令注入，先闭合单引号，在写入命令试试</p>
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240316201116.png" ></p>
 <p>经过一番探索（结合wp），发现可以直接注入php语句，还要配合前面的log.php，因为access.php不会执行，log.php记录了这些并且会执行，例如：</p>
