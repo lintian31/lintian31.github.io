@@ -222,7 +222,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Thu Mar 21 2024 01:06:18 GMT+0800">2024-03-21</span>
+                <span class="datetime" data-updated="Thu Mar 21 2024 10:15:07 GMT+0800">2024-03-21</span>
             </span>
         
 
@@ -335,7 +335,7 @@
 <p>接着就sudo &#x2F;attack_dir&#x2F;ddos.sh执行脚本</p>
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240320222448.png" ></p>
 <p>成功拿到root的shell，提权成功。</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>第一次遇到<strong>DNS欺骗</strong>，学到了，通过ftp敲门那里思路比较清奇，要打破惯性思维，不要一看到账号密码只想到ssh的网页，还有ftp！可执行文件修改（二进制方向的魅力），knock开端口（注意网卡配置）。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>第一次遇到<strong>DNS欺骗</strong>，学到了，通过ftp敲门那里思路比较清奇，要打破惯性思维，不要一看到账号密码只想到ssh的网页，还有ftp！可执行文件修改（二进制方向的魅力），knock开端口（注意网卡配置），还有一般都是先拿到www-data再拿到其他账户的shell，这次是先有个pink才有www-data。</p>
 <p>这么理下来知识点也不是特别多，但我就要消化好久，自己做的时候没办法想到的思路无非就是因为知识面不够广，还有就是脑子不够灵活（比如没想到拿账号密码登陆ftp），路漫漫。</p>
 
                 </div>
@@ -366,6 +366,22 @@
 
                 
                     <div class="post-nav border-box">
+                        
+                            <div class="prev-post">
+                                <a class="prev"
+                                   rel="prev"
+                                   href="/2024/03/21/hackmyvm%E5%A4%8D%E7%9B%98%E5%90%88%E9%9B%862/"
+                                   title="hackmyvm 思路复盘2"
+                                >
+                                    <span class="left arrow-icon flex-center">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </span>
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">hackmyvm 思路复盘2</span>
+                                        <span class="post-nav-item">上一篇</span>
+                                    </span>
+                                </a>
+                            </div>
                         
                         
                             <div class="next-post">

