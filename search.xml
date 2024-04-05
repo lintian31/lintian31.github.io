@@ -681,4 +681,63 @@
         <tag>htb</tag>
       </tags>
   </entry>
+  <entry>
+    <title>hackmyvm influencer复盘</title>
+    <url>/2024/04/05/hackmyvm-influencer%E5%A4%8D%E7%9B%98/</url>
+    <content><![CDATA[<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   href="https://hackmyvm.eu/machines/machine.php?vm=Influencer" >https://hackmyvm.eu/machines/machine.php?vm=Influencer<i class="fas fa-external-link-alt"></i></a></p>
+<p>难度：medium</p>
+<p>ip：192.168.64.115(后变成116)</p>
+<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>nmap扫到2121端口（是ftp服务（和80端口</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405154528.png" ></p>
+<p>无密码连接ftp，有一个note.txt提示有个wordpress站点，还有很多张图片，用工具分析了图片，找到snapchat.jpg有隐藏信息</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405154710.png" ></p>
+<p>给了一串密码，还要看用户名</p>
+<p>看看80端口，到目录扫到&#x2F;wordpress，很容易就找到登录口，用wpscan扫描，扫到一个用户名luna，尝试用刚刚到密码登录，失败，rockyou.txt爆破也没有结果，然后就去站点本身看看</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405155202.png" ></p>
+<p>看到有关luna的个人信息，用社工工具生成一个字典</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-05%2015.54.55.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405155651.png" ></p>
+<p>然后用wpscan爆破出密码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405155805.png" ></p>
+<p>成功爆破出来，登录后台</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405155939.png" ></p>
+<p>找到appearance-&gt;theme file editor，修改php文件，写入后门文件，本地开启监听</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405160202.png" ></p>
+<p>成功拿到www-data的shell</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405160255.png" ></p>
+<h4 id="userflag"><a href="#userflag" class="headerlink" title="userflag"></a>userflag</h4><p>ss -lntp查看开放了什么端口</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405160424.png" ></p>
+<p>注意到有个1212端口，先用socat转发出去</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">socat TCP-LISTEN:4444,fork TCP:localhost:1212 &amp; </span><br></pre></td></tr></table></figure>
+
+<p>然后访问4444端口</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405160617.png" ></p>
+<p>看来是个ssh服务，那就用ssh连接，用最开始在图片里拿到的密码，成功登录</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh luna@192.168.64.116 -p 4444</span><br><span class="line">密码：u3jkeg97gf</span><br></pre></td></tr></table></figure>
+
+<p>然后使用sudo -l查到juan可以免密码执行exiftool</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405160840.png" ></p>
+<p>再查询知道exiftool可以写文件，<strong>思路是在juan的.ssh目录下写一个authorized_keys</strong>,然后ssh连接登录</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">luna@influencer:~$ cd /tmp</span><br><span class="line">luna@influencer:/tmp$ echo &#x27;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC8pW4mmY4tPKfm6n1XBJldNxoo+ehIpzS1Y1kI32qU8fLVbraU85pjcPUK7pHcvoKfBl02hjpKhsTSHHG5iEsaCAMrD8euYDfNRKu0ITfX5EukM8JhDXEgWzGWlieF9KEB0haZJyFm6lIVPK950FtElXNZGagQ3wyQoVGRnoUhTlyeK5BcFbFlnMZdndOEB8TPOTzc13SpfCSU7lF4YckPjqgV1Y45kDEvJViv9xMPEd0be80F+lJ1J2/qywFTySfVlOqsFOzp3m3fLyUb80yk8Qs0BSR5q1NXexHXfCPwBbDW6vX4iygbSm1TRei2kre0CvsqUEgGipCmJTdkPQyr+ZFTZl/0DlSX07ZSrat9NAbXc+MfG5j0QsgebkjR4aWQxAym/yEfe7WGyOZdf43rxzS61dToq9CBrTQUapmwg6efBTwlEeMVA+fSK5bqxDvD1quCLoMrSonc7v4OKkopaB3hUfdM/YwGexHk7DLtsE50O80wMajhYy8aR4N4aI8= root@kali&#x27; &gt; abc</span><br><span class="line">luna@influencer:/tmp$ chmod 777 abc</span><br><span class="line">luna@influencer:/tmp$ sudo -u juan /usr/bin/exiftool -filename=/home/juan/.ssh/authorized_keys abc</span><br></pre></td></tr></table></figure>
+
+<p>成功在本地登录</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405161301.png"   style="zoom:50%;" >
+
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>sudo -l查到是免密码执行一个脚本，脚本内容是给server.hmv发送请求</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405161444.png" ></p>
+<p>然后查到&#x2F;etc&#x2F;hosts有写的权限，那么思路是修改&#x2F;etc&#x2F;hosts，<strong>把server.hmv的地址配置为自己kali的ip，开启apache服务并且在目录下新建一个98127651的文件</strong></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405161658.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405161859.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405161931.png" ></p>
+<p>执行命令后再查看&#x2F;bin&#x2F;bash的权限</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405162027.png" ></p>
+<p>最后bash -p重新进入bash，提权成功</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405162119.png" ></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这个靶场虽然是medium，但是思路都是比较常见的，感觉做完是在回顾前段时间学到的东西。涉及的知识点：wpscan扫描，爆破密码，社工工具生成字典，wordpress后台写入后门，socat端口转发，exiftool读写文件，&#x2F;etc&#x2F;hosts配置。</p>
+]]></content>
+      <tags>
+        <tag>hackmyvm</tag>
+        <tag>复盘</tag>
+      </tags>
+  </entry>
 </search>
