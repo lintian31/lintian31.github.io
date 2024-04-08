@@ -147,6 +147,7 @@
       <tags>
         <tag>hackmyvm</tag>
         <tag>复盘</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -209,6 +210,7 @@
       <tags>
         <tag>hackmyvm</tag>
         <tag>复盘</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -291,7 +293,8 @@
 ]]></content>
       <tags>
         <tag>hackmyvm</tag>
-        <tag>复盘学习</tag>
+        <tag>复盘</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -394,6 +397,7 @@
       <tags>
         <tag>hackmyvm</tag>
         <tag>复盘</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -446,6 +450,7 @@
       <tags>
         <tag>hackmyvm</tag>
         <tag>复盘</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -505,6 +510,7 @@
       <tags>
         <tag>hackmyvm</tag>
         <tag>复盘</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -628,9 +634,9 @@
 
 ]]></content>
       <tags>
-        <tag>blog</tag>
         <tag>hackmyvm</tag>
         <tag>复盘</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -679,6 +685,7 @@
       <tags>
         <tag>复盘</tag>
         <tag>htb</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -738,6 +745,7 @@
       <tags>
         <tag>hackmyvm</tag>
         <tag>复盘</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
   <entry>
@@ -790,6 +798,7 @@
       <tags>
         <tag>复盘</tag>
         <tag>htb</tag>
+        <tag>linux</tag>
       </tags>
   </entry>
 </search>
