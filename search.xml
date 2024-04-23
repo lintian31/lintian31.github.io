@@ -1160,4 +1160,45 @@
         <tag>windows</tag>
       </tags>
   </entry>
+  <entry>
+    <title>sh脚本中==判断的几个情况</title>
+    <url>/2024/04/23/sh%E8%84%9A%E6%9C%AC%E4%B8%AD-%E5%88%A4%E6%96%AD%E7%9A%84%E5%87%A0%E4%B8%AA%E6%83%85%E5%86%B5/</url>
+    <content><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>今天看到一个脚本需要爆破密码，我在已知密码是18位的情况下，妄想写个脚本去爆破，肯定是失败的，最后看到正确的脚本，我注意到里面用到*，最开始的理解是通配符绕过去了，经过shell脚本大佬·群主老师·云淡__风轻的点拨，我了解到一个关于shell脚本的知识点，有必要写个笔记记录一下。</p>
+<h4 id="进入正题"><a href="#进入正题" class="headerlink" title="进入正题"></a>进入正题</h4><h5 id="绕过"><a href="#绕过" class="headerlink" title="&#x3D;&#x3D;绕过"></a>&#x3D;&#x3D;绕过</h5><p>先看脚本</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">password=&#x27;qwe123&#x27;</span><br><span class="line"></span><br><span class="line">read -p &quot;input pass:&quot; input</span><br><span class="line">if [[ $password == $input ]];then</span><br><span class="line">    echo &quot;ok&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;not ok&quot;</span><br><span class="line"></span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>逻辑就是定义一个password，然后我们的输入保存在input里，比较input和password看看o不ok</p>
+<p>正常情况下我们要ok就应该输入‘qwe123’，和password去匹配</p>
+<p>但是我们可以用到*, *在shell里叫glob，也叫通配符， *的作用可以用来匹配任何长度的任何字符，类似于正则里面的 *，</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240423213816.png" ></p>
+<p>后来了解到glob有其他字符，各自有不同的功能，比如?可以匹配任意字符串，在我知道密码长度的情况下输入n个?，也能绕过</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240423213914.png" ></p>
+<h5 id="没法用的情况1"><a href="#没法用的情况1" class="headerlink" title="*没法用的情况1"></a>*没法用的情况1</h5><p>如果脚本长这样</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">password=&#x27;qwe123&#x27;</span><br><span class="line"></span><br><span class="line">read -p &quot;input pass:&quot; input</span><br><span class="line">if [[ $password == &quot;$input&quot; ]];then</span><br><span class="line">    echo &quot;ok&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;not ok&quot;</span><br><span class="line"></span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意到$input前后多了引号</strong>，这个时候再使用*去通配就会失败</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240423214332.png" ></p>
+<p><strong>原因是：给$input前后加上引号，会导致*没办法展开，所以通配不了，这个时候只能输入和password一模一样的字符才能ok</strong></p>
+<h5 id="没法用的情况2"><a href="#没法用的情况2" class="headerlink" title="*没法用的情况2"></a>*没法用的情况2</h5><p>这个时候的脚本长这样</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">password=&#x27;qwe123&#x27;</span><br><span class="line"></span><br><span class="line">read -p &quot;input pass:&quot; input</span><br><span class="line">if [[ $input == $password ]];then</span><br><span class="line">    echo &quot;ok&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;not ok&quot;</span><br><span class="line"></span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<p>对比第一个脚本，在判断里面$input $password的位置调换了</p>
+<p>这个东西有点抽象，群主当时给了例子</p>
+<p>我自己复现了一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240423215113.png" ></p>
+<p>接下来理解一下：*.txt能够代表很多个txt文件，他不能只等于1.txt，所以no，但是1.txt是 *.txt里面的一个，所以可以ok</p>
+<p><strong>通俗地讲就是多个文件不能等于特定的那一个，特定的一个文件属于多个文件里</strong></p>
+<p>回到input那里，我们给他输入*，就符合多个可能对应特定的一个，所以不能，所以not ok</p>
+<h4 id="绕过的应用"><a href="#绕过的应用" class="headerlink" title="*绕过的应用"></a>*绕过的应用</h4><p>了解到三个用法，有这个思路就可以用来爆破密码</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> string</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"></span><br><span class="line"><span class="built_in">all</span> = <span class="built_in">list</span>(string.ascii_letters + string.digits)  <span class="comment"># 创建包含所有字母和数字的字符列表</span></span><br><span class="line">password = <span class="string">&quot;&quot;</span>  <span class="comment"># 初始化密码为空字符串</span></span><br><span class="line">found = <span class="literal">False</span>  <span class="comment"># 初始化 found 变量为 False，表示密码尚未找到</span></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">not</span> found:</span><br><span class="line">    <span class="keyword">for</span> character <span class="keyword">in</span> <span class="built_in">all</span>:</span><br><span class="line">				command = <span class="string">f&quot;echo &#x27;<span class="subst">&#123;password&#125;</span><span class="subst">&#123;character&#125;</span>*&#x27;｜对应的脚本操作</span></span><br><span class="line"><span class="string">        ...后续的判断</span></span><br></pre></td></tr></table></figure>
+
+<p>command &#x3D; f”echo ‘{password}{character}*’注意这里最后就是有一个 *去通配，然后一位一位地去爆破密码</p>
+<p>肯定不止这个用法，后续待更新</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>肯定是要感谢群主的耐心指导</p>
+<p>这个知识点现在理解了就觉得没什么，不过还是值得记录下来的</p>
+]]></content>
+      <tags>
+        <tag>学习笔记</tag>
+      </tags>
+  </entry>
 </search>

