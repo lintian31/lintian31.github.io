@@ -1333,19 +1333,62 @@
       </tags>
   </entry>
   <entry>
-    <title>password test</title>
-    <url>/2024/06/01/password-test/</url>
-    <content><![CDATA[<div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
-  <script id="hbeData" type="hbeData" data-hmacdigest="ac106617e1b74ba32ff0c02b410f9871e39d05dd90df0530a26160a99dc6c42a">851ab96e4328cb48605b86585c81f06dbc15bf9e4d52c38b38977368e14efa6536f1751240a80fc852785c4b879d1bf4</script>
-  <div class="hbe hbe-content">
-    <div class="hbe hbe-input hbe-input-default">
-      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
-      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
-        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
-      </label>
-    </div>
-  </div>
-</div>
-<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">]]></content>
+    <title>玄机-windows实战</title>
+    <url>/2024/06/01/%E7%8E%84%E6%9C%BA-windows%E5%AE%9E%E6%88%98/</url>
+    <content><![CDATA[<h3 id="emlog"><a href="#emlog" class="headerlink" title="emlog"></a>emlog</h3><p>先远程桌面连接，用微软的remote desktop还挺方便</p>
+<h4 id="找到黑客植入-shell-将黑客植入-shell-的密码-作为-FLAG-提交"><a href="#找到黑客植入-shell-将黑客植入-shell-的密码-作为-FLAG-提交" class="headerlink" title="找到黑客植入 shell,将黑客植入 shell 的密码 作为 FLAG 提交;"></a>找到黑客植入 shell,将黑客植入 shell 的密码 作为 FLAG 提交;</h4><p>用d盾查杀，找到shell.php</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601143330.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601141231.png" ></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;rebeyond&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="分析黑客攻击成功的-IP-为多少-将黑客-IP-作为-FLAG-提交"><a href="#分析黑客攻击成功的-IP-为多少-将黑客-IP-作为-FLAG-提交" class="headerlink" title="分析黑客攻击成功的 IP 为多少,将黑客 IP 作为 FLAG 提交;"></a>分析黑客攻击成功的 IP 为多少,将黑客 IP 作为 FLAG 提交;</h4><p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601141541.png" ></p>
+<p>这种就是看日志，找到phpstudy路径下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601141733.png" ></p>
+<p>随便一看就是192.168.126.1这个ip一直在访问shell.php</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;192.168.126.1&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="分析黑客的隐藏账户名称-将黑客隐藏账户名称作为-FLAG-提交"><a href="#分析黑客的隐藏账户名称-将黑客隐藏账户名称作为-FLAG-提交" class="headerlink" title="分析黑客的隐藏账户名称,将黑客隐藏账户名称作为 FLAG 提交"></a>分析黑客的隐藏账户名称,将黑客隐藏账户名称作为 FLAG 提交</h4><p>思路可以看用户表或者直接看用户目录下多了什么</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601142716.png" ></p>
+<p>有个hacker138</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601142902.png" ></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;hacker138&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="分析黑客的挖矿程序的矿池域名-将黑客挖矿程序的矿池域名称作为-仅域名-FLAG-提交"><a href="#分析黑客的挖矿程序的矿池域名-将黑客挖矿程序的矿池域名称作为-仅域名-FLAG-提交" class="headerlink" title="分析黑客的挖矿程序的矿池域名,将黑客挖矿程序的矿池域名称作为(仅域名)FLAG 提交;"></a>分析黑客的挖矿程序的矿池域名,将黑客挖矿程序的矿池域名称作为(仅域名)FLAG 提交;</h4><p>思路是去黑客新增的用户目录下看看有什么，在桌面下发现“kuang”文件</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601143018.png" ></p>
+<p>用工具反编译一下就能看到矿池域名</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;wakuang.zhigongshanfang.top&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="wordpress"><a href="#wordpress" class="headerlink" title="wordpress"></a>wordpress</h3><h4 id="请提交攻击者攻击成功的第一时间，格式：flag-YY-MM-DD-hh-mm-ss"><a href="#请提交攻击者攻击成功的第一时间，格式：flag-YY-MM-DD-hh-mm-ss" class="headerlink" title="请提交攻击者攻击成功的第一时间，格式：flag{YY:MM:DD hh:mm:ss}"></a>请提交攻击者攻击成功的第一时间，格式：flag{YY:MM:DD hh:mm:ss}</h4><p>先看日志，看nginx的日志</p>
+<p>思路是看最早是什么时候出现302重定向，进入manage</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-06-01%2014.41.46.png" ></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;2023:04:29 22:45:23&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="请提交攻击者的浏览器版本-flag-Firgfox-2200"><a href="#请提交攻击者的浏览器版本-flag-Firgfox-2200" class="headerlink" title="请提交攻击者的浏览器版本 flag{Firgfox&#x2F;2200}"></a>请提交攻击者的浏览器版本 flag{Firgfox&#x2F;2200}</h4><p>上一道题可以看到</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;Firefox/110.0&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="请提交攻击者目录扫描所使用的工具名称"><a href="#请提交攻击者目录扫描所使用的工具名称" class="headerlink" title="请提交攻击者目录扫描所使用的工具名称"></a>请提交攻击者目录扫描所使用的工具名称</h4><p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601144356.png" ></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;Fuzz Faster U Fool&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="找到攻击者写入的恶意后门文件，提交文件名（完整路径）"><a href="#找到攻击者写入的恶意后门文件，提交文件名（完整路径）" class="headerlink" title="找到攻击者写入的恶意后门文件，提交文件名（完整路径）"></a>找到攻击者写入的恶意后门文件，提交文件名（完整路径）</h4><p>用D盾查杀一下，找到.x.php</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601145929.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601150123.png" ></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;C:\phpstudy_pro\WWW\.x.php&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="找到攻击者隐藏在正常web应用代码中的恶意代码，提交该文件名（完整路径）"><a href="#找到攻击者隐藏在正常web应用代码中的恶意代码，提交该文件名（完整路径）" class="headerlink" title="找到攻击者隐藏在正常web应用代码中的恶意代码，提交该文件名（完整路径）"></a>找到攻击者隐藏在正常web应用代码中的恶意代码，提交该文件名（完整路径）</h4><p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-06-01%2015.02.39.png" ></p>
+<p>还是被D盾发现了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;C:\phpstudy_pro\WWW\usr\themes\default\post.php&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="请指出可疑进程采用的自动启动的方式，启动的脚本的名字-flag-1-exe"><a href="#请指出可疑进程采用的自动启动的方式，启动的脚本的名字-flag-1-exe" class="headerlink" title="请指出可疑进程采用的自动启动的方式，启动的脚本的名字 flag{1.exe}"></a>请指出可疑进程采用的自动启动的方式，启动的脚本的名字 flag{1.exe}</h4><p>windows目录下有个360.exe和x.bat（内容是”C:\Windows\360.exe”）</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601150516.png" ></p>
+<p>沙箱也能看到360.exe是木马</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240601151153.png" ></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">flag&#123;x.bat&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a class="link"   href="https://tryhackmyoffsecbox.github.io/Target-Machines-WriteUp/docs/Xuanji/" >https://tryhackmyoffsecbox.github.io/Target-Machines-WriteUp/docs/Xuanji/<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   href="https://xz.aliyun.com/t/14254?time__1311=mqmx9QiQi=0=DQeDsNOf1TKnq40ErD&alichlgref=https://www.google.com/" >https://xz.aliyun.com/t/14254?time__1311=mqmx9QiQi%3D0%3DDQeDsNOf1TKnq40ErD&amp;alichlgref=https%3A%2F%2Fwww.google.com%2F<i class="fas fa-external-link-alt"></i></a></p>
+]]></content>
+      <tags>
+        <tag>应急响应</tag>
+      </tags>
   </entry>
 </search>
