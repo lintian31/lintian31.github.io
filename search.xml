@@ -1616,12 +1616,60 @@
     <title>9.4回校小记</title>
     <url>/2024/09/04/9-4%E5%9B%9E%E6%A0%A1%E5%B0%8F%E8%AE%B0/</url>
     <content><![CDATA[<p>随便说点，结束了hw，在北京多呆了四天，四处逛逛，今天回到学校，开始坐牢生活</p>
-<p>回到宿舍，发现有的室友报名了教资，有的室友在开始准备雅思，真的有大三的实感了，大家在开始走往不同的方向</p>
+<p>回到宿舍，发现有的室友报名了教资   ，有的室友在开始准备雅思，真的有大三的实感了，大家在开始走往不同的方向</p>
 <p>言归正传，新学期新气象，还要磨练技术，这段时间真的认识到好多同龄但是厉害很多的师傅，自己离他们还有一大截，这篇博客简单记录，公开出来（虽然不知道有多少人会看到）警醒自己不能再懒散了…</p>
 ]]></content>
       <tags>
         <tag>杂</tag>
         <tag>生活记录</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Macbook M系统芯片用UTM安装最新kali linux</title>
+    <url>/2024/09/11/Macbook-M%E7%B3%BB%E7%BB%9F%E8%8A%AF%E7%89%87%E7%94%A8UTM%E5%AE%89%E8%A3%85%E6%9C%80%E6%96%B0kali-linux/</url>
+    <content><![CDATA[<h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>这两天偶然一个契机想装个最新的kali，找到官网的教程装起来很轻松。回想刚开始接触装虚拟机的时候起码折腾一星期，所以就像写个博客记录一下，如果有人看到有被帮助到，那就更好了，希望你能少踩点坑吧。</p>
+<p><a class="link"   href="https://www.kali.org/docs/virtualization/install-utm-guest-vm/" >官方参考文档<i class="fas fa-external-link-alt"></i></a></p>
+<h4 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h4><p>UTM：找到<a class="link"   href="https://mac.getutm.app/" >官网<i class="fas fa-external-link-alt"></i></a>下载安装即可</p>
+<p>Kali镜像：<a class="link"   href="https://www.kali.org/get-kali/#kali-installer-images" >镜像地址<i class="fas fa-external-link-alt"></i></a></p>
+<p>记得选择这个Apple sllicon的，中间recommend那个就行</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911113834.png" ></p>
+<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>在UTM找到“新建”添加一个虚拟机，<strong>选择“虚拟化”-&gt;“其他”</strong></p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911114826.png"   style="zoom:50%;" >
+
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115935.png"   style="zoom:50%;" >
+
+<p>在第三个页面点击“浏览”，把我们下载的kali镜像挂上去</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115109.png"   style="zoom:50%;" >
+
+<p>接下来就一直点击“继续”，可以根据自己的需要调整内存和CPU核数量</p>
+<p>到虚拟机设置完成，我们还需要编辑一下一些配置</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115415.png" ></p>
+<p>我们需要在这里添加一个serial</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115450.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115651.png" ></p>
+<p>然后<strong>保存</strong>即可，启动虚拟机进行一些配置</p>
+<h4 id="Kali初始配置"><a href="#Kali初始配置" class="headerlink" title="Kali初始配置"></a>Kali初始配置</h4><p>虚拟机启动后就能看到选择，这里我选择了图形化安装</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120052.png" ></p>
+<p>语言选English</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120149.png" ></p>
+<p>时区建议选择Hong Kong</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120217.png" ></p>
+<p>键盘也是选美式的</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120243.png" ></p>
+<p>接下来就是个性化制定你的用户名和机子的名字了，自己选吧</p>
+<p>填完一些了个性化名字，到了这里我选择第一个</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120656.png" ></p>
+<p>接下来就是一路选择yes&#x2F;continue就行，等待虚拟机自己加载</p>
+<p>经过漫长的等待，到看到这个页面就可以了，选择continue到出现黑屏的时候把虚拟机关闭</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911122515.png" ></p>
+<p>然后回到UTM打开虚拟机编辑，把之前挂载的iso和serial给删了，再到这个“显示”</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911122841.png" ></p>
+<p>把选项改成’virtio-gpu-pci’，再保存启动虚拟机，正常输入你之前设置的账号密码，正常开机，大功告成！</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911123136.png" ></p>
+]]></content>
+      <tags>
+        <tag>随笔</tag>
+        <tag>教程</tag>
       </tags>
   </entry>
 </search>
