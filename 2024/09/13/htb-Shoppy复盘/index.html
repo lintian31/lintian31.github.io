@@ -9,7 +9,7 @@
     
     <title>
         
-            Macbook M系统芯片用UTM安装最新kali linux |
+            htb Shoppy复盘 |
         
         Flowww&#39;s blog
     </title>
@@ -191,7 +191,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        Macbook M系统芯片用UTM安装最新kali linux
+                        htb Shoppy复盘
                     </div>
                 
 
@@ -217,12 +217,12 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2024-09-11</span>
+                <span class="datetime">2024-09-13</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Wed Sep 11 2024 12:32:22 GMT+0800">2024-09-11</span>
+                <span class="datetime" data-updated="Fri Sep 13 2024 14:32:42 GMT+0800">2024-09-13</span>
             </span>
         
 
@@ -232,10 +232,13 @@
             <span class="post-tag meta-info-item border-box">
                 <ul class="post-tag-ul">
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a></li>
                         
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E6%95%99%E7%A8%8B/">教程</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/htb/">htb</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/linux/">linux</a></li>
                         
                     
                 </ul>
@@ -263,45 +266,54 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>这两天偶然一个契机想装个最新的kali，找到官网的教程装起来很轻松。回想刚开始接触装虚拟机的时候起码折腾一星期，所以就像写个博客记录一下，如果有人看到有被帮助到，那就更好了，希望你能少踩点坑吧。</p>
-<p><a class="link"   target="_blank" rel="noopener" href="https://www.kali.org/docs/virtualization/install-utm-guest-vm/" >官方参考文档<i class="fas fa-external-link-alt"></i></a></p>
-<h4 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h4><p>UTM：找到<a class="link"   target="_blank" rel="noopener" href="https://mac.getutm.app/" >官网<i class="fas fa-external-link-alt"></i></a>下载安装即可</p>
-<p>Kali镜像：<a class="link"   target="_blank" rel="noopener" href="https://www.kali.org/get-kali/#kali-installer-images" >镜像地址<i class="fas fa-external-link-alt"></i></a></p>
-<p>记得选择这个Apple sllicon的，中间recommend那个就行</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911113834.png" ></p>
-<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>在UTM找到“新建”添加一个虚拟机，<strong>选择“虚拟化”-&gt;“其他”</strong></p>
-<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911114826.png"   style="zoom:50%;" >
+                    <h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">└─# nmap -A -p- --min-rate=1000 -T4 10.10.11.180</span><br><span class="line">Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-12 22:56 PDT</span><br><span class="line">Nmap scan report for shoppy.htb (10.10.11.180)</span><br><span class="line">Host is up (0.38s latency).</span><br><span class="line">Not shown: 65532 closed tcp ports (reset)</span><br><span class="line">PORT     STATE SERVICE  VERSION</span><br><span class="line">22/tcp   open  ssh      OpenSSH 8.4p1 Debian 5+deb11u1 (protocol 2.0)</span><br><span class="line">| ssh-hostkey: </span><br><span class="line">|   3072 9e:5e:83:51:d9:9f:89:ea:47:1a:12:eb:81:f9:22:c0 (RSA)</span><br><span class="line">|   256 58:57:ee:eb:06:50:03:7c:84:63:d7:a3:41:5b:1a:d5 (ECDSA)</span><br><span class="line">|_  256 3e:9d:0a:42:90:44:38:60:b3:b6:2c:e9:bd:9a:67:54 (ED25519)</span><br><span class="line">80/tcp   open  http     nginx 1.23.1</span><br><span class="line">|_http-title:             Shoppy Wait Page        </span><br><span class="line">|_http-server-header: nginx/1.23.1</span><br><span class="line">9093/tcp open  copycat?</span><br><span class="line">| fingerprint-strings: </span><br><span class="line">|   GenericLines: </span><br><span class="line">。。。。</span><br><span class="line">OS:=Z%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T7(R</span><br><span class="line">OS:=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y%DF=N%T=40%IPL=164%UN=0%</span><br><span class="line">OS:RIPL=G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T=40%CD=S)</span><br><span class="line"></span><br><span class="line">Network Distance: 2 hops</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">TRACEROUTE (using port 53/tcp)</span><br><span class="line">HOP RTT       ADDRESS</span><br><span class="line">1   407.75 ms 10.10.16.1</span><br><span class="line">2   407.83 ms shoppy.htb (10.10.11.180)</span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 235.39 seconds</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
-<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115935.png"   style="zoom:50%;" >
+<p>开了三个端口，9093端口访问后看起来像是配置文件，没找到什么有用的东西（后来看别的wp说这能看出这台机器有mattermost服务）</p>
+<p>有个域名 <code>shoppy.htb</code>，扫子域名扫到mattermost，都添加到hosts里，mattermost这个域名需要账号密码登陆</p>
+<p>shoppy.htb这个扫目录扫到登陆口&#x2F;login，然后看官方对这个机器的介绍是存在Nosql注入</p>
+<h4 id="web"><a href="#web" class="headerlink" title="web"></a>web</h4><blockquote>
+<p>Nosql注入介绍以及payload</p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://nullsweep.com/a-nosql-injection-primer-with-mongo/" >https://nullsweep.com/a-nosql-injection-primer-with-mongo/<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://xz.aliyun.com/t/9908?time__1311=n4+xnD0DuDRDci730=D/iaRmxjhhIWDRxD5t4+Qx" >https://xz.aliyun.com/t/9908?time__1311=n4%2BxnD0DuDRDci730%3DD%2FiaRmxjhhIWDRxD5t4%2BQx<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://book.hacktricks.xyz/v/cn/pentesting-web/nosql-injection#sql-mongo" >https://book.hacktricks.xyz/v/cn/pentesting-web/nosql-injection#sql-mongo<i class="fas fa-external-link-alt"></i></a></p>
+</blockquote>
+<p>是通过什么判断为Nosql注入的呢？（参考思路：<a class="link"   target="_blank" rel="noopener" href="https://arz101.medium.com/hackthebox-shoppy-64cbe52964ed" >https://arz101.medium.com/hackthebox-shoppy-64cbe52964ed<i class="fas fa-external-link-alt"></i></a> ）</p>
+<p>login发包是post发送username和password两个参数，按往常那样测试单引号，每次都需等待很久的时间然后返回504，直接sqlmap跑也无效，当我们随便访问一个不存在的目录时返回的是，这表明这个web在使用路由</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913140659.png" ></p>
+<p>所以可能是在使用Node.js，他存在使用Nosql注入漏洞绕过登陆限制，经过尝试，可以使用<code>admin&#39; || &#39;a&#39;==&#39;a</code>绕过</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913141054.png" ></p>
+<p>登陆后跳转到&#x2F;admin，主要是有个search功能点，没找到别的点了，搜索admin，给了一个json文件，里面有admin密码的哈希（爆破不出来）</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913141517.png" ></p>
+<p>但是不知道有没有别的用户，继续使用Nosql的payload<code>admin&#39; || &#39;a&#39;==&#39;a</code>，这次多看到一个用户的密码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913141635.png" ></p>
+<p>爆破后拿到账号密码<code>josh:remembermethisway</code>，成功登陆mattermost那个域名的登陆口，在聊天窗口中找到jaeger的账号密码，ssh登陆成功，拿到user</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913141843.png" ></p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>sudo -l看到 <code>(deploy) /home/deploy/password-manager</code>,password-manager是个二进制文件，strings查看，貌似是输入正确的密码后能拿到deploy目录下的creds.txt</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913142207.png" ></p>
+<p>传到本地，ida看了一下，密码就在源代码里，<code>Sample</code></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913142251.png" ></p>
+<p>输入正确密码后拿到deploy的密码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913142327.png" ></p>
+<p>登陆deploy输入id，发现deploy在docker组里，有相关的提权方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">deploy@shoppy:/home/jaeger$ id</span><br><span class="line">uid=1001(deploy) gid=1001(deploy) groups=1001(deploy),998(docker)</span><br></pre></td></tr></table></figure>
 
-<p>在第三个页面点击“浏览”，把我们下载的kali镜像挂上去</p>
-<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115109.png"   style="zoom:50%;" >
-
-<p>接下来就一直点击“继续”，可以根据自己的需要调整内存和CPU核数量</p>
-<p>到虚拟机设置完成，我们还需要编辑一下一些配置</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115415.png" ></p>
-<p>我们需要在这里添加一个serial</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115450.png" ></p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115651.png" ></p>
-<p>然后<strong>保存</strong>即可，启动虚拟机进行一些配置</p>
-<h4 id="Kali初始配置"><a href="#Kali初始配置" class="headerlink" title="Kali初始配置"></a>Kali初始配置</h4><p>虚拟机启动后就能看到选择，这里我选择了图形化安装</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120052.png" ></p>
-<p>语言选English</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120149.png" ></p>
-<p>时区建议选择Hong Kong</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120217.png" ></p>
-<p>键盘也是选美式的</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120243.png" ></p>
-<p>接下来就是个性化制定你的用户名和机子的名字了，自己选吧</p>
-<p>填完一些了个性化名字，到了这里我选择第一个</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120656.png" ></p>
-<p>接下来就是一路选择yes&#x2F;continue就行，等待虚拟机自己加载</p>
-<p>经过漫长的等待，到看到这个页面就可以了，选择continue到出现黑屏的时候把虚拟机关闭</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911122515.png" ></p>
-<p>然后回到UTM打开虚拟机编辑，把之前挂载的iso和serial给删了，再到这个“显示”</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911122841.png" ></p>
-<p>把选项改成’virtio-gpu-pci’，再保存启动虚拟机，正常输入你之前设置的账号密码，正常开机，大功告成！</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911123136.png" ></p>
+<blockquote>
+<p>docker提权参考链接</p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://www.cnblogs.com/kqdssheng/p/18275541" >https://www.cnblogs.com/kqdssheng/p/18275541<i class="fas fa-external-link-alt"></i></a></p>
+</blockquote>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913142636.png" ></p>
+<p>有个docker提权的漏洞，大概思路就是<strong>创建一个新的容器，该容器中挂载了整个文件系统。在这个容器中，我将是根用户，因此可以完全访问容器中的所有文件（包括完整的主机文件系统）。</strong></p>
+<p>​	•	docker run: 运行一个新的 Docker 容器。</p>
+<p>​	•	-v &#x2F;:&#x2F;mnt: 将宿主机的根目录 &#x2F; 挂载到容器内部的 &#x2F;mnt 目录。这样，容器可以通过 &#x2F;mnt 访问到宿主机的文件系统。</p>
+<p>​	•	–rm: 容器在退出后会自动删除，不会保留临时文件或容器。</p>
+<p>​	•	-it: 以交互模式运行容器，并分配一个伪终端。这样你可以在容器中运行命令并看到输出。</p>
+<p>​	•	alpine: 指定使用 Alpine Linux 这个小型的 Linux 发行版镜像作为容器的基础镜像。</p>
+<p>​	•	chroot &#x2F;mnt: 使用 chroot 命令将 &#x2F;mnt 作为新的根目录，将容器的根文件系统切换到宿主机的根目录。</p>
+<p>​	•	bash: 运行 bash，给你一个新的 shell 环境。</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913143024.png" ></p>
+<p>于是我们可以成功读到root.txt，后续也可以通过读取shadow或是ssh私钥等方法来获得真正的宿主机root</p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这个靶机还挺有意思的，主要涉及到Nosql注入和docker提权，都是第一次遇见，过后要好好消化一下这两个知识了。。</p>
+<h5 id="推荐阅读wp"><a href="#推荐阅读wp" class="headerlink" title="推荐阅读wp"></a>推荐阅读wp</h5><p><a class="link"   target="_blank" rel="noopener" href="https://0xdf.gitlab.io/2023/01/14/htb-shoppy.htm" >https://0xdf.gitlab.io/2023/01/14/htb-shoppy.htm<i class="fas fa-external-link-alt"></i></a></p>
 
                 </div>
                 
@@ -312,11 +324,15 @@
                             <ul class="post-tags-box border-box">
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a>
                                     </li>
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E6%95%99%E7%A8%8B/">教程</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/htb/">htb</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/linux/">linux</a>
                                     </li>
                                 
                             </ul>
@@ -332,31 +348,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/2024/09/11/htb-OpenSource%E5%A4%8D%E7%9B%98/"
-                                   title="htb OpenSource复盘"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">htb OpenSource复盘</span>
-                                        <span class="post-nav-item">上一篇</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/2024/09/04/9-4%E5%9B%9E%E6%A0%A1%E5%B0%8F%E8%AE%B0/"
-                                   title="9.4回校小记"
+                                   href="/2024/09/13/htb-previse%E5%A4%8D%E7%9B%98/"
+                                   title="htb previse复盘"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">9.4回校小记</span>
+                                        <span class="post-nav-title-item text-ellipsis">htb previse复盘</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -384,7 +384,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kali%E5%88%9D%E5%A7%8B%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">Kali初始配置</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">1.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#web"><span class="nav-number">2.</span> <span class="nav-text">web</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">3.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8E%A8%E8%8D%90%E9%98%85%E8%AF%BBwp"><span class="nav-number">4.1.</span> <span class="nav-text">推荐阅读wp</span></a></li></ol></li></ol>
     </div>
 </div>
 
@@ -547,7 +547,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kali%E5%88%9D%E5%A7%8B%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">Kali初始配置</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">1.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#web"><span class="nav-number">2.</span> <span class="nav-text">web</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">3.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8E%A8%E8%8D%90%E9%98%85%E8%AF%BBwp"><span class="nav-number">4.1.</span> <span class="nav-text">推荐阅读wp</span></a></li></ol></li></ol>
     </div>
 </div>
 

