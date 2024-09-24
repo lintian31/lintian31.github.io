@@ -222,7 +222,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Wed Sep 11 2024 12:32:22 GMT+0800">2024-09-11</span>
+                <span class="datetime" data-updated="Tue Sep 24 2024 16:20:06 GMT+0800">2024-09-24</span>
             </span>
         
 
@@ -302,6 +302,10 @@
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911122841.png" ></p>
 <p>把选项改成’virtio-gpu-pci’，再保存启动虚拟机，正常输入你之前设置的账号密码，正常开机，大功告成！</p>
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240911123136.png" ></p>
+<h4 id="关于复制粘贴的补充"><a href="#关于复制粘贴的补充" class="headerlink" title="关于复制粘贴的补充"></a>关于复制粘贴的补充</h4><p>用了几天下来发现不能和物理主机共享剪切板，非常难受，经过一番摸索，找到了可惜的解决方法，在此记录一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt-get install qemu-guest-agent</span><br><span class="line">sudo apt install spice-vdagent</span><br></pre></td></tr></table></figure>
+
+<p>安装完这些再重启虚拟机即可！</p>
 
                 </div>
                 
@@ -384,7 +388,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kali%E5%88%9D%E5%A7%8B%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">Kali初始配置</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kali%E5%88%9D%E5%A7%8B%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">Kali初始配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%A4%8D%E5%88%B6%E7%B2%98%E8%B4%B4%E7%9A%84%E8%A1%A5%E5%85%85"><span class="nav-number">5.</span> <span class="nav-text">关于复制粘贴的补充</span></a></li></ol>
     </div>
 </div>
 
@@ -547,7 +551,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kali%E5%88%9D%E5%A7%8B%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">Kali初始配置</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="nav-number">1.</span> <span class="nav-text">写在前面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD"><span class="nav-number">2.</span> <span class="nav-text">下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kali%E5%88%9D%E5%A7%8B%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">Kali初始配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%B3%E4%BA%8E%E5%A4%8D%E5%88%B6%E7%B2%98%E8%B4%B4%E7%9A%84%E8%A1%A5%E5%85%85"><span class="nav-number">5.</span> <span class="nav-text">关于复制粘贴的补充</span></a></li></ol>
     </div>
 </div>
 
