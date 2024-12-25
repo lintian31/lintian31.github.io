@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="一直游到海水变蓝">
+    <meta name="author" content="FLow">
+    
+    <title>
+        
+            htb-UnderPass笔记 |
+        
+        Flowww&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+    
+    
+<link rel="stylesheet" href="/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Flowww's blog","author":"FLow","avatar":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png","logo":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png","favicon":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png"},"menu":{"home":"/","archives":"/archives","tags":"/tags","about":"/about"},"first_screen":{"enable":true,"background_img":"/image/bg.svg","background_img_dark":"/images/bg.svg","description":"一直游到海水变蓝","hitokoto":false},"social_contact":{"enable":false,"links":{"github":null,"weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":null}},"scroll":{"progress_bar":false,"percent":false,"hide_header":true},"home":{"announcement":null,"category":false,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":false},"datetime_format":"YYYY-MM-DD","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"default"},"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":false,"site_pv":false,"page_pv":true}},"search":{"path":"search.json","field":"post","content":true,"format":"striptags"},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":null,"reaction":false,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2020,"word_count":false,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":false,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","source_data":{},"version":"4.1.0"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Flowww&#39;s blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                
+                                首页
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                
+                                归档
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                
+                                标签
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/"
+                    >首页</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives"
+                    >归档</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags"
+                    >标签</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about"
+                    >关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        htb-UnderPass笔记
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">FLow</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2024-12-25</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="datetime" data-updated="Wed Dec 25 2024 14:12:11 GMT+0800">2024-12-25</span>
+            </span>
+        
+
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/htb/">htb</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/Linux/">Linux</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <h4 id="to-user"><a href="#to-user" class="headerlink" title="to user"></a>to user</h4><p>信息搜集，nmap只扫出22和80端口</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">└─# nmap -sS -p- --min-rate=20000 10.10.11.48</span><br><span class="line">Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-12-21 11:47 HKT</span><br><span class="line">Nmap scan report for underpass.htb (10.10.11.48)</span><br><span class="line">Host is up (0.55s latency).</span><br><span class="line">Not shown: 60013 filtered tcp ports (no-response), 5520 closed tcp ports (reset)</span><br><span class="line">PORT   STATE SERVICE</span><br><span class="line">22/tcp open  ssh</span><br><span class="line">80/tcp open  http</span><br><span class="line"></span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 15.09 seconds</span><br><span class="line"></span><br><span class="line">└─# nmap -p22,80 -A 10.10.11.48</span><br><span class="line">Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-12-21 11:49 HKT</span><br><span class="line">Nmap scan report for underpass.htb (10.10.11.48)</span><br><span class="line">Host is up (0.60s latency).</span><br><span class="line"></span><br><span class="line">PORT   STATE SERVICE VERSION</span><br><span class="line">22/tcp open  ssh     OpenSSH 8.9p1 Ubuntu 3ubuntu0.10 (Ubuntu Linux; protocol 2.0)</span><br><span class="line">| ssh-hostkey: </span><br><span class="line">|   256 48:b0:d2:c7:29:26:ae:3d:fb:b7:6b:0f:f5:4d:2a:ea (ECDSA)</span><br><span class="line">|_  256 cb:61:64:b8:1b:1b:b5:ba:b8:45:86:c5:16:bb:e2:a2 (ED25519)</span><br><span class="line">80/tcp open  http    Apache httpd 2.4.52 ((Ubuntu))</span><br><span class="line">|_http-title: Apache2 Ubuntu Default Page: It works</span><br><span class="line">Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port</span><br><span class="line">Aggressive OS guesses: Linux 4.15 - 5.8 (96%), Linux 5.3 - 5.4 (95%), Linux 2.6.32 (95%), Linux 5.0 - 5.5 (95%), Linux 3.1 (95%), Linux 3.2 (95%), AXIS 210A or 211 Network Camera (Linux 2.6.17) (95%), ASUS RT-N56U WAP (Linux 3.4) (93%), Linux 3.16 (93%), Linux 5.0 (93%)</span><br><span class="line">No exact OS matches for host (test conditions non-ideal).</span><br><span class="line">Network Distance: 2 hops</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">TRACEROUTE (using port 22/tcp)</span><br><span class="line">HOP RTT       ADDRESS</span><br><span class="line">1   558.64 ms 10.10.16.1</span><br><span class="line">2   559.11 ms underpass.htb (10.10.11.48)</span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 68.85 seconds</span><br></pre></td></tr></table></figure>
+
+<p>直接访问80端口没有什么东西，fuzz子域名和扫目录都扫不出东西，这个时候我就在想有没有一些端口没被发现，然后就尝试UDP扫描</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20241225115417.png" ></p>
+<p>扫到161开了snmp服务，看了一些hacktricks</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">└─# nmap -sU -p- --min-rate=20000 10.10.11.48</span><br><span class="line">Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-12-21 11:54 HKT</span><br><span class="line">RTTVAR has grown to over 2.3 seconds, decreasing to 2.0</span><br><span class="line">RTTVAR has grown to over 2.3 seconds, decreasing to 2.0</span><br><span class="line">RTTVAR has grown to over 2.3 seconds, decreasing to 2.0</span><br><span class="line">RTTVAR has grown to over 2.3 seconds, decreasing to 2.0</span><br><span class="line">Nmap scan report for underpass.htb (10.10.11.48)</span><br><span class="line">Host is up (3.5s latency).</span><br><span class="line">Not shown: 65502 open|filtered udp ports (no-response), 32 closed udp ports (port-unreach)</span><br><span class="line">PORT    STATE SERVICE</span><br><span class="line">161/udp open  snmp</span><br><span class="line"></span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 41.59 seconds</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https://book.hacktricks.xyz/zh/network-services-pentesting/pentesting-snmp</span><br></pre></td></tr></table></figure>
+
+<p>可以探测一下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">┌──(root㉿kali)-[/home/kali]</span><br><span class="line">└─# snmpbulkwalk -c public -v2c 10.10.11.48 </span><br><span class="line">iso.3.6.1.2.1.1.1.0 = STRING: &quot;Linux underpass 5.15.0-126-generic #136-Ubuntu SMP Wed Nov 6 10:38:22 UTC 2024 x86_64&quot;</span><br><span class="line">iso.3.6.1.2.1.1.2.0 = OID: iso.3.6.1.4.1.8072.3.2.10</span><br><span class="line">iso.3.6.1.2.1.1.3.0 = Timeticks: (311557) 0:51:55.57</span><br><span class="line">iso.3.6.1.2.1.1.4.0 = STRING: &quot;steve@underpass.htb&quot;</span><br><span class="line">iso.3.6.1.2.1.1.5.0 = STRING: &quot;UnDerPass.htb is the only daloradius server in the basin!&quot;</span><br><span class="line">iso.3.6.1.2.1.1.6.0 = STRING: &quot;Nevada, U.S.A. but not Vegas&quot;</span><br><span class="line">iso.3.6.1.2.1.1.7.0 = INTEGER: 72</span><br><span class="line">iso.3.6.1.2.1.1.8.0 = Timeticks: (0) 0:00:00.00</span><br><span class="line">iso.3.6.1.2.1.1.9.1.2.1 = OID: iso.3.6.1.6.3.10.3.1.1</span><br><span class="line">iso.3.6.1.2.1.1.9.1.2.2 = OID: iso.3.6.1.6.3.11.3.1.1</span><br><span class="line">iso.3.6.1.2.1.1.9.1.2.3 = OID: iso.3.6.1.6.3.15.2.1.1</span><br><span class="line">iso.3.6.1.2.1.1.9.1.2.4 = OID: iso.3.6.1.6.3.1</span><br><span class="line">iso.3.6.1.2.1.1.9.1.2.5 = OID: iso.3.6.1.6.3.16.2.2.1</span><br><span class="line">iso.3.6.1.2.1.1.9.1.2.6 = OID: iso.3.6.1.2.1.49</span><br><span class="line">iso.3.6.1.2.1.1.9.1.2.7 = OID: iso.3.6.1.2.1.50</span><br><span class="line">iso.3.6.1.2.1.1.9.1.2.8 = OID: iso.3.6.1.2.1.4</span><br><span class="line">iso.3.6.1.2.1.1.9.1.2.9 = OID: iso.3.6.1.6.3.13.3.1.3</span><br><span class="line">iso.3.6.1.2.1.1.9.1.2.10 = OID: iso.3.6.1.2.1.92</span><br><span class="line">iso.3.6.1.2.1.1.9.1.3.1 = STRING: &quot;The SNMP Management Architecture MIB.&quot;</span><br><span class="line">iso.3.6.1.2.1.1.9.1.3.2 = STRING: &quot;The MIB for Message Processing and Dispatching.&quot;</span><br><span class="line">iso.3.6.1.2.1.1.9.1.3.3 = STRING: &quot;The management information definitions for the SNMP User-based Security Model.&quot;</span><br><span class="line">iso.3.6.1.2.1.1.9.1.3.4 = STRING: &quot;The MIB module for SNMPv2 entities&quot;</span><br><span class="line">iso.3.6.1.2.1.1.9.1.3.5 = STRING: &quot;View-based Access Control Model for SNMP.&quot;</span><br><span class="line">iso.3.6.1.2.1.1.9.1.3.6 = STRING: &quot;The MIB module for managing TCP implementations&quot;</span><br><span class="line">iso.3.6.1.2.1.1.9.1.3.7 = STRING: &quot;The MIB module for managing UDP implementations&quot;</span><br><span class="line">iso.3.6.1.2.1.1.9.1.3.8 = STRING: &quot;The MIB module for managing IP and ICMP implementations&quot;</span><br><span class="line">iso.3.6.1.2.1.1.9.1.3.9 = STRING: &quot;The MIB modules for managing SNMP Notification, plus filtering.&quot;</span><br><span class="line">iso.3.6.1.2.1.1.9.1.3.10 = STRING: &quot;The MIB module for logging SNMP Notifications.&quot;</span><br><span class="line">iso.3.6.1.2.1.1.9.1.4.1 = Timeticks: (0) 0:00:00.00</span><br><span class="line">iso.3.6.1.2.1.1.9.1.4.2 = Timeticks: (0) 0:00:00.00</span><br><span class="line">iso.3.6.1.2.1.1.9.1.4.3 = Timeticks: (0) 0:00:00.00</span><br><span class="line">iso.3.6.1.2.1.1.9.1.4.4 = Timeticks: (0) 0:00:00.00</span><br><span class="line">iso.3.6.1.2.1.1.9.1.4.5 = Timeticks: (0) 0:00:00.00</span><br><span class="line">iso.3.6.1.2.1.1.9.1.4.6 = Timeticks: (0) 0:00:00.00</span><br><span class="line">iso.3.6.1.2.1.1.9.1.4.7 = Timeticks: (0) 0:00:00.00</span><br><span class="line">iso.3.6.1.2.1.1.9.1.4.8 = Timeticks: (0) 0:00:00.00</span><br><span class="line">iso.3.6.1.2.1.1.9.1.4.9 = Timeticks: (0) 0:00:00.00</span><br><span class="line">iso.3.6.1.2.1.1.9.1.4.10 = Timeticks: (0) 0:00:00.00</span><br><span class="line">iso.3.6.1.2.1.25.1.1.0 = Timeticks: (312875) 0:52:08.75</span><br><span class="line">iso.3.6.1.2.1.25.1.2.0 = Hex-STRING: 07 E8 0C 19 03 29 21 00 2B 00 00 </span><br><span class="line">iso.3.6.1.2.1.25.1.3.0 = INTEGER: 393216</span><br><span class="line">iso.3.6.1.2.1.25.1.4.0 = STRING: &quot;BOOT_IMAGE=/vmlinuz-5.15.0-126-generic root=/dev/mapper/ubuntu--vg-ubuntu--lv ro net.ifnames=0 biosdevname=0</span><br><span class="line">&quot;</span><br><span class="line">iso.3.6.1.2.1.25.1.5.0 = Gauge32: 3</span><br><span class="line">iso.3.6.1.2.1.25.1.6.0 = Gauge32: 227</span><br><span class="line">iso.3.6.1.2.1.25.1.7.0 = INTEGER: 0</span><br><span class="line">iso.3.6.1.2.1.25.1.7.0 = No more variables left in this MIB View (It is past the end of the MIB tree)</span><br></pre></td></tr></table></figure>
+
+<p>重点在</p>
+<blockquote>
+<p>iso.3.6.1.2.1.1.4.0 &#x3D; STRING: “<a class="link"   href="mailto:&#x73;&#116;&#101;&#x76;&#x65;&#64;&#x75;&#110;&#x64;&#101;&#x72;&#x70;&#x61;&#x73;&#x73;&#x2e;&#x68;&#116;&#98;" >&#x73;&#116;&#101;&#x76;&#x65;&#64;&#x75;&#110;&#x64;&#101;&#x72;&#x70;&#x61;&#x73;&#x73;&#x2e;&#x68;&#116;&#98;<i class="fas fa-external-link-alt"></i></a>“<br>iso.3.6.1.2.1.1.5.0 &#x3D; STRING: “UnDerPass.htb is the only daloradius server in the basin!”</p>
+</blockquote>
+<p>好好好UnDerPass，靶机名字就透露了和UDP有点关系，注意到有一个<strong>daloradius</strong>，搜了一下找到一个项目</p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://github.com/lirantal/daloradius" >https://github.com/lirantal/daloradius<i class="fas fa-external-link-alt"></i></a></p>
+<p>然后尝试在80端口拼接目录&#x2F;daloradius，真有东西，不是404了</p>
+<p>看了一下github到文件目录结构，找到了登陆口</p>
+<p><a class="link"   target="_blank" rel="noopener" href="http://underpass.htb/daloradius/app/operators/login.php" >http://underpass.htb/daloradius/app/operators/login.php<i class="fas fa-external-link-alt"></i></a></p>
+<p>现在需要账户密码，这里有两个思路，一是直接谷歌搜</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20241225120150.png" ></p>
+<p>拿去尝试一下，真的成功了，心情如下：</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20241225120244.png" ></p>
+<p>第二个思路就是去翻一下配置文件，找到&#x2F;daloradius&#x2F;doc&#x2F;install&#x2F;INSTALL</p>
+<p>这样也能看到密码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20241225120719.png" ></p>
+<p>然后一登录就看到用户列表有一个hash和一个用户名，爆破出明文</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20241225120751.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20241225121246.png" ></p>
+<p>拿到凭据<code>svcMosh:underwaterfriends</code>，试了一下ssh就登陆成功了</p>
+<p>getuser</p>
+<h4 id="toroot"><a href="#toroot" class="headerlink" title="toroot"></a>toroot</h4><p>登陆后直接sudo -l就看到有一个moshserver</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">svcMosh@underpass:~$ sudo -l</span><br><span class="line">Matching Defaults entries for svcMosh on localhost:</span><br><span class="line">    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin\:/snap/bin, use_pty</span><br><span class="line"></span><br><span class="line">User svcMosh may run the following commands on localhost:</span><br><span class="line">    (ALL) NOPASSWD: /usr/bin/mosh-server</span><br></pre></td></tr></table></figure>
+
+<p>搜了一下是什么东西</p>
+<p>找到这篇文章 <a class="link"   target="_blank" rel="noopener" href="https://www.cnblogs.com/sunweiye/p/12003616.html" >https://www.cnblogs.com/sunweiye/p/12003616.html<i class="fas fa-external-link-alt"></i></a></p>
+<blockquote>
+<p>Mosh表示移动Shell(Mobile Shell)，是一个用于从客户端跨互联网连接远程服务器的命令行工具。它能用于SSH连接，但是比Secure Shell功能更多。它是一个类似于SSH而带有更多功能的应用。程序最初由Keith Winstein 编写，用于类Unix的操作系统中，发布于GNU GPL V3协议下。</p>
+</blockquote>
+<p>然后注意到这里有一个教用mosh-server连接的</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20241225141107.png" ></p>
+<p>于是</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20241225141155.png" ></p>
+<p>就连接上了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20241225141130.png" ></p>
+<p>结束🔚</p>
+
+                </div>
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/htb/">htb</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/Linux/">Linux</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2024/12/20/htb-Heal%E7%AC%94%E8%AE%B0/"
+                                   title="htb-Heal笔记"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">htb-Heal笔记</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#to-user"><span class="nav-number">1.</span> <span class="nav-text">to user</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#toroot"><span class="nav-number">2.</span> <span class="nav-text">toroot</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2020</span>&nbsp;-&nbsp;2024
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">FLow</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+        
+
+        <div class="count-item info-item default">
+            
+
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-toggle-theme-mode flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#to-user"><span class="nav-number">1.</span> <span class="nav-text">to user</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#toroot"><span class="nav-number">2.</span> <span class="nav-text">toroot</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/toggle-theme.js"></script>
+
+<script src="/js/code-block.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+
+<!-- local-search -->
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    
+        <!-- post-helper -->
+        
+<script src="/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>
