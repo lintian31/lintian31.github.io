@@ -9,7 +9,7 @@
     
     <title>
         
-            htb Shoppy复盘 |
+            2024总结 |
         
         Flowww&#39;s blog
     </title>
@@ -187,12 +187,19 @@
     <div class="post-page-container border-box">
         <div class="post-content-container border-box">
             
-
-            <div class="post-content-bottom border-box">
-                
-                    <div class="post-title">
-                        htb Shoppy复盘
+                <div class="post-content-top border-box"
+                     style="height: 13.8rem"
+                >
+                    <div class="cover-post-title">
+                        2024总结
                     </div>
+                    <img class="post-cover" src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250102235225.png"
+                         onerror="this.style.display='none'"
+                    >
+                </div>
+            
+
+            <div class="post-content-bottom border-box has-cover">
                 
 
                 
@@ -217,12 +224,12 @@
         
             <span class="meta-info-item post-create-date">
                 <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
-                <span class="datetime">2024-09-13</span>
+                <span class="datetime">2025-01-02</span>
             </span>
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Fri Sep 13 2024 15:08:09 GMT+0800">2024-09-13</span>
+                <span class="datetime" data-updated="Fri Jan 03 2025 00:33:32 GMT+0800">2025-01-03</span>
             </span>
         
 
@@ -232,13 +239,10 @@
             <span class="post-tag meta-info-item border-box">
                 <ul class="post-tag-ul">
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E6%9D%82/">杂</a></li>
                         
                     
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/linux/">linux</a></li>
-                        
-                    
-                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/htb/">htb</a></li>
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E7%94%9F%E6%B4%BB%E8%AE%B0%E5%BD%95/">生活记录</a></li>
                         
                     
                 </ul>
@@ -266,54 +270,42 @@
                 <div class="post-content keep-markdown-body">
                     
 
-                    <h4 id="信息搜集"><a href="#信息搜集" class="headerlink" title="信息搜集"></a>信息搜集</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">└─# nmap -A -p- --min-rate=1000 -T4 10.10.11.180</span><br><span class="line">Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-09-12 22:56 PDT</span><br><span class="line">Nmap scan report for shoppy.htb (10.10.11.180)</span><br><span class="line">Host is up (0.38s latency).</span><br><span class="line">Not shown: 65532 closed tcp ports (reset)</span><br><span class="line">PORT     STATE SERVICE  VERSION</span><br><span class="line">22/tcp   open  ssh      OpenSSH 8.4p1 Debian 5+deb11u1 (protocol 2.0)</span><br><span class="line">| ssh-hostkey: </span><br><span class="line">|   3072 9e:5e:83:51:d9:9f:89:ea:47:1a:12:eb:81:f9:22:c0 (RSA)</span><br><span class="line">|   256 58:57:ee:eb:06:50:03:7c:84:63:d7:a3:41:5b:1a:d5 (ECDSA)</span><br><span class="line">|_  256 3e:9d:0a:42:90:44:38:60:b3:b6:2c:e9:bd:9a:67:54 (ED25519)</span><br><span class="line">80/tcp   open  http     nginx 1.23.1</span><br><span class="line">|_http-title:             Shoppy Wait Page        </span><br><span class="line">|_http-server-header: nginx/1.23.1</span><br><span class="line">9093/tcp open  copycat?</span><br><span class="line">| fingerprint-strings: </span><br><span class="line">|   GenericLines: </span><br><span class="line">。。。。</span><br><span class="line">OS:=Z%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=0%Q=)T7(R</span><br><span class="line">OS:=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(R=Y%DF=N%T=40%IPL=164%UN=0%</span><br><span class="line">OS:RIPL=G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=N%T=40%CD=S)</span><br><span class="line"></span><br><span class="line">Network Distance: 2 hops</span><br><span class="line">Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel</span><br><span class="line"></span><br><span class="line">TRACEROUTE (using port 53/tcp)</span><br><span class="line">HOP RTT       ADDRESS</span><br><span class="line">1   407.75 ms 10.10.16.1</span><br><span class="line">2   407.83 ms shoppy.htb (10.10.11.180)</span><br><span class="line"></span><br><span class="line">OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .</span><br><span class="line">Nmap done: 1 IP address (1 host up) scanned in 235.39 seconds</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+                    <h4 id="2024"><a href="#2024" class="headerlink" title="2024"></a>2024</h4><h5 id="比较有意思的事："><a href="#比较有意思的事：" class="headerlink" title="比较有意思的事："></a>比较有意思的事：</h5><p>一家人一起去了东北旅游，这是我小时候没有的经历。</p>
+<p>第一次出国去了韩国，旅游途中刚好撞上了几个护网面试。</p>
+<p>真的参加了一次护网，自己一个人去北京度过了一个多月，整个护网从准备到最后正式结束的过程中经历非常多不确定性，当时感觉非常难熬，现在回看也算是熬过来了，整个过程我感觉到的是内心的成长。</p>
+<p>认识了很多非常好的网友，特别是花哥，威哥，给了我很多的帮助，24年最感恩的事。</p>
+<p>和朋友线下的见面总是有趣的。</p>
+<h5 id="学习上："><a href="#学习上：" class="headerlink" title="学习上："></a>学习上：</h5><p>总的来说进步多少是有的，但是自己不是太满意，可以进步更多，太多时候被自己的惰性打败，没有利用好每一次学习时间。</p>
+<p>知识面变广了，除了网安也有在努力拓展别的知识，比如短暂地接触一下后端，也算是知道他难在哪里，干开发给我的感觉更像是一个设计师，写增删改查反而是最简单的。在网安方面，打了很多靶机，年末开始接触一些java审计的知识，都还是太浅，漏洞挖掘也不太行，要说未来值得努力的方向，那可太多了。</p>
+<p>然后好像没有别的好说的了，过去一年真的长进不多，有些惭愧，没有像别的厉害的师傅一样拿到什么大的奖或者什么证书。</p>
+<h5 id="心态上："><a href="#心态上：" class="headerlink" title="心态上："></a>心态上：</h5><p>自己多活一年长大一岁真的是有成长的，我在努力让自己保持情绪稳定，也要耐心对待身边的亲人朋友。今年更多的时间是在跟自己相处，至少比去年比有多认识自己一些。</p>
+<h5 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h5><p>有新鲜的经历，也有很多挫败的时候。从前都没有对自己的一年好好总结，今年我要记录下来，以后回看都是自己成长的脚印。反思的过程中真的又一次意识到自己的不足，写下这篇还有部分原因是督促自己，2025年要比24年成长得更多！</p>
+<h4 id="2025目标"><a href="#2025目标" class="headerlink" title="2025目标"></a>2025目标</h4><ul>
+<li>更新30篇文章，多记录学习过程，勤做笔记，不断拓宽自己的知识面，也许是向java审计或者插件开发方向走。</li>
+<li>成功找到实习。</li>
+<li>完整看完7本书，练练自己的文笔。</li>
+<li>多认识新朋友，勇敢尝试新鲜东西。</li>
+<li>希望找到新的视角看人生，回头会看25年的时候会发现自己又进步了，而且还是进步了一大截。</li>
+</ul>
+<p>最后分享一些有趣的照片：）</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/IMG_0248.JPG"   style="zoom:50%;" >
 
-<p>开了三个端口，9093端口访问后看起来像是配置文件，没找到什么有用的东西（后来看别的wp说这能看出这台机器有mattermost服务）</p>
-<p>有个域名 <code>shoppy.htb</code>，扫子域名扫到mattermost，都添加到hosts里，mattermost这个域名需要账号密码登陆</p>
-<p>shoppy.htb这个扫目录扫到登陆口&#x2F;login，然后看官方对这个机器的介绍是存在Nosql注入</p>
-<h4 id="web"><a href="#web" class="headerlink" title="web"></a>web</h4><blockquote>
-<p>Nosql注入介绍以及payload</p>
-<p><a class="link"   target="_blank" rel="noopener" href="https://nullsweep.com/a-nosql-injection-primer-with-mongo/" >https://nullsweep.com/a-nosql-injection-primer-with-mongo/<i class="fas fa-external-link-alt"></i></a></p>
-<p><a class="link"   target="_blank" rel="noopener" href="https://xz.aliyun.com/t/9908?time__1311=n4+xnD0DuDRDci730=D/iaRmxjhhIWDRxD5t4+Qx" >https://xz.aliyun.com/t/9908?time__1311=n4%2BxnD0DuDRDci730%3DD%2FiaRmxjhhIWDRxD5t4%2BQx<i class="fas fa-external-link-alt"></i></a></p>
-<p><a class="link"   target="_blank" rel="noopener" href="https://book.hacktricks.xyz/v/cn/pentesting-web/nosql-injection#sql-mongo" >https://book.hacktricks.xyz/v/cn/pentesting-web/nosql-injection#sql-mongo<i class="fas fa-external-link-alt"></i></a></p>
-</blockquote>
-<p>是通过什么判断为Nosql注入的呢？（参考思路：<a class="link"   target="_blank" rel="noopener" href="https://arz101.medium.com/hackthebox-shoppy-64cbe52964ed" >https://arz101.medium.com/hackthebox-shoppy-64cbe52964ed<i class="fas fa-external-link-alt"></i></a> ）</p>
-<p>login发包是post发送username和password两个参数，按往常那样测试单引号，每次都需等待很久的时间然后返回504，直接sqlmap跑也无效，当我们随便访问一个不存在的目录时返回的是，这表明这个web在使用路由</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913140659.png" ></p>
-<p>所以可能是在使用Node.js，他存在使用Nosql注入漏洞绕过登陆限制，经过尝试，可以使用<code>admin&#39; || &#39;a&#39;==&#39;a</code>绕过</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913141054.png" ></p>
-<p>登陆后跳转到&#x2F;admin，主要是有个search功能点，没找到别的点了，搜索admin，给了一个json文件，里面有admin密码的哈希（爆破不出来）</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913141517.png" ></p>
-<p>但是不知道有没有别的用户，继续使用Nosql的payload<code>admin&#39; || &#39;a&#39;==&#39;a</code>，这次多看到一个用户的密码</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913141635.png" ></p>
-<p>爆破后拿到账号密码<code>josh:remembermethisway</code>，成功登陆mattermost那个域名的登陆口，在聊天窗口中找到jaeger的账号密码，ssh登陆成功，拿到user</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913141843.png" ></p>
-<h4 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h4><p>sudo -l看到 <code>(deploy) /home/deploy/password-manager</code>,password-manager是个二进制文件，strings查看，貌似是输入正确的密码后能拿到deploy目录下的creds.txt</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913142207.png" ></p>
-<p>传到本地，ida看了一下，密码就在源代码里，<code>Sample</code></p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913142251.png" ></p>
-<p>输入正确密码后拿到deploy的密码</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913142327.png" ></p>
-<p>登陆deploy输入id，发现deploy在docker组里，有相关的提权方法</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">deploy@shoppy:/home/jaeger$ id</span><br><span class="line">uid=1001(deploy) gid=1001(deploy) groups=1001(deploy),998(docker)</span><br></pre></td></tr></table></figure>
+<p>南方人第一次看到雪，在哈尔滨</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/8611e80513402416617f3d2ea6c51154.JPG"   style="zoom:50%;" >
 
-<blockquote>
-<p>docker提权参考链接</p>
-<p><a class="link"   target="_blank" rel="noopener" href="https://www.cnblogs.com/kqdssheng/p/18275541" >https://www.cnblogs.com/kqdssheng/p/18275541<i class="fas fa-external-link-alt"></i></a></p>
-</blockquote>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913142636.png" ></p>
-<p>有个docker提权的漏洞，大概思路就是<strong>创建一个新的容器，该容器中挂载了整个文件系统。在这个容器中，我将是根用户，因此可以完全访问容器中的所有文件（包括完整的主机文件系统）。</strong></p>
-<p>​	•	docker run: 运行一个新的 Docker 容器。</p>
-<p>​	•	-v &#x2F;:&#x2F;mnt: 将宿主机的根目录 &#x2F; 挂载到容器内部的 &#x2F;mnt 目录。这样，容器可以通过 &#x2F;mnt 访问到宿主机的文件系统。</p>
-<p>​	•	–rm: 容器在退出后会自动删除，不会保留临时文件或容器。</p>
-<p>​	•	-it: 以交互模式运行容器，并分配一个伪终端。这样你可以在容器中运行命令并看到输出。</p>
-<p>​	•	alpine: 指定使用 Alpine Linux 这个小型的 Linux 发行版镜像作为容器的基础镜像。</p>
-<p>​	•	chroot &#x2F;mnt: 使用 chroot 命令将 &#x2F;mnt 作为新的根目录，将容器的根文件系统切换到宿主机的根目录。</p>
-<p>​	•	bash: 运行 bash，给你一个新的 shell 环境。</p>
-<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20240913143024.png" ></p>
-<p>于是我们可以成功读到root.txt，后续也可以通过读取shadow或是ssh私钥等方法来获得真正的宿主机root</p>
-<h4 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h4><p>这个靶机还挺有意思的，主要涉及到Nosql注入和docker提权，都是第一次遇见，过后要好好消化一下这两个知识了。。</p>
-<h5 id="推荐阅读wp"><a href="#推荐阅读wp" class="headerlink" title="推荐阅读wp"></a>推荐阅读wp</h5><p><a class="link"   target="_blank" rel="noopener" href="https://0xdf.gitlab.io/2023/01/14/htb-shoppy.htm" >https://0xdf.gitlab.io/2023/01/14/htb-shoppy.htm<i class="fas fa-external-link-alt"></i></a></p>
+<p>在飞机上用胶片相机拍下的云景</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250102233241.png"   style="zoom: 25%;" >
+
+<p>韩国街景</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250102233219.png"   style="zoom:50%;" >
+
+<p>梨花女子大学附近的路</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250102233311.png"   style="zoom: 25%;" >
+
+<p>北京天安门打卡，后来一个人逛了好多景点</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250102233406.png"   style="zoom: 25%;" >
+
+<p>生日那天晚上下班买了个好利来回出租屋给自己的仪式感</p>
 
                 </div>
                 
@@ -324,15 +316,11 @@
                             <ul class="post-tags-box border-box">
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%A4%8D%E7%9B%98/">复盘</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E6%9D%82/">杂</a>
                                     </li>
                                 
                                     <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/linux/">linux</a>
-                                    </li>
-                                
-                                    <li class="tag-item border-box">
-                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/htb/">htb</a>
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E7%94%9F%E6%B4%BB%E8%AE%B0%E5%BD%95/">生活记录</a>
                                     </li>
                                 
                             </ul>
@@ -348,31 +336,15 @@
                 
                     <div class="post-nav border-box">
                         
-                            <div class="prev-post">
-                                <a class="prev"
-                                   rel="prev"
-                                   href="/2024/09/24/htb-RedPanda%E5%A4%8D%E7%9B%98/"
-                                   title="htb RedPanda复盘"
-                                >
-                                    <span class="left arrow-icon flex-center">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </span>
-                                    <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">htb RedPanda复盘</span>
-                                        <span class="post-nav-item">上一篇</span>
-                                    </span>
-                                </a>
-                            </div>
-                        
                         
                             <div class="next-post">
                                 <a class="next"
                                    rel="next"
-                                   href="/2024/09/13/htb-previse%E5%A4%8D%E7%9B%98/"
-                                   title="htb previse复盘"
+                                   href="/2024/12/29/htb-Trickster%E7%AC%94%E8%AE%B0/"
+                                   title="htb-Trickster笔记"
                                 >
                                     <span class="title flex-center">
-                                        <span class="post-nav-title-item text-ellipsis">htb previse复盘</span>
+                                        <span class="post-nav-title-item text-ellipsis">htb-Trickster笔记</span>
                                         <span class="post-nav-item">下一篇</span>
                                     </span>
                                     <span class="right arrow-icon flex-center">
@@ -400,7 +372,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">1.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#web"><span class="nav-number">2.</span> <span class="nav-text">web</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">3.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8E%A8%E8%8D%90%E9%98%85%E8%AF%BBwp"><span class="nav-number">4.1.</span> <span class="nav-text">推荐阅读wp</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#2024"><span class="nav-number">1.</span> <span class="nav-text">2024</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%AF%94%E8%BE%83%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E4%BA%8B%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">比较有意思的事：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AD%A6%E4%B9%A0%E4%B8%8A%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">学习上：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BF%83%E6%80%81%E4%B8%8A%EF%BC%9A"><span class="nav-number">1.3.</span> <span class="nav-text">心态上：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="nav-number">1.4.</span> <span class="nav-text">总结：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2025%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">2025目标</span></a></li></ol>
     </div>
 </div>
 
@@ -563,7 +535,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="nav-number">1.</span> <span class="nav-text">信息搜集</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#web"><span class="nav-number">2.</span> <span class="nav-text">web</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8F%90%E6%9D%83"><span class="nav-number">3.</span> <span class="nav-text">提权</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8E%A8%E8%8D%90%E9%98%85%E8%AF%BBwp"><span class="nav-number">4.1.</span> <span class="nav-text">推荐阅读wp</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#2024"><span class="nav-number">1.</span> <span class="nav-text">2024</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%AF%94%E8%BE%83%E6%9C%89%E6%84%8F%E6%80%9D%E7%9A%84%E4%BA%8B%EF%BC%9A"><span class="nav-number">1.1.</span> <span class="nav-text">比较有意思的事：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AD%A6%E4%B9%A0%E4%B8%8A%EF%BC%9A"><span class="nav-number">1.2.</span> <span class="nav-text">学习上：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BF%83%E6%80%81%E4%B8%8A%EF%BC%9A"><span class="nav-number">1.3.</span> <span class="nav-text">心态上：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="nav-number">1.4.</span> <span class="nav-text">总结：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2025%E7%9B%AE%E6%A0%87"><span class="nav-number">2.</span> <span class="nav-text">2025目标</span></a></li></ol>
     </div>
 </div>
 
