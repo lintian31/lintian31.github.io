@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="一直游到海水变蓝">
+    <meta name="author" content="Flow">
+    
+    <title>
+        
+            java反序列化基础之类加载 |
+        
+        Flowww&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+    
+    
+<link rel="stylesheet" href="/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Flowww's blog","author":"Flow","avatar":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png","logo":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png","favicon":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png"},"menu":{"home":"/","archives":"/archives","tags":"/tags","about":"/about"},"first_screen":{"enable":true,"background_img":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250112172909.png","background_img_dark":"/images/bg.svg","description":"一直游到海水变蓝","hitokoto":false},"social_contact":{"enable":false,"links":{"github":null,"weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":null}},"scroll":{"progress_bar":false,"percent":false,"hide_header":true},"home":{"announcement":null,"category":false,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":false},"datetime_format":"YYYY-MM-DD","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"default"},"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":false,"site_pv":false,"page_pv":true}},"search":{"path":"search.json","field":"post","content":true,"format":"striptags"},"local_search":{"enable":true,"preload":true},"comment":{"enable":false,"use":"valine","valine":{"appid":null,"appkey":null,"server_urls":null,"placeholder":null},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":null,"reaction":false,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2020,"word_count":false,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":false,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","source_data":{},"version":"4.1.0"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Flowww&#39;s blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                
+                                首页
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                
+                                归档
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                
+                                标签
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/"
+                    >首页</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives"
+                    >归档</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags"
+                    >标签</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about"
+                    >关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        java反序列化基础之类加载
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Flow</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2025-02-14</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="datetime" data-updated="Fri Feb 14 2025 16:21:19 GMT+0800">2025-02-14</span>
+            </span>
+        
+
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/java/">java</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>cc链看到cc3，涉及到类加载，之前囫囵吞枣地学了些，还是不够牢固。于是写篇笔记给自己理清楚。参考了很多前辈的文章，感谢，如果有任何不对的，欢迎找我指正🙏</p>
+<h4 id="Java类加载机制"><a href="#Java类加载机制" class="headerlink" title="Java类加载机制"></a>Java类加载机制</h4><p>借用网上一张图</p>
+<img     src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250214132308.png"   style="zoom:50%;" >
+
+<p>.java 编译后生成 .class文件保存在本地，如果我们要执行class文件，就需要经过一系列的生命周期和初始化操作，最后目的就是让JVM成功执行。</p>
+<p>看这个流程图就知道<strong>类的加载就是由java类加载器实现的，作用将类文件进行动态加载到java虚拟机内存中运行。</strong></p>
+<h4 id="几个类加载器"><a href="#几个类加载器" class="headerlink" title="几个类加载器"></a>几个类加载器</h4><h5 id="BootstrapClassLoader"><a href="#BootstrapClassLoader" class="headerlink" title="BootstrapClassLoader"></a>BootstrapClassLoader</h5><p>这个也叫引导类加载器，比较底层，由C++代码编写，属于JVM的一部分。不继承 <code>java.lang.ClassLoader</code> 类，也没有父加载器，主要负责加载核心 java 库(即 JVM 本身)，存储在 <code>/jre/lib/rt.jar</code> 目录当中。(同时处于安全考虑，<code>BootstrapClassLoader</code> 只加载包名为 <code>java</code>、<code>javax</code>、<code>sun</code> 等开头的类)。</p>
+<h5 id="ExtensionsClassLoader"><a href="#ExtensionsClassLoader" class="headerlink" title="ExtensionsClassLoader"></a>ExtensionsClassLoader</h5><p>也叫拓展类加载器，由 <code>sun.misc.Launcher$ExtClassLoader</code> 类实现，用来在 <code>/jre/lib/ext</code> 或者 <code>java.ext.dirs</code> 中指明的目录加载 java 的扩展库。Java 虚拟机会提供一个扩展库目录，此加载器在目录里面查找并加载 java 类。</p>
+<h5 id="AppClassLoader"><a href="#AppClassLoader" class="headerlink" title="AppClassLoader"></a>AppClassLoader</h5><p>App类加载器&#x2F;系统类加载器（AppClassLoader），由 <code>sun.misc.Launcher$AppClassLoader</code> 实现，一般通过( <code>java.class.path</code> 或者 <code>Classpath</code> 环境变量)来加载 Java 类，也就是我们常说的 classpath 路径。通常我们是使用这个加载类来加载 Java 应用类，可以使用 <code>ClassLoader.getSystemClassLoader()</code> 来获取它。</p>
+<h5 id="UserDefineClassLoader"><a href="#UserDefineClassLoader" class="headerlink" title="UserDefineClassLoader"></a>UserDefineClassLoader</h5><p>除了上面说的三种，用户还可以通过继承<code>java.lang.ClassLoader</code>类的方式实现自己的类加载器。</p>
+<p>我们介绍的几个ClassLoader之间有父子关系（不是继承），在Java.lang.ClassLoader里面定义了指向父加载器的常量 parent, 可以通过调用 getParent() 方法获取父加载器。可以看一个代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ClassLoaderTest</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        System.out.println(ClassLoader.getSystemClassLoader());</span><br><span class="line">        System.out.println(ClassLoader.getSystemClassLoader().getParent());</span><br><span class="line">        System.out.println(ClassLoader.getSystemClassLoader().getParent().getParent());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打印出来是（这里的null其实就是BootstrapClassLoader，因为是c++实现的，所以无法在java中获取到相应的引用）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sun.misc.Launcher$AppClassLoader@5ce65a89</span><br><span class="line">sun.misc.Launcher$ExtClassLoader@1edf1c96</span><br><span class="line">null</span><br></pre></td></tr></table></figure>
+
+<p>几个ClassLoader关系如下：</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250214141003.png" ></p>
+<p>所有ClassLoader都继承自<code>java.lang.ClassLoader</code> 这个抽象类， ExtClassLoader 和 AppClassLoader 继承自 <code>URLClassLoader</code>， <code>URLClassLoader</code>既可以加载本地字节码，也可以加载远程字节码。</p>
+<p><code>java.lang.ClassLoader</code> 是所有 ClassLoader 的基石，在这个抽象类中定义了几个比较重要的方法</p>
+<ul>
+<li>loadClass(): 基于双亲委派机制查找 Class, 调用父加载器的 loadClass 方法或自身的 findClass 方法</li>
+<li>findClass(): 根据名称和位置读取字节码, 并调用 defineClass 方法, 具体实现由子类重写</li>
+<li>defineClass(): 把 byte 数组形式的字节码转换成对应的 Class 对象 (真正加载字节码的地方)</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">loadClass() -&gt; findClass() -&gt; defineClass()</span><br></pre></td></tr></table></figure>
+
+<h4 id="双亲委派机制"><a href="#双亲委派机制" class="headerlink" title="双亲委派机制"></a>双亲委派机制</h4><p>先说一下class有两种加载方式</p>
+<ul>
+<li><p>隐式加载：通过 new 实例化类, 或通过 <code>类名.方法名()</code> 调用其静态方法, 或调用其静态属性</p>
+</li>
+<li><p>显式加载：通过反射的形式, 例如 <code>Class.forName()</code> 或者调用 ClassLoader 的 loadClass 方法</p>
+</li>
+</ul>
+<p>然后我们的类加载基于双亲委派机制：<strong>当一个类加载器收到了类加载的请求的时候，他不会直接去加载指定的类，而是把这个请求委托给自己的父加载器去加载。只有父加载器无法加载这个类的时候，才会由当前这个加载器来负责类的加载</strong></p>
+<p>可以看一下实现代码，<strong>java.lang.ClassLoader的loadClass()方法</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> Class&lt;?&gt; loadClass(String name, <span class="type">boolean</span> resolve)</span><br><span class="line">        <span class="keyword">throws</span> ClassNotFoundException</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (getClassLoadingLock(name)) &#123;</span><br><span class="line">            <span class="comment">// First, check if the class has already been loaded</span></span><br><span class="line">            Class&lt;?&gt; c = findLoadedClass(name); <span class="comment">// 检查类是否已经被加载</span></span><br><span class="line">            <span class="keyword">if</span> (c == <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="type">long</span> <span class="variable">t0</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (parent != <span class="literal">null</span>) &#123;</span><br><span class="line">                        c = parent.loadClass(name, <span class="literal">false</span>); <span class="comment">// 调用父类的loadClass，委托下一层</span></span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        c = findBootstrapClassOrNull(name); <span class="comment">// 此时父加载器为 BootstrapClassLoader</span></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">                    <span class="comment">// ClassNotFoundException thrown if class not found</span></span><br><span class="line">                    <span class="comment">// from the non-null parent class loader</span></span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (c == <span class="literal">null</span>) &#123;</span><br><span class="line">                    <span class="comment">// If still not found, then invoke findClass in order</span></span><br><span class="line">                    <span class="comment">// to find the class.</span></span><br><span class="line">                    <span class="type">long</span> <span class="variable">t1</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">                    c = findClass(name); <span class="comment">// 尝试调用自己的 findClass 方法来加载 class</span></span><br><span class="line"></span><br><span class="line">                    <span class="comment">// this is the defining class loader; record the stats</span></span><br><span class="line">                    sun.misc.PerfCounter.getParentDelegationTime().addTime(t1 - t0);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClassTime().addElapsedTimeFrom(t1);</span><br><span class="line">                    sun.misc.PerfCounter.getFindClasses().increment();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (resolve) &#123;</span><br><span class="line">                resolveClass(c);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> c;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>简单流程就是1、先检查类是否已经被加载过 2、若没有加载则调用父加载器的loadClass()方法进行加载 3、若父加载器为空则默认使用启动类加载器作为父加载器。 4、如果父类加载失败，抛出ClassNotFoundException异常后，再调用自己的findClass()方法进行加载。</p>
+<h4 id="不同场景下代码块加载顺序"><a href="#不同场景下代码块加载顺序" class="headerlink" title="不同场景下代码块加载顺序"></a>不同场景下代码块加载顺序</h4><p>基础认知</p>
+<ul>
+<li>静态代码块：<code>static&#123;&#125;</code></li>
+<li>构造代码块：<code>&#123;&#125;</code></li>
+<li>无参构造器：<code>ClassName()</code></li>
+<li>有参构造器：<code>ClassName(String name)</code></li>
+</ul>
+<p>先写一个Dog.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Dog</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="type">int</span> staticVar;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> instanceVar;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;静态代码块&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;构造代码块&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Dog()&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;无参构造器&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    Dog(<span class="type">int</span> instanceVar)&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;有参构造器&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">staticAction</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;静态方法&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="场景一：实例化对象"><a href="#场景一：实例化对象" class="headerlink" title="场景一：实例化对象"></a>场景一：实例化对象</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Dog</span> <span class="variable">dog</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Dog</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打印</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">静态代码块</span><br><span class="line">构造代码块</span><br><span class="line">无参构造器</span><br></pre></td></tr></table></figure>
+
+<p>所以当我们使用<code>new</code>来实例化对象的时候，会先调用静态代码块，再调用动态代码块，再根据不同的实例化方法调用不同的构造器</p>
+<h5 id="场景二：调用静态方法"><a href="#场景二：调用静态方法" class="headerlink" title="场景二：调用静态方法"></a>场景二：调用静态方法</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        Dog.staticAction();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打印</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">静态代码块</span><br><span class="line">静态方法</span><br></pre></td></tr></table></figure>
+
+<p>所以当我们不实例化对象直接调用静态方法，会先调用类中的静态代码块，然后调用静态方法</p>
+<h5 id="场景三：对类中的静态成员赋值"><a href="#场景三：对类中的静态成员赋值" class="headerlink" title="场景三：对类中的静态成员赋值"></a>场景三：对类中的静态成员赋值</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        Dog.staticVar = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打印</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">静态代码块</span><br></pre></td></tr></table></figure>
+
+<p>所以对静态成员变量赋值前，会调用静态代码块</p>
+<h5 id="场景四：使用class获取类"><a href="#场景四：使用class获取类" class="headerlink" title="场景四：使用class获取类"></a>场景四：使用class获取类</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> Dog.class;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>没有输出任何东西</p>
+<h5 id="场景五：使用forName获取类"><a href="#场景五：使用forName获取类" class="headerlink" title="场景五：使用forName获取类"></a>场景五：使用forName获取类</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> ClassNotFoundException&#123;</span><br><span class="line">        Class.forName(<span class="string">&quot;com.Dog&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打印 </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">静态代码块</span><br></pre></td></tr></table></figure>
+
+<p>还有</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Class.forName(<span class="string">&quot;com.Dog&quot;</span>, <span class="literal">true</span>, ClassLoader.getSystemClassLoader());</span><br><span class="line"><span class="comment">// 打印“静态代码块”</span></span><br><span class="line">Class.forName(<span class="string">&quot;com.Dog&quot;</span>, <span class="literal">false</span>, ClassLoader.getSystemClassLoader());</span><br><span class="line"><span class="comment">// 没有打印 因为这个通过false控制只加载，没有初始化</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="利用URLClassLoader加载class文件"><a href="#利用URLClassLoader加载class文件" class="headerlink" title="利用URLClassLoader加载class文件"></a>利用URLClassLoader加载class文件</h4><p><code>URLClassLoader</code> 实际上是我们平时默认使用的 <code>AppClassLoader</code> 的父类，所以，我们解释 <code>URLClassLoader</code> 的工作过程实际上就是在解释默认的 <code>Java </code>类加载器的工作流程。</p>
+<p>先新建一个calc类，注意这里没有声明Calc再哪个包，就是自由的</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Calc</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Runtime.getRuntime().exec(<span class="string">&quot;open -a Calculator&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>构建生成Calc.class文件，把它放在目录下</p>
+<h5 id="file协议"><a href="#file协议" class="headerlink" title="file协议"></a>file协议</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">package com;</span><br><span class="line"></span><br><span class="line">import java.net.MalformedURLException;</span><br><span class="line">import java.net.URL;</span><br><span class="line">import java.net.URLClassLoader;</span><br><span class="line"></span><br><span class="line">public class URLLoader &#123;</span><br><span class="line">    public static void main(String[] args) throws MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException &#123;</span><br><span class="line">        URLClassLoader urlClassLoader = new URLClassLoader(new URL[]&#123;new URL(&quot;file:///Users/lingtian/Downloads/&quot;)&#125;);</span><br><span class="line">        Class calc = urlClassLoader.loadClass(&quot;Calc&quot;);</span><br><span class="line">        calc.newInstance();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="http协议"><a href="#http协议" class="headerlink" title="http协议"></a>http协议</h5><p>在Clac.class所在目录开一个http服务</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.net.MalformedURLException;</span><br><span class="line"><span class="keyword">import</span> java.net.URL;</span><br><span class="line"><span class="keyword">import</span> java.net.URLClassLoader;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">URLLoader</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException &#123;</span><br><span class="line">        <span class="type">URLClassLoader</span> <span class="variable">urlClassLoader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">URLClassLoader</span>(<span class="keyword">new</span> <span class="title class_">URL</span>[]&#123;<span class="keyword">new</span> <span class="title class_">URL</span>(<span class="string">&quot;http://localhost:8000/&quot;</span>)&#125;);</span><br><span class="line">        <span class="type">Class</span> <span class="variable">calc</span> <span class="operator">=</span> urlClassLoader.loadClass(<span class="string">&quot;Calc&quot;</span>);</span><br><span class="line">        calc.newInstance();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>服务器这边也可以看到接收到请求</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250214154610.png" ></p>
+<h5 id="jar-file"><a href="#jar-file" class="headerlink" title="jar+file"></a>jar+file</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">jar -cvf Calc.jar Clac.class</span><br></pre></td></tr></table></figure>
+
+<p>生成一个jar文件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">URLClassLoader</span> <span class="variable">urlClassLoader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">URLClassLoader</span>(<span class="keyword">new</span> <span class="title class_">URL</span>[]&#123;<span class="keyword">new</span> <span class="title class_">URL</span>(<span class="string">&quot;jar:file:///Users/lingtian/Downloads/Calc.jar!/&quot;</span>)&#125;);</span><br><span class="line"><span class="type">Class</span> <span class="variable">calc</span> <span class="operator">=</span> urlClassLoader.loadClass(<span class="string">&quot;Calc&quot;</span>);</span><br><span class="line">calc.newInstance();</span><br></pre></td></tr></table></figure>
+
+<p>就是调用前面多一个jar:，总体逻辑是一样的，要注意包声明的位置，需要对得上</p>
+<h5 id="jar-http"><a href="#jar-http" class="headerlink" title="jar+http"></a>jar+http</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">URLClassLoader</span> <span class="variable">urlClassLoader</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">URLClassLoader</span>(<span class="keyword">new</span> <span class="title class_">URL</span>[]&#123;<span class="keyword">new</span> <span class="title class_">URL</span>(<span class="string">&quot;jar:http://127.0.0.1:8000/Calc.jar!/&quot;</span>)&#125;);</span><br><span class="line"><span class="type">Class</span> <span class="variable">calc</span> <span class="operator">=</span> urlClassLoader.loadClass(<span class="string">&quot;Calc&quot;</span>);</span><br><span class="line">calc.newInstance();</span><br></pre></td></tr></table></figure>
+
+<h4 id="利用-ClassLoader-defineClass-直接加载字节码"><a href="#利用-ClassLoader-defineClass-直接加载字节码" class="headerlink" title="利用 ClassLoader#defineClass 直接加载字节码"></a>利用 ClassLoader#defineClass 直接加载字节码</h4><p>默认的ClassLoader#defineClass方法是native，逻辑在JVM里面的C语言</p>
+<p>看一下defineclass的调用模式，name就是类名，b为字节码数组，off为偏移量，len为字节码长度</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">final</span> Class&lt;?&gt; defineClass(String name, <span class="type">byte</span>[] b, <span class="type">int</span> off, <span class="type">int</span> len)</span><br></pre></td></tr></table></figure>
+
+<p>因为是保护的属性，无法在外部直接访问，所以我们需要反射调用<code>defineClass()</code> 方法进行字节码的加载</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">URLLoaderTest</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException &#123;</span><br><span class="line">        <span class="type">ClassLoader</span> <span class="variable">classLoader</span> <span class="operator">=</span> ClassLoader.getSystemClassLoader(); <span class="comment">// 获取系统的类加载器</span></span><br><span class="line">        <span class="type">Method</span> <span class="variable">method</span> <span class="operator">=</span> ClassLoader.class.getDeclaredMethod(<span class="string">&quot;defineClass&quot;</span>, String.class, <span class="type">byte</span>[].class, <span class="type">int</span>.class, <span class="type">int</span>.class);<span class="comment">// 通过反射获取到define方法</span></span><br><span class="line">        method.setAccessible(<span class="literal">true</span>); <span class="comment">// 设置访问权限</span></span><br><span class="line">        <span class="type">byte</span>[] code = Files.readAllBytes(Paths.get(<span class="string">&quot;/Users/lingtian/Downloads/Calc.class&quot;</span>)); <span class="comment">// 获取字节码数组</span></span><br><span class="line">        <span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> (Class) method.invoke(classLoader, <span class="string">&quot;Calc&quot;</span>, code, <span class="number">0</span>, code.length); <span class="comment">// 按照defineclass的调用要求依次传入参数。然后加载出类给c，其实也就是Calc类</span></span><br><span class="line">        c.newInstance(); <span class="comment">// 实现实例化</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>ClassLoader#defineClass</code>直接加载字节码有个优点就是不需要出网也可以加载字节码。</p>
+<h4 id="利用Unsafe-加载字节码"><a href="#利用Unsafe-加载字节码" class="headerlink" title="利用Unsafe 加载字节码"></a>利用Unsafe 加载字节码</h4><p>Unsafe也有defineClass()，本质和上一个差不多</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, NoSuchFieldException &#123;</span><br><span class="line">        <span class="type">byte</span>[] code = Files.readAllBytes(Paths.get(<span class="string">&quot;/Users/lingtian/Downloads/Calc.class&quot;</span>));</span><br><span class="line">        <span class="type">ClassLoader</span> <span class="variable">classLoader</span> <span class="operator">=</span> ClassLoader.getSystemClassLoader();</span><br><span class="line"></span><br><span class="line">        Class&lt;Unsafe&gt; unsafeClass = Unsafe.class;</span><br><span class="line">        <span class="type">Field</span> <span class="variable">unsafeField</span> <span class="operator">=</span> unsafeClass.getDeclaredField(<span class="string">&quot;theUnsafe&quot;</span>);</span><br><span class="line">        unsafeField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">        <span class="type">Unsafe</span> <span class="variable">classUnsafe</span> <span class="operator">=</span> (Unsafe) unsafeField.get(<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">        <span class="type">Method</span> <span class="variable">defineClassMethod</span> <span class="operator">=</span> unsafeClass.getMethod(<span class="string">&quot;defineClass&quot;</span>, String.class, <span class="type">byte</span>[].class,<span class="type">int</span>.class, <span class="type">int</span>.class, ClassLoader.class, ProtectionDomain.class);</span><br><span class="line">        <span class="type">Class</span> <span class="variable">cc</span> <span class="operator">=</span> (Class) defineClassMethod.invoke(classUnsafe, <span class="string">&quot;Calc&quot;</span>, code, <span class="number">0</span>, code.length, classLoader, <span class="literal">null</span>);</span><br><span class="line">        cc.newInstance();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="TemplatesImpl加载字节码"><a href="#TemplatesImpl加载字节码" class="headerlink" title="TemplatesImpl加载字节码"></a>TemplatesImpl加载字节码</h4><h5 id="为什么要用这个"><a href="#为什么要用这个" class="headerlink" title="为什么要用这个"></a>为什么要用这个</h5><p>为什么用这个：在实际场景中，因为defineClass方法作用域却是不开放的，所以我们很很难直接利用到它，但是我们的TemplatesImpl里的作用域是default</p>
+<p>目标，调用到里面的TemplatesImpl有一个内部类，TransletClassLoader，里面调用了defineClass方法（重写），而且这个内部类继承了ClassLoader，而且这个重写的defineClass方法没有写明作用域，就默认是default，所以可以被类外部调用</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/image-20241125205755573.png" ></p>
+<h5 id="调用链"><a href="#调用链" class="headerlink" title="调用链"></a>调用链</h5><p>确定了目标，接下来确定一下调用链</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">TransletClassLoader#defineClass()</span><br><span class="line">	-&gt; TemplatesImpl#defineTransletClasses()</span><br><span class="line">	 -&gt; TemplatesImpl#getTransletInstance()</span><br><span class="line">	 	-&gt; TemplatesImpl#newTransformer()</span><br><span class="line">	 		-&gt; TemplatesImpl#getOutputProperties()</span><br></pre></td></tr></table></figure>
+
+<p>倒推前面一两个属性都是private，直到newTransformer和getOutputProperties才是public</p>
+<h5 id="注意点1"><a href="#注意点1" class="headerlink" title="注意点1"></a>注意点1</h5><p>这里有一个点，就是在找defineTransletClasses上一个调用方法的时候，其实是有三个</p>
+<p>但是这里getTransletClasses()和 getTransletIndex() 都在调用defineTransletClasses()后没别的动作，那么最后加载的类就无法被实例化&#x2F;初始化</p>
+<p>咱们getTransletInstance()在取得了_class后会对数组里面对应的队形进行<strong>无参数</strong>初始化，满足了我们的要求</p>
+<h5 id="poc"><a href="#poc" class="headerlink" title="poc"></a>poc</h5><p>确定了调用链，先构造一个准备被调用的类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.DOM;</span><br><span class="line"><span class="keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.TransletException;</span><br><span class="line"><span class="keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet;</span><br><span class="line"><span class="keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;</span><br><span class="line"><span class="keyword">import</span> com.sun.org.apache.xml.internal.dtm.DTMAxisIterator;</span><br><span class="line"><span class="keyword">import</span> com.sun.org.apache.xml.internal.serializer.SerializationHandler;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="comment">// TemplatesImpl 的字节码构造</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TemplatesBytes</span> <span class="keyword">extends</span> <span class="title class_">AbstractTranslet</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">TemplatesBytes</span><span class="params">()</span> <span class="keyword">throws</span> IOException&#123; <span class="comment">// 构造方法，每次加载类的时候会自动调用</span></span><br><span class="line">        <span class="built_in">super</span>();</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello TemplatesBytes&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transform</span><span class="params">(DOM document, SerializationHandler[] handlers)</span> <span class="keyword">throws</span> TransletException &#123;&#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transform</span><span class="params">(DOM document, DTMAxisIterator iterator, SerializationHandler handler)</span> <span class="keyword">throws</span> TransletException &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里这个类需要继承<code>com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</code></p>
+<p>然后因为AbstractTranslet这个类里面有一些抽象方法，所以需要重写，然后就直接写我们要做的事情，这里控制打印一下就好</p>
+<p><strong>POC：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl;</span><br><span class="line"><span class="keyword">import</span> com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Field;</span><br><span class="line"><span class="keyword">import</span> java.nio.file.Files;</span><br><span class="line"><span class="keyword">import</span> java.nio.file.Paths;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 主程序</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TemplatesRce</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception&#123;</span><br><span class="line">        <span class="type">byte</span>[] code = Files.readAllBytes(Paths.get(<span class="string">&quot;/Users/lingtian/Downloads/TemplatesBytes.class&quot;</span>));</span><br><span class="line">        <span class="type">TemplatesImpl</span> <span class="variable">templates</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TemplatesImpl</span>();</span><br><span class="line">        setFieldValue(templates, <span class="string">&quot;_name&quot;</span>, <span class="string">&quot;Calc&quot;</span>);</span><br><span class="line">        setFieldValue(templates, <span class="string">&quot;_bytecodes&quot;</span>, <span class="keyword">new</span> <span class="title class_">byte</span>[][] &#123;code&#125;);</span><br><span class="line">        setFieldValue(templates, <span class="string">&quot;_tfactory&quot;</span>, <span class="keyword">new</span> <span class="title class_">TransformerFactoryImpl</span>());</span><br><span class="line">        templates.getOutputProperties();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">setFieldValue</span><span class="params">(Object obj, String fieldName, Object value)</span> <span class="keyword">throws</span> Exception&#123;</span><br><span class="line">        <span class="type">Field</span> <span class="variable">field</span> <span class="operator">=</span> obj.getClass().getDeclaredField(fieldName);</span><br><span class="line">        field.setAccessible(<span class="literal">true</span>);</span><br><span class="line">        field.set(obj, value);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>setFieldValue</code>这个好高明，直接定义一个方法调用，避免冗余，主要逻辑就是获取成员变量然后修改里面的值就好</p>
+<h5 id="注意点2"><a href="#注意点2" class="headerlink" title="注意点2"></a>注意点2</h5><p>链子一开始可以是newTransformer()也可以是getOutputProperties()，因为都是public，多一个getOutputProperties去调用也没什么影响，直接newTransformer也是可以的，不用纠结这个，直接修改代码里面的这个就行</p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p>b站：白日梦组长</p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://drun1baby.top/2022/06/03/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80%E7%AF%87-05-%E7%B1%BB%E7%9A%84%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD/" >https://drun1baby.top/2022/06/03/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80%E7%AF%87-05-%E7%B1%BB%E7%9A%84%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD/<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://exp10it.io/2022/11/java-classloader/" >https://exp10it.io/2022/11/java-classloader/<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://xz.aliyun.com/news/8556" >https://xz.aliyun.com/news/8556<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/260902" >https://www.anquanke.com/post/id/260902<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://www.cnblogs.com/hollischuang/p/14260801.html" >https://www.cnblogs.com/hollischuang/p/14260801.html<i class="fas fa-external-link-alt"></i></a></p>
+
+                </div>
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/java/">java</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2025/02/09/cc6%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"
+                                   title="cc6学习笔记"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">cc6学习笔记</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6"><span class="nav-number">2.</span> <span class="nav-text">Java类加载机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%A0%E4%B8%AA%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">几个类加载器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#BootstrapClassLoader"><span class="nav-number">3.1.</span> <span class="nav-text">BootstrapClassLoader</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ExtensionsClassLoader"><span class="nav-number">3.2.</span> <span class="nav-text">ExtensionsClassLoader</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#AppClassLoader"><span class="nav-number">3.3.</span> <span class="nav-text">AppClassLoader</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#UserDefineClassLoader"><span class="nav-number">3.4.</span> <span class="nav-text">UserDefineClassLoader</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6"><span class="nav-number">4.</span> <span class="nav-text">双亲委派机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E5%9C%BA%E6%99%AF%E4%B8%8B%E4%BB%A3%E7%A0%81%E5%9D%97%E5%8A%A0%E8%BD%BD%E9%A1%BA%E5%BA%8F"><span class="nav-number">5.</span> <span class="nav-text">不同场景下代码块加载顺序</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%B8%80%EF%BC%9A%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%AF%B9%E8%B1%A1"><span class="nav-number">5.1.</span> <span class="nav-text">场景一：实例化对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%BA%8C%EF%BC%9A%E8%B0%83%E7%94%A8%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95"><span class="nav-number">5.2.</span> <span class="nav-text">场景二：调用静态方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%B8%89%EF%BC%9A%E5%AF%B9%E7%B1%BB%E4%B8%AD%E7%9A%84%E9%9D%99%E6%80%81%E6%88%90%E5%91%98%E8%B5%8B%E5%80%BC"><span class="nav-number">5.3.</span> <span class="nav-text">场景三：对类中的静态成员赋值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E5%9B%9B%EF%BC%9A%E4%BD%BF%E7%94%A8class%E8%8E%B7%E5%8F%96%E7%B1%BB"><span class="nav-number">5.4.</span> <span class="nav-text">场景四：使用class获取类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%BA%94%EF%BC%9A%E4%BD%BF%E7%94%A8forName%E8%8E%B7%E5%8F%96%E7%B1%BB"><span class="nav-number">5.5.</span> <span class="nav-text">场景五：使用forName获取类</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8URLClassLoader%E5%8A%A0%E8%BD%BDclass%E6%96%87%E4%BB%B6"><span class="nav-number">6.</span> <span class="nav-text">利用URLClassLoader加载class文件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#file%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.1.</span> <span class="nav-text">file协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#http%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.2.</span> <span class="nav-text">http协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#jar-file"><span class="nav-number">6.3.</span> <span class="nav-text">jar+file</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#jar-http"><span class="nav-number">6.4.</span> <span class="nav-text">jar+http</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8-ClassLoader-defineClass-%E7%9B%B4%E6%8E%A5%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81"><span class="nav-number">7.</span> <span class="nav-text">利用 ClassLoader#defineClass 直接加载字节码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8Unsafe-%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81"><span class="nav-number">8.</span> <span class="nav-text">利用Unsafe 加载字节码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TemplatesImpl%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81"><span class="nav-number">9.</span> <span class="nav-text">TemplatesImpl加载字节码</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E8%BF%99%E4%B8%AA"><span class="nav-number">9.1.</span> <span class="nav-text">为什么要用这个</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E9%93%BE"><span class="nav-number">9.2.</span> <span class="nav-text">调用链</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E7%82%B91"><span class="nav-number">9.3.</span> <span class="nav-text">注意点1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#poc"><span class="nav-number">9.4.</span> <span class="nav-text">poc</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E7%82%B92"><span class="nav-number">9.5.</span> <span class="nav-text">注意点2</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">10.</span> <span class="nav-text">参考</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2020</span>&nbsp;-&nbsp;2025
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Flow</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+        
+
+        <div class="count-item info-item default">
+            
+
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-toggle-theme-mode flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6"><span class="nav-number">2.</span> <span class="nav-text">Java类加载机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%A0%E4%B8%AA%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-number">3.</span> <span class="nav-text">几个类加载器</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#BootstrapClassLoader"><span class="nav-number">3.1.</span> <span class="nav-text">BootstrapClassLoader</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ExtensionsClassLoader"><span class="nav-number">3.2.</span> <span class="nav-text">ExtensionsClassLoader</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#AppClassLoader"><span class="nav-number">3.3.</span> <span class="nav-text">AppClassLoader</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#UserDefineClassLoader"><span class="nav-number">3.4.</span> <span class="nav-text">UserDefineClassLoader</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6"><span class="nav-number">4.</span> <span class="nav-text">双亲委派机制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E5%9C%BA%E6%99%AF%E4%B8%8B%E4%BB%A3%E7%A0%81%E5%9D%97%E5%8A%A0%E8%BD%BD%E9%A1%BA%E5%BA%8F"><span class="nav-number">5.</span> <span class="nav-text">不同场景下代码块加载顺序</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%B8%80%EF%BC%9A%E5%AE%9E%E4%BE%8B%E5%8C%96%E5%AF%B9%E8%B1%A1"><span class="nav-number">5.1.</span> <span class="nav-text">场景一：实例化对象</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%BA%8C%EF%BC%9A%E8%B0%83%E7%94%A8%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95"><span class="nav-number">5.2.</span> <span class="nav-text">场景二：调用静态方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%B8%89%EF%BC%9A%E5%AF%B9%E7%B1%BB%E4%B8%AD%E7%9A%84%E9%9D%99%E6%80%81%E6%88%90%E5%91%98%E8%B5%8B%E5%80%BC"><span class="nav-number">5.3.</span> <span class="nav-text">场景三：对类中的静态成员赋值</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E5%9B%9B%EF%BC%9A%E4%BD%BF%E7%94%A8class%E8%8E%B7%E5%8F%96%E7%B1%BB"><span class="nav-number">5.4.</span> <span class="nav-text">场景四：使用class获取类</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9C%BA%E6%99%AF%E4%BA%94%EF%BC%9A%E4%BD%BF%E7%94%A8forName%E8%8E%B7%E5%8F%96%E7%B1%BB"><span class="nav-number">5.5.</span> <span class="nav-text">场景五：使用forName获取类</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8URLClassLoader%E5%8A%A0%E8%BD%BDclass%E6%96%87%E4%BB%B6"><span class="nav-number">6.</span> <span class="nav-text">利用URLClassLoader加载class文件</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#file%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.1.</span> <span class="nav-text">file协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#http%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.2.</span> <span class="nav-text">http协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#jar-file"><span class="nav-number">6.3.</span> <span class="nav-text">jar+file</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#jar-http"><span class="nav-number">6.4.</span> <span class="nav-text">jar+http</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8-ClassLoader-defineClass-%E7%9B%B4%E6%8E%A5%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81"><span class="nav-number">7.</span> <span class="nav-text">利用 ClassLoader#defineClass 直接加载字节码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8Unsafe-%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81"><span class="nav-number">8.</span> <span class="nav-text">利用Unsafe 加载字节码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TemplatesImpl%E5%8A%A0%E8%BD%BD%E5%AD%97%E8%8A%82%E7%A0%81"><span class="nav-number">9.</span> <span class="nav-text">TemplatesImpl加载字节码</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%94%A8%E8%BF%99%E4%B8%AA"><span class="nav-number">9.1.</span> <span class="nav-text">为什么要用这个</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E9%93%BE"><span class="nav-number">9.2.</span> <span class="nav-text">调用链</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E7%82%B91"><span class="nav-number">9.3.</span> <span class="nav-text">注意点1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#poc"><span class="nav-number">9.4.</span> <span class="nav-text">poc</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E7%82%B92"><span class="nav-number">9.5.</span> <span class="nav-text">注意点2</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">10.</span> <span class="nav-text">参考</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/toggle-theme.js"></script>
+
+<script src="/js/code-block.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+
+<!-- local-search -->
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    
+        <!-- post-helper -->
+        
+<script src="/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>
