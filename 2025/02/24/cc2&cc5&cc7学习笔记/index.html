@@ -222,7 +222,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Mon Feb 24 2025 21:51:31 GMT+0800">2025-02-24</span>
+                <span class="datetime" data-updated="Mon Feb 24 2025 21:59:35 GMT+0800">2025-02-24</span>
             </span>
         
 
@@ -322,11 +322,11 @@
 </ul>
 <p><code>reconstitutionPut</code>是被遍历调用，第一次调用的时候<code>tab[index]</code>内容是空的，在方法最下面会给它赋一个值。第二次进入这个方法后它就不是空，此时的变量分别是</p>
 <blockquote>
-<p>tab[index] -&gt; 在上一轮for被赋值后，可以把它当成decorateMap1<br>e -&gt; lazymap2<br>而第二次调用reconstitutionPut的时候传入的key value对应decorateMap2的key value</p>
+<p>tab[index] -&gt; 在上一轮for被赋值后，可以把它当成decorateMap1<br>e -&gt; decorateMap2<br>而第二次调用reconstitutionPut的时候传入的key value对应decorateMap2的key value</p>
 </blockquote>
 <p>所以为了判断能够进入<code>e.key.equals(key)</code>，要先使<code>e.hash == hash</code></p>
 <blockquote>
-<p>lazymap1.hash -&gt; decorateMap1.key.hashcode()</p>
+<p>decorateMap1.hash -&gt; decorateMap1.key.hashcode()</p>
 </blockquote>
 <p>也就是<u>decorateMap1</u>和<u>decorateMap2</u>两个的key作hashcode()处理后的值相等才能过判断</p>
 <p>这里利用到java的一个小bug，”yy”和”zZ”做hashcode处理后值是一样的</p>
