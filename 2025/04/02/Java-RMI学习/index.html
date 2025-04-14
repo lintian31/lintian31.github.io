@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="Hexo Theme Keep">
+    <meta name="description" content="一直游到海水变蓝">
+    <meta name="author" content="Flow">
+    
+    <title>
+        
+            Java-RMI学习 |
+        
+        Flowww&#39;s blog
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+    
+        <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+    
+    
+<link rel="stylesheet" href="/font/css/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/regular.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/solid.min.css">
+
+    
+<link rel="stylesheet" href="/font/css/brands.min.css">
+
+    
+    <script class="keep-theme-configurations">
+    const KEEP = window.KEEP || {}
+    KEEP.hexo_config = {"hostname":"example.com","root":"/","language":"zh-CN","path":"search.xml"}
+    KEEP.theme_config = {"base_info":{"primary_color":"#0066cc","title":"Flowww's blog","author":"Flow","avatar":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png","logo":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png","favicon":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png"},"menu":{"home":"/","archives":"/archives","tags":"/tags","about":"/about"},"first_screen":{"enable":true,"background_img":"https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250112172909.png","background_img_dark":"/images/bg.svg","description":"一直游到海水变蓝","hitokoto":false},"social_contact":{"enable":false,"links":{"github":null,"weixin":null,"qq":null,"weibo":null,"zhihu":null,"twitter":null,"x":null,"facebook":null,"email":null}},"scroll":{"progress_bar":false,"percent":false,"hide_header":true},"home":{"announcement":null,"category":false,"tag":true,"post_datetime":"created"},"post":{"author_badge":{"enable":false,"level_badge":true,"custom_badge":["One","Two","Three"]},"word_count":{"wordcount":true,"min2read":false},"datetime_format":"YYYY-MM-DD","copyright_info":false,"share":false,"reward":{"enable":false,"img_link":null,"text":null}},"code_block":{"tools":{"enable":true,"style":"default"},"highlight_theme":"default"},"toc":{"enable":true,"number":true,"expand_all":false,"init_open":true,"layout":"right"},"website_count":{"busuanzi_count":{"enable":true,"site_uv":false,"site_pv":false,"page_pv":true}},"search":{"path":"search.json","field":"post","content":true,"format":"striptags"},"local_search":{"enable":true,"preload":true},"comment":{"enable":true,"use":"valine","valine":{"appid":"E3FHp0QEVFhY7p13mQXePdYC-gzGzoHsz","appkey":"hJxnDaGeKNxkzn9GLQS6pJD4","placeholder":"留下你的评论～","recordIP":true,"avatar":"robohash","avatar_cdn":"https://cravatar.cn/avatar/"},"gitalk":{"github_id":null,"github_admins":null,"repository":null,"client_id":null,"client_secret":null,"proxy":null},"twikoo":{"env_id":null,"region":null,"version":"1.6.21"},"waline":{"server_url":null,"reaction":false,"version":2},"giscus":{"repo":null,"repo_id":null,"category":"Announcements","category_id":null,"reactions_enabled":false},"artalk":{"server":null},"disqus":{"shortname":null}},"rss":{"enable":false},"lazyload":{"enable":false},"cdn":{"enable":false,"provider":"cdnjs"},"pjax":{"enable":false},"footer":{"since":2020,"word_count":false,"icp":{"enable":false,"record_code":null,"url":"https://beian.miit.gov.cn"},"site_deploy":{"enable":false,"provider":"github","url":null},"shields_style":{"enable":false,"custom":[{"link_url":null,"img_url":null}]}},"inject":{"enable":false,"css":[null],"js":[null]},"root":"","source_data":{},"version":"4.1.0"}
+    KEEP.language_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"}
+    KEEP.language_code_block = {"copy":"复制代码","copied":"已复制","fold":"折叠代码块","folded":"已折叠"}
+    KEEP.language_copy_copyright = {"copy":"复制版权信息","copied":"已复制","title":"原文标题","author":"原文作者","link":"原文链接"}
+  </script>
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+</div>
+
+
+
+<main class="page-container border-box">
+    <!-- home first screen  -->
+    
+
+    <!-- page content -->
+    <div class="page-main-content border-box">
+        <div class="page-main-content-top">
+            
+<header class="header-wrapper">
+
+    <div class="border-box header-content">
+        <div class="left border-box">
+            
+                <a class="logo-image border-box" href="/">
+                    <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                </a>
+            
+            <a class="site-name border-box" href="/">
+               Flowww&#39;s blog
+            </a>
+        </div>
+
+        <div class="right border-box">
+            <div class="pc">
+                <ul class="menu-list">
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/"
+                            >
+                                
+                                首页
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/archives"
+                            >
+                                
+                                归档
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/tags"
+                            >
+                                
+                                标签
+                            </a>
+                        </li>
+                    
+                        
+                        <li class="menu-item">
+                            <a class=""
+                               href="/about"
+                            >
+                                
+                                关于
+                            </a>
+                        </li>
+                    
+                    
+                        <li class="menu-item search search-popup-trigger">
+                            <i class="fas search fa-search"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fas fa-search"></i></div>
+                
+                <div class="icon-item menu-bar">
+                    <div class="menu-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-drawer">
+        <ul class="drawer-menu-list">
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/"
+                    >首页</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/archives"
+                    >归档</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/tags"
+                    >标签</a>
+                </li>
+            
+                
+                <li class="drawer-menu-item flex-center">
+                    <a class=""
+                       href="/about"
+                    >关于</a>
+                </li>
+            
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="page-main-content-middle border-box">
+
+            <div class="main-content border-box">
+                
+
+                    
+<div class="fade-in-down-animation">
+    <div class="post-page-container border-box">
+        <div class="post-content-container border-box">
+            
+
+            <div class="post-content-bottom border-box">
+                
+                    <div class="post-title">
+                        Java-RMI学习
+                    </div>
+                
+
+                
+                    <div class="post-header border-box">
+                        
+                            <div class="avatar-box border-box">
+                                <img src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/aaa.png">
+                            </div>
+                        
+                        <div class="info-box">
+                            <div class="author border-box">
+                                <span class="name">Flow</span>
+                                
+                            </div>
+                            <div class="meta-info border-box">
+                                
+
+<div class="post-meta-info-container border-box post">
+    <div class="post-meta-info border-box">
+        
+
+        
+            <span class="meta-info-item post-create-date">
+                <i class="icon fa-solid fa-calendar-plus"></i>&nbsp;
+                <span class="datetime">2025-04-02</span>
+            </span>
+
+            <span class="meta-info-item post-update-date">
+                <i class="icon fa-solid fa-file-pen"></i>&nbsp;
+                <span class="datetime" data-updated="Tue Apr 15 2025 00:13:43 GMT+0800">2025-04-15</span>
+            </span>
+        
+
+        
+
+        
+            <span class="post-tag meta-info-item border-box">
+                <ul class="post-tag-ul">
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/java/">java</a></li>
+                        
+                    
+                            <li class="tag-item"><span class="tag-separator"><i class="icon fas fa-hashtag"></i></span><a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a></li>
+                        
+                    
+                </ul>
+            </span>
+        
+
+        
+        
+        
+        
+            <span class="meta-info-item post-pv">
+                <i class="icon fas fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+            </span>
+        
+    </div>
+
+    
+</div>
+
+                            </div>
+                        </div>
+                    </div>
+                
+
+                <div class="post-content keep-markdown-body">
+                    
+
+                    <p>我看后面挺多漏洞和这个RMI和JNDI有关，现在先学习一下</p>
+<h4 id="RMI介绍"><a href="#RMI介绍" class="headerlink" title="RMI介绍"></a>RMI介绍</h4><p>RMI 全称 Remote Method Invocation（远程方法调用），在一个 JVM 中 Java 程序调用在另一个远程 JVM 中运行的 Java 程序，这个远程 JVM 既可以在同一台实体机上，也可以在不同的实体机上，两者之间通过网络进行通信。</p>
+<p>RMI 依赖的<strong>通信协议</strong>为 JRMP(Java Remote Message Protocol，Java 远程消息交换协议)，该协议为 Java 定制，要求服务端与客户端都为 Java 编写。</p>
+<h5 id="RMI三个部分"><a href="#RMI三个部分" class="headerlink" title="RMI三个部分"></a>RMI三个部分</h5><ul>
+<li>服务端：提供服务</li>
+<li>客户端：调用服务端端服务</li>
+<li>注册端：提供服务注册与服务获取，客户端可以在这里查询要调用的方法的引用</li>
+</ul>
+<p>交互过程（图源 <a class="link"   target="_blank" rel="noopener" href="https://fynch3r.github.io/Java-RMI%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E6%88%98/%EF%BC%89" >https://fynch3r.github.io/Java-RMI%E5%8E%9F%E7%90%86%E5%8F%8A%E5%AE%9E%E6%88%98/）<i class="fas fa-external-link-alt"></i></a><br><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250303151048.png" ></p>
+<p>在Java RMI里</p>
+<ul>
+<li>远程服务器实现具体的Java方法并提供接口</li>
+<li>客户端本地仅需根据接口类的定义，提供相应的参数即可调用远程方法</li>
+<li>其中对象是通过<strong>序列化</strong>方式进行编码传输的</li>
+<li>RMI全部的宗旨就是尽可能简化远程接口对象的使用</li>
+</ul>
+<h4 id="RMI实现"><a href="#RMI实现" class="headerlink" title="RMI实现"></a>RMI实现</h4><p>先写一个接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.rmi.Remote;</span><br><span class="line"><span class="keyword">import</span> java.rmi.RemoteException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">HelloService</span> <span class="keyword">extends</span> <span class="title class_">Remote</span> &#123;</span><br><span class="line">    String <span class="title function_">sayHello</span><span class="params">(String name)</span> <span class="keyword">throws</span> RemoteException;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>写一个类继承这个接口</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.rmi.RemoteException;</span><br><span class="line"><span class="keyword">import</span> java.rmi.server.UnicastRemoteObject;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloServiceImpl</span> <span class="keyword">extends</span> <span class="title class_">UnicastRemoteObject</span> <span class="keyword">implements</span> <span class="title class_">HelloService</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">protected</span> <span class="title function_">HelloServiceImpl</span><span class="params">()</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">        <span class="built_in">super</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">sayHello</span><span class="params">(String name)</span> <span class="keyword">throws</span> RemoteException &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;你好, &quot;</span> + name + <span class="string">&quot;! 这是来自RMI服务器的问候。&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>服务端代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.rmi.registry.LocateRegistry;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RMIServer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 设置 RMI 服务器的 IP 地址</span></span><br><span class="line">            System.setProperty(<span class="string">&quot;java.rmi.server.hostname&quot;</span>, <span class="string">&quot;127.0.0.1&quot;</span>);</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 创建服务实例</span></span><br><span class="line">            <span class="type">HelloService</span> <span class="variable">helloService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HelloServiceImpl</span>();</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 创建并启动RMI注册表，监听1099端口</span></span><br><span class="line">            <span class="type">Registry</span> <span class="variable">registry</span> <span class="operator">=</span> LocateRegistry.createRegistry(<span class="number">1099</span>);</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 将服务绑定到注册表</span></span><br><span class="line">            registry.bind(<span class="string">&quot;HelloService&quot;</span>, helloService);</span><br><span class="line">            </span><br><span class="line">            System.out.println(<span class="string">&quot;RMI服务器已启动在127.0.0.1:1099...&quot;</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            System.err.println(<span class="string">&quot;RMI服务器异常：&quot;</span> + e.toString());</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>客户端代码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.rmi.registry.LocateRegistry;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RMIClient</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 获取RMI注册表</span></span><br><span class="line">            <span class="type">Registry</span> <span class="variable">registry</span> <span class="operator">=</span> LocateRegistry.getRegistry(<span class="string">&quot;localhost&quot;</span>, <span class="number">1099</span>);</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 查找远程服务HelloService</span></span><br><span class="line">            <span class="type">HelloService</span> <span class="variable">helloService</span> <span class="operator">=</span> (HelloService) registry.lookup(<span class="string">&quot;HelloService&quot;</span>);</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 调用远程方法</span></span><br><span class="line">            <span class="type">String</span> <span class="variable">response</span> <span class="operator">=</span> helloService.sayHello(<span class="string">&quot;FLOW&quot;</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;服务器响应：&quot;</span> + response);</span><br><span class="line">            </span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            System.err.println(<span class="string">&quot;客户端异常：&quot;</span> + e.toString());</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>然后就能运行起来了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250303212732.png" ></p>
+<p>这里有个特别坑的地方，在server的代码里面，绑定registry之前要设置好服务器ip，不然client连接的时候会报错，本身不是很熟悉这个东西，拷打gpt半天都没结局，最后换了cursor才解决的。。。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System.setProperty(<span class="string">&quot;java.rmi.server.hostname&quot;</span>, <span class="string">&quot;127.0.0.1&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h4 id="从WireShark观察RMI通信过程"><a href="#从WireShark观察RMI通信过程" class="headerlink" title="从WireShark观察RMI通信过程"></a>从WireShark观察RMI通信过程</h4><p>wireshark开一个本地抓包，粗略看一眼就可以发现有很多RMI协议的包，当然前后的TCP包也要注意</p>
+<p>可以看到这里<strong>25-27</strong>号包是在tcp三次握手建立连接的过程</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250304182910.png" ></p>
+<p>建立连接之后数据端与注册中心建立通讯，1099是注册端，50140是客户端</p>
+<p>建立TCP连接后开始请求调用，看到后面有一个CALL，数据包里面包含了要调用的远程函数名，</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2025-03-04%2021.33.07.png" ></p>
+<p>再往下看到ReturnData，返回了很多代理服务对象，是序列化的数据，可以看到序列化的魔术头，最后还看到一个新的端口</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2025-03-04%2021.35.30.png" ></p>
+<p>c3b0 50096，指的是提供服务的端口</p>
+<p>后面客户端（50141）新起一个端口和服务端（50096）建立连接，会看到建立了第二次TCP连接，有三个握手包</p>
+<p>建立连接后继续发送序列化数据和我们要打印的数据</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2025-03-04%2021.41.01.png" ></p>
+<p>红色和紫色分别代表客户端和服务端发送的数据，可以清晰地看到数据的来回传送</p>
+<p>可以看到整个过程中数据流都是通过序列化传输的，那客户端和服务端必定有序列化反序列化的地方。</p>
+<p>看完整个流量包过程再看会前面那张流程图就会清晰很多，推荐所有人都去动手做一下。</p>
+<h4 id="从源码观察调用过程"><a href="#从源码观察调用过程" class="headerlink" title="从源码观察调用过程"></a>从源码观察调用过程</h4><h5 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h5><p>创建远程对象然后发布到网上，就已经可以通信了，我们要了解这是个什么样的过程</p>
+<p>说是没什么server这个部分其实没什么漏洞，但是要了解一下过程</p>
+<h6 id="创建服务并发布"><a href="#创建服务并发布" class="headerlink" title="创建服务并发布"></a>创建服务并发布</h6><p>为了跟着教程，这里我用Drunk师傅的代码调试，不知道为什么自己的idea跳不进去，我这里断点打在<code>RemoteObjectImpl</code></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250317234238.png" ></p>
+<p><code>RemoteObjectImpl</code>是继承<code>UnicastRemoteObject</code>类（继承这个类是硬性要求。另一种写法是在下面的代码块写一段直接调用），所以会先到父类的构造函数，f7步进</p>
+<p>跳到下图地方，可以看到给了一个port端口，一开始是0</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250317235155.png" ></p>
+<p>再继续往下看，来到 <code>exportObject()</code>，就是这个函数负责把服务发步到网络，跟进去</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250318000013.png" ></p>
+<p>看到还套了一层，里面有一个<code>UnicastServerRef()</code>，这里在idea里直接点击UnicastServerRef，就会跳转到这个函数里面</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250318000151.png" ></p>
+<p>有一个**<code>LiveRef</code>**，这个很重要，继续跟进</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250318000949.png" ></p>
+<p>是一个构造函数，点this进去看看，构造函数如下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250318001016.png" ></p>
+<p>第一个参数是ID，第三个参数是true，主要是第二个参数，TCPEndpoint这个名字一听就是和网络请求有关的，构造参数是一个host一个port</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250318001235.png" ></p>
+<p>LiveRef构造函数点击this进去</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2025-03-18%2000.16.21.png" ></p>
+<p>可以看到进行了赋值，host和port都在endpoint里面了，而这个endpoint在LiveRef里面，注意这些id，会发现整个过程处理的都是一个LiveRef</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2025-03-18%2000.17.36.png" ></p>
+<p>以上完成了对<code>LiveRef</code>的建立，代码会回到前面</p>
+<p>一直走，其中这一步把之前的<code>LiveRef</code>给ref，操作对象一直都是同一个</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250318003347.png" ></p>
+<p>跳到这里又调用了一个&#96;exportObect，继续跟进</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250318003553.png" ></p>
+<p>一直跟到这里出现了stub，这个是在整个RMI一个很重要的东西</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250318003646.png" ></p>
+<p>在这里先放一张原理图</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250318003830.png" ></p>
+<p>RMI在服务端建立的时候，现在服务端新建一个stub，再把stub传给RMI registry，最后让RMI Client去获取stub</p>
+<p>这个stub在后面一个createProxy的地方被创建，看名字就知道是创建代理，跟进去看一下</p>
+<p>可以看到这里有一个判断，这里不会进入，先不管，后面接触了再理解</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323143451.png" ></p>
+<p>然后到了后面就是创建动态代理，看一下里面的参数</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323144026.png" ></p>
+<p>第一个参数是一个AppClassLoader，第二个是个远程接口，第三个是个调用处理器，可以看到里面包裹的就是我们之前一直操作的Ref，始终处理的对象就是这一个。</p>
+<p>创建完动态代理后出来，可以看到stub已经有内容，里面也带上了Ref</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323144307.png" ></p>
+<p>再继续往后，看到代码在创建一个Target，我们把taget理解成一个总封装，把我们之前创建的有用的参数包起来</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323144440.png" ></p>
+<p>看一下构造函数里面怎么操作的</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323150155.png" ></p>
+<p>看里面的值，一直都是一个LiveRef</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323150329.png" ></p>
+<p>一路步过跳出target，看到后面又进入一个exportObject()</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323150601.png" ></p>
+<p>一路跟进，到后面发现进入到TCPTransport里面的exportObject()，一进来就看到里面一个listen()函数，这里相当于开始处理真正的网络请求</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323150730.png" ></p>
+<p>跟到一定的地方会看到里面新建一个socket，等待连接</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323151003.png" ></p>
+<p>后面的thread里就去做完成连接之后的事，如果有连接，就会进入run</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323151430.png" ></p>
+<p>后面还有一个地方给port赋值</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323151348.png" ></p>
+<p>listen()主要就是开了一个socket，在整个流程里添加了port，这块内容记录在stub里面</p>
+<h6 id="发布服务后的记录"><a href="#发布服务后的记录" class="headerlink" title="发布服务后的记录"></a>发布服务后的记录</h6><p>再继续一直跟，出现了两个put，RMI会把所有信息保存在两个table里，相当于一个记录作用吧，这块就不细看了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323152146.png" ></p>
+<h6 id="服务端创建小结"><a href="#服务端创建小结" class="headerlink" title="服务端创建小结"></a>服务端创建小结</h6><p>思路还是比较清晰的，主要就是一直利用exportObject()包装对象，一直处理的对象也就是那个LiveRef，进行各种各样的封装赋值。顺便给了端口，开了socket。</p>
+<p>完成之后还有一个记录，是保存在静态的HashMap里面的，Drunk师傅说当日志理解就可以了。</p>
+<p>服务端自己创建远程服务整个过程不存在漏洞。</p>
+<h5 id="创建注册端-绑定"><a href="#创建注册端-绑定" class="headerlink" title="创建注册端+绑定"></a>创建注册端+绑定</h5><p>创建注册端和服务端还有点像，本质上也是把服务发布到网上，这块过的快一点</p>
+<h6 id="创建注册中心"><a href="#创建注册中心" class="headerlink" title="创建注册中心"></a>创建注册中心</h6><p>断点打在这里</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323153603.png" ></p>
+<p>然后进入到<code>createRegistry()</code>-&gt;<code>RegistryImpl()</code>，这里传入端口号1099</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323153939.png" ></p>
+<p>再跟进，中间有些别的代码是些安全检查，我们一直看到136行，这里新建了一个我们很熟悉的LiveRef和一个UnicastServerRef</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323154223.png" ></p>
+<p>和之前创建远程服务端流程很像，我们跟进到里面的setup看一下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323154428.png" ></p>
+<p>里面也是用到exportObject()，对比一下之前创建远程对象的exportObject()</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323154746.png" ></p>
+<p>对比一下他们的参数，主要区别就是第三个参数，服务端是false，注册端是true，描述是permanent，很好理解，这代表我们注册端注册的服务是一个永久对象，服务端的服务是一个临时对象</p>
+<p>继续跟进，也是来到创建stub的地方，但是这个和之前服务端的创建就不一样，进入到createProxy()</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323155134.png" ></p>
+<p>这次这里的判断就比较重要，我们跟进<code>stubClassExists()</code>判断</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323155455.png" ></p>
+<p>大概逻辑就是看能不能获取到<code>RegistryImpl_Stub</code>这个类，如果有就返回true，没有就false，我们这个版本的java是有<code>RegistryImpl_Stub</code>这个类的，所以返回true，我们会进入到if语句里</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323160835.png" ></p>
+<p>所以下一步是进入到<code>createStub()</code>里面，跟进看一下</p>
+<p>就是通过反射创建这个对象，里面放的是ref</p>
+<blockquote>
+<p>相比于之前<strong>发布远程对象</strong>中的 Stub，是一个动态代理，里面放的是一个 ref。<br>现在<strong>发布远程对象</strong>是用 forName 创建的，里面放的也是 ref，是一致的。</p>
+</blockquote>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323161212.png" ></p>
+<p>创建完回去再往下，我们会进入到<code>setSkeleton()</code></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323161452.png" ></p>
+<p>进去里面有一个<code>createSkeleton()</code>，根据前面的流程图，我们知道skeleton是作为服务端的代理</p>
+<p>skeleton是通过forname()的方法创建的</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323161809.png" ></p>
+<p>再往后，又来到target，作用也很前面服务端一样把数据包裹进去</p>
+<p>此时看变量情况，ref里面多了skel对象</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323161957.png" ></p>
+<p>迅速跳过，到下面的<code>exportObject()</code>，流程和前面一样，直到一个<code>super.exportObject(target);</code>跟进去</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323162210.png" ></p>
+<p>有一个<code>ObjectTable.putTarget(target)</code> 又是一次封装</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323162424.png" ></p>
+<p>一路赋值完，我们关注一下控制台变量的情况，主要是点开objTable，可以看到有三个target</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323163307.png" ></p>
+<p>target@801里面disp和stub里面包的ref是同一个，端口号都是1099，stub是一个RegustryImpl_Stub</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323164614.png" ></p>
+<p>target@842里面的stub是$proxy对象的，也可以看到ref详情</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323164752.png" ></p>
+<p>再看target@840,里面的stub是一个DGCImpl_Stub，是分布式垃圾回收的一个对象，后面会再接触到</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323164928.png" ></p>
+<h6 id="绑定"><a href="#绑定" class="headerlink" title="绑定"></a>绑定</h6><p>主要是这个bind()方法，比较简单，标注在图里了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2025-03-23%2016.57.52.png" ></p>
+<h6 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h6><p>注册端创建和服务端创建总体还是差不多的，区别在于一个是持久的一个是临时的，还有stub的判断和创建方式也有些不同。关于为什么最后数据有三个target，且里面stub的类型还不一样，要到后面才能解答。</p>
+<h5 id="客户端请求注册中心–客户端"><a href="#客户端请求注册中心–客户端" class="headerlink" title="客户端请求注册中心–客户端"></a>客户端请求注册中心–客户端</h5><p>*这块存在漏洞</p>
+<p>三个代码都打断点</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323175236.png" ></p>
+<p>进入<code>getRegistry()</code>,会看到很多之前熟悉的操作，赋值LiveRef，createProxy等</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323175616.png" ></p>
+<p>和之前一样新建一个ref，可以看到ip端口信息都在里面了，这里就算我们获取了注册中心等stub，后面去查找远程对象</p>
+<p>代码第二句进来看到很多log相关的语句，无关紧要，跳了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323184407.png" ></p>
+<p>直到这个lookup，这里因为java版本对不上，没办法打断点，直接看逻辑吧</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323184440.png" ></p>
+<p>此时看到变量情况，会看到有一个<code>param_1=&quot;remoteObj&quot;</code>，这个是传参的var1，这个参数是作为序列化数据传进去的，注册中心后续会通过反序列化读取。</p>
+<p>接着有一个<code>supre.ref.invoke(var2)</code>，查看详情可以知道是<code>UnicastRef</code>类，<code>invoke()</code>方法里面有 <code>call.executeCall()</code></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323184904.png" ></p>
+<p>在 <code>call.executeCall()</code>里面处理真正的网络请求</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323185112.png" ></p>
+<p>进入到<code>call.executeCall()</code>里面有一个<code>readObject()</code></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323185217.png" ></p>
+<p>看到in变量，不难理解就是数据流的东西</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323185259.png" ></p>
+<p>这里处理异常本意是好，但是如果注册中心返回的是一个恶意的流，会导致在这个地方反序列化。这个点更隐蔽，影响面更大，因为所有处理网络请求都会经过这个地方</p>
+<p>以上就是客户端和注册中心之间的操作，f8回到主函数</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250323185913.png" ></p>
+<p>可以看到我们已经获取了remoteObj这个动态代理，里面包含了一个ref</p>
+<h5 id="客户端请求服务端–客户端"><a href="#客户端请求服务端–客户端" class="headerlink" title="客户端请求服务端–客户端"></a>客户端请求服务端–客户端</h5><p>这里断点打在第三句</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414142810.png" ></p>
+<p>因为此时<code>helloService</code>是一个动态代理类，所以一开始会进入到invoke</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414142931.png" ></p>
+<p>重点看到最底下的<code>invokeRemoteMethod</code>方法，跟进去，里面有一个<code>ref.invoke()</code>，是一个重载的方法，里面是用来创建一个连接，具体逻辑如下</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414143210.png" ></p>
+<p>继续走，有一个<code>marshalValue</code>方法，里面会做一堆判断，然后序列化我们调用远程函数时传进去的参数</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414143345.png" ></p>
+<p>再继续往前，又遇到<code>call.executeCall()</code>，前文也提到了，RMI执行网络请求的时候就会一定会走到这个地方，是存在危险的</p>
+<p>后面就是<code>unmarshalValue()</code>，因为我们传入的参数类型是String，不符合前面一系列判断，这里会进行一次反序列化操作，把数据读回来，这里也是一个攻击点</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414143853.png" ></p>
+<p>然后一路跟进就走会主函数，代码完成远程函数调用</p>
+<h6 id="小结一下"><a href="#小结一下" class="headerlink" title="小结一下"></a>小结一下</h6><ul>
+<li>存在攻击的点，注册中心-&gt;服务端，查找远程对象的时候存在攻击点，具体表现为服务端打客户端，入口类是<code>call.executeCall()</code>，里面再抛出异常的时候存在反序列化点</li>
+<li>服务端-&gt;客户端两个攻击点，一个是<code>call.executeCall()</code>，另一个是<code>unmarshalValue()</code></li>
+</ul>
+<h5 id="注册中心处理客户端请求"><a href="#注册中心处理客户端请求" class="headerlink" title="注册中心处理客户端请求"></a>注册中心处理客户端请求</h5><p>从注册中心角度看客户端请求，主要是处理skel，前面新建注册中心的过程有一个listen()，最后肯定会走到<code>RegistryImpl_Skel</code>里面（具体过程可以回顾白日梦组长的视频）</p>
+<p>断点打在这里</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414171358.png" ></p>
+<p>RMIServer开启调试模式，RMIClient运行程序，调试会自动跳到这里</p>
+<p>看一下此时target里面有一个stub，stub里面的ref指向的是1099端口</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414212554.png" ></p>
+<p>往下走到<code>final Dispatcher disp = target.getDispatcher();</code>，这一步是把<code>skel</code>的值放到disp中</p>
+<p>再继续往下有一个<code>disp.dispatch</code>，跟进去</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414212846.png" ></p>
+<p><code>oldDispatch()</code></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414213102.png" ></p>
+<p><code>disp.dispatch</code>()-&gt;<code>oldDispatch()</code>-&gt;<code>skel.dispatch()</code></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414213215.png" ></p>
+<p>重点是<code>skel.dispatch</code>，这部分源码主要是case，以下这段<a class="link"   target="_blank" rel="noopener" href="https://drun1baby.top/2022/07/19/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8BRMI%E4%B8%93%E9%A2%9801-RMI%E5%9F%BA%E7%A1%80" >引自<i class="fas fa-external-link-alt"></i></a></p>
+<blockquote>
+<p>我们与注册中心进行交互可以使用如下几种方式：</p>
+<ul>
+<li>list</li>
+<li>bind</li>
+<li>rebind</li>
+<li>unbind</li>
+<li>lookup</li>
+</ul>
+<p>这几种方法位于 <code>RegistryImpl_Skel#dispatch</code> 中，也就是我们现在 dispatch 这个方法的地方。</p>
+<p>如果存在对传入的对象调用 <code>readObject</code> 方法，则可以利用，<code>dispatch</code> 里面对应关系如下：</p>
+<ul>
+<li>0-&gt;bind</li>
+<li>1-&gt;list</li>
+<li>2-&gt;lookup</li>
+<li>3-&gt;rebind</li>
+<li>4-&gt;unbind</li>
+</ul>
+<p>只要中间是有反序列化就是可以攻击的，而且我们是从客户端打到注册中心，这其实是黑客们最喜欢的攻击方式。我们来看一看谁可以攻击。</p>
+</blockquote>
+<p>比如case 0里面有readObject()</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414213551.png" ></p>
+<p>一圈看下来只有list没有</p>
+<h6 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h6><p>客户端请求的时候，注册中心主要就是处理target，完成skel的生成和处理</p>
+<p>漏洞点主要在dispatch，多数case里面都有readObject()，方便后续利用</p>
+<h5 id="服务端处理客户端请求"><a href="#服务端处理客户端请求" class="headerlink" title="服务端处理客户端请求"></a>服务端处理客户端请求</h5><p>继续走一样的流程，但是这次的target里面stub是<code>$proxy0</code>，和注册中心的流程有些区别</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414215400.png" ></p>
+<p>来到这里，因为skel是null，所以不会进入<code>oldDispatch()</code></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414221043.png" ></p>
+<p>后面可以看到一个method，参数是我们传入的参数sayhello（要调用的远程函数名）</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414221420.png" ></p>
+<p>继续往下走，重点是<code>unmarshalValue()</code>，这个部分可以理解成对称。前面客户发送请求的时候，把参数用marshalValue序列化，这里用unmarshalValue反序列化出来，还有其他地方有这样的对应。</p>
+<h5 id="DGC"><a href="#DGC" class="headerlink" title="DGC"></a>DGC</h5><p>前面创建注册中心的时候有一个<code>DGCImpl_Stub</code>,现在看一下是什么机制</p>
+<p>断点打在这里</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414222105.png" ></p>
+<p>前面说会把taget放到一个静态表里，相当于日志记录作用，在put之前，我们可以看到变量里面就有这个DGC，而且还存放在static里面</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414222730.png" ></p>
+<p>现在来看DGC是怎么创建的，主要就是这两句，看似没什么操作</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414222105.png" ></p>
+<p>但是这里用了静态变量 <strong>调用静态变量会触发类的初始化</strong></p>
+<p>看到DGCImpl里面有一个static方法，作用是 class initializer，断点打在这里</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414223156.png" ></p>
+<p>后面又有createProxy()，进去里面有一个createstub</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414223318.png" ></p>
+<p>这里像注册中心创建远程服务一样，看是否可以获得这个类<code>DGCImpl_Stub</code>，是有的</p>
+<p>整个过程就像注册中心创建远程服务，但是目的不一样，这里创建的是用于回收机制的，并且端口随机</p>
+<p>DGC有漏洞的地方：看到这个类<code>DGCImpl_Stub</code>本身，里面有clean和dirty方法</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414224049.png" ></p>
+<p><code>DGCImpl_Skel</code>也有</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250414224229.png" ></p>
+<ul>
+<li>DGC是自动创建的一个过程，用于清理内存。客户端和服务端都有攻击点，而且这是自动生成的，只要创建了远程对象就会有DGC服务</li>
+</ul>
+<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><p>【Java反序列化RMI专题-没有人比我更懂RMI】<a class="link"   target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1L3411a7ax?p=10&vd_source=46e5237289ae6c1a3c7bcab6091e42a6" >https://www.bilibili.com/video/BV1L3411a7ax?p=10&amp;vd_source=46e5237289ae6c1a3c7bcab6091e42a6<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   target="_blank" rel="noopener" href="https://drun1baby.top/2022/07/19/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8BRMI%E4%B8%93%E9%A2%9801-RMI%E5%9F%BA%E7%A1%80/" >https://drun1baby.top/2022/07/19/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E4%B9%8BRMI%E4%B8%93%E9%A2%9801-RMI%E5%9F%BA%E7%A1%80/<i class="fas fa-external-link-alt"></i></a></p>
+<h4 id="碎碎念"><a href="#碎碎念" class="headerlink" title="碎碎念"></a>碎碎念</h4><p>这篇拖了好久好久好久，博客也没有保持更新频率，真是太拖拉了，战线拉太长现在结束了没有心情注意格式和内容正确了，后面有空再修一下吧。学这部分内容相对比较枯燥，总体还是好理解了，算是自己的java基础多添加了一块砖。希望后面赶上进度。</p>
+
+                </div>
+                
+
+                <div class="post-bottom-tags-and-share border-box">
+                    <div>
+                        
+                            <ul class="post-tags-box border-box">
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/java/">java</a>
+                                    </li>
+                                
+                                    <li class="tag-item border-box">
+                                        <i class="icon fas fa-hashtag"></i>&nbsp;<a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+                                    </li>
+                                
+                            </ul>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+
+                
+
+                
+                    <div class="post-nav border-box">
+                        
+                        
+                            <div class="next-post">
+                                <a class="next"
+                                   rel="next"
+                                   href="/2025/02/27/CommonsBeanUtils%E9%93%BE%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"
+                                   title="CommonsBeanUtils链学习笔记"
+                                >
+                                    <span class="title flex-center">
+                                        <span class="post-nav-title-item text-ellipsis">CommonsBeanUtils链学习笔记</span>
+                                        <span class="post-nav-item">下一篇</span>
+                                    </span>
+                                    <span class="right arrow-icon flex-center">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </span>
+                                </a>
+                            </div>
+                        
+                    </div>
+                
+
+                
+                    
+
+
+    <div class="comments-container border-box">
+        <div id="comments-anchor" class="comment-area-title border-box">
+            <i class="fas fa-comments"></i>&nbsp;评论
+        </div>
+        <div class="comment-plugin-fail border-box">
+    <span class="fail-tip">评论插件加载失败</span>
+    <button class="reload keep-button">点击重新加载</button>
+</div>
+<div class="comment-plugin-loading flex-center border-box">
+    <i class="loading-icon fa-solid fa-spinner fa-spin"></i>
+    <span class="load-tip">正在加载评论插件</span>
+</div>
+<script data-pjax>
+  window.KeepCommentPlugin = {}
+  window.KeepCommentPlugin.hideLoading = () => {
+    const cplDom = document.querySelector('.comments-container .comment-plugin-loading')
+    cplDom.style.display = 'none'
+  }
+  window.KeepCommentPlugin.loadFailHandle = () => {
+    window.KeepCommentPlugin.hideLoading()
+    const cpfDom = document.querySelector('.comments-container .comment-plugin-fail')
+    cpfDom.style.display = 'flex'
+    cpfDom.querySelector('.reload').addEventListener('click', () => {
+      window.location.reload()
+    })
+  }
+</script>
+
+        
+            
+
+    <div class="valine-container">
+        <div id="vcomments"></div>
+        <script 
+                src="//cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"
+                async
+                onerror="window.KeepCommentPlugin.loadFailHandle()"
+        ></script>
+        <script 
+                async
+                onerror="window.KeepCommentPlugin.loadFailHandle()"
+        >
+          window.KeepCommentPlugin.initValine = () => {
+            const config = {
+              el: '#vcomments',
+              appId: 'E3FHp0QEVFhY7p13mQXePdYC-gzGzoHsz',
+              appKey: 'hJxnDaGeKNxkzn9GLQS6pJD4',
+              meta: ['nick', 'mail', 'link'],
+              avatar: 'wavatar',
+              enableQQ: true,
+              placeholder: '留下你的评论～',
+              lang: 'zh-CN'.toLowerCase()
+            }
+
+            if ('') {
+              config.serverURLs = ''
+            }
+
+            if (window?.Valine) {
+              new Valine(config)
+              window.KeepCommentPlugin.hideLoading()
+            } else {
+              setTimeout(() => {
+                window.KeepCommentPlugin.initValine()
+              }, 1000)
+            }
+          }
+
+          if ('false' === 'true') {
+            setTimeout(() => {
+              window.KeepCommentPlugin.initValine()
+            }, 1200)
+          } else {
+            window.addEventListener('DOMContentLoaded', window.KeepCommentPlugin.initValine)
+          }
+        </script>
+    </div>
+
+
+        
+    </div>
+
+
+
+
+
+                
+            </div>
+        </div>
+
+        
+            <div class="pc-post-toc right-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#RMI%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">RMI介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RMI%E4%B8%89%E4%B8%AA%E9%83%A8%E5%88%86"><span class="nav-number">1.1.</span> <span class="nav-text">RMI三个部分</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RMI%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">RMI实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%8EWireShark%E8%A7%82%E5%AF%9FRMI%E9%80%9A%E4%BF%A1%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">从WireShark观察RMI通信过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%8E%E6%BA%90%E7%A0%81%E8%A7%82%E5%AF%9F%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">从源码观察调用过程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-number">4.1.</span> <span class="nav-text">服务端</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%9C%8D%E5%8A%A1%E5%B9%B6%E5%8F%91%E5%B8%83"><span class="nav-number">4.1.1.</span> <span class="nav-text">创建服务并发布</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E6%9C%8D%E5%8A%A1%E5%90%8E%E7%9A%84%E8%AE%B0%E5%BD%95"><span class="nav-number">4.1.2.</span> <span class="nav-text">发布服务后的记录</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%88%9B%E5%BB%BA%E5%B0%8F%E7%BB%93"><span class="nav-number">4.1.3.</span> <span class="nav-text">服务端创建小结</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%B3%A8%E5%86%8C%E7%AB%AF-%E7%BB%91%E5%AE%9A"><span class="nav-number">4.2.</span> <span class="nav-text">创建注册端+绑定</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="nav-number">4.2.1.</span> <span class="nav-text">创建注册中心</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%BB%91%E5%AE%9A"><span class="nav-number">4.2.2.</span> <span class="nav-text">绑定</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.2.3.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E2%80%93%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">4.3.</span> <span class="nav-text">客户端请求注册中心–客户端</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82%E6%9C%8D%E5%8A%A1%E7%AB%AF%E2%80%93%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">4.4.</span> <span class="nav-text">客户端请求服务端–客户端</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93%E4%B8%80%E4%B8%8B"><span class="nav-number">4.4.1.</span> <span class="nav-text">小结一下</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%A4%84%E7%90%86%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82"><span class="nav-number">4.5.</span> <span class="nav-text">注册中心处理客户端请求</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-1"><span class="nav-number">4.5.1.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%A4%84%E7%90%86%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82"><span class="nav-number">4.6.</span> <span class="nav-text">服务端处理客户端请求</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DGC"><span class="nav-number">4.7.</span> <span class="nav-text">DGC</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A2%8E%E7%A2%8E%E5%BF%B5"><span class="nav-number">6.</span> <span class="nav-text">碎碎念</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        
+    </div>
+</div>
+
+
+                
+            </div>
+        </div>
+
+        <div class="page-main-content-bottom border-box">
+            
+<footer class="footer border-box">
+    <div class="border-box website-info-box default">
+        
+            <div class="copyright-info info-item default">
+                &copy;&nbsp;<span>2020</span>&nbsp;-&nbsp;2025
+                
+                    &nbsp;<i class="fas fa-heart icon-animate"></i>&nbsp;&nbsp;<a href="/">Flow</a>
+                
+            </div>
+
+            <div class="theme-info info-item default">
+                由&nbsp;<a target="_blank" href="https://hexo.io">Hexo</a>&nbsp;驱动&nbsp;&&nbsp;主题&nbsp;<a class="keep-version" target="_blank" href="https://github.com/XPoet/hexo-theme-keep">Keep</a>
+            </div>
+
+            
+
+            
+        
+
+        <div class="count-item info-item default">
+            
+
+            
+
+            
+        </div>
+    </div>
+</footer>
+
+        </div>
+    </div>
+
+    <!-- post tools -->
+    
+        <div class="post-tools right-toc">
+            <div class="post-tools-container border-box">
+    <ul class="tools-list border-box">
+        <!-- PC TOC show toggle -->
+        
+            <li class="tools-item flex-center toggle-show-toc">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        <!-- PC go comment -->
+        
+            <li class="tools-item flex-center go-to-comments">
+                <i class="fas fa-comment"></i>
+                <span class="post-comments-count"></span>
+            </li>
+        
+
+        <!-- PC full screen -->
+        <li class="tools-item flex-center full-screen">
+            <i class="fa-solid fa-expand"></i>
+        </li>
+    </ul>
+</div>
+
+        </div>
+    
+
+    <!-- side tools -->
+    <div class="side-tools">
+        <div class="side-tools-container border-box ">
+    <ul class="side-tools-list side-tools-show-handle border-box">
+        <li class="tools-item tool-font-adjust-plus flex-center">
+            <i class="fas fa-search-plus"></i>
+        </li>
+
+        <li class="tools-item tool-font-adjust-minus flex-center">
+            <i class="fas fa-search-minus"></i>
+        </li>
+
+        <li class="tools-item tool-toggle-theme-mode flex-center">
+            <i class="fas fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        <li class="tools-item tool-scroll-to-bottom flex-center">
+            <i class="fas fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="exposed-tools-list border-box">
+        
+            <li class="tools-item toggle-show-toc-tablet flex-center">
+                <i class="fas fa-list"></i>
+            </li>
+        
+
+        
+            <li class="tools-item go-to-comments-tablet flex-center">
+                <i class="fas fa-comment"></i>
+            </li>
+        
+
+        <li class="tools-item tool-toggle-show flex-center">
+            <i class="fas fa-cog fa-spin"></i>
+        </li>
+
+        <li class="tools-item tool-scroll-to-top flex-center show-arrow">
+            <i class="arrow fas fa-arrow-up"></i>
+            <span class="percent"></span>
+        </li>
+    </ul>
+</div>
+
+    </div>
+
+    <!-- image mask -->
+    <div class="zoom-in-image-mask">
+    <img class="zoom-in-image">
+</div>
+
+
+    <!-- local search -->
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fas fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="close-popup-btn">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fas fa-spinner fa-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+    <!-- tablet toc -->
+    
+        <div class="tablet-post-toc-mask">
+            <div class="tablet-post-toc">
+                <div class="post-toc-wrap border-box">
+    <div class="post-toc border-box">
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#RMI%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">RMI介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#RMI%E4%B8%89%E4%B8%AA%E9%83%A8%E5%88%86"><span class="nav-number">1.1.</span> <span class="nav-text">RMI三个部分</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#RMI%E5%AE%9E%E7%8E%B0"><span class="nav-number">2.</span> <span class="nav-text">RMI实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%8EWireShark%E8%A7%82%E5%AF%9FRMI%E9%80%9A%E4%BF%A1%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">从WireShark观察RMI通信过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%8E%E6%BA%90%E7%A0%81%E8%A7%82%E5%AF%9F%E8%B0%83%E7%94%A8%E8%BF%87%E7%A8%8B"><span class="nav-number">4.</span> <span class="nav-text">从源码观察调用过程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-number">4.1.</span> <span class="nav-text">服务端</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%9C%8D%E5%8A%A1%E5%B9%B6%E5%8F%91%E5%B8%83"><span class="nav-number">4.1.1.</span> <span class="nav-text">创建服务并发布</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%8F%91%E5%B8%83%E6%9C%8D%E5%8A%A1%E5%90%8E%E7%9A%84%E8%AE%B0%E5%BD%95"><span class="nav-number">4.1.2.</span> <span class="nav-text">发布服务后的记录</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%88%9B%E5%BB%BA%E5%B0%8F%E7%BB%93"><span class="nav-number">4.1.3.</span> <span class="nav-text">服务端创建小结</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%B3%A8%E5%86%8C%E7%AB%AF-%E7%BB%91%E5%AE%9A"><span class="nav-number">4.2.</span> <span class="nav-text">创建注册端+绑定</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="nav-number">4.2.1.</span> <span class="nav-text">创建注册中心</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%BB%91%E5%AE%9A"><span class="nav-number">4.2.2.</span> <span class="nav-text">绑定</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">4.2.3.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E2%80%93%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">4.3.</span> <span class="nav-text">客户端请求注册中心–客户端</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82%E6%9C%8D%E5%8A%A1%E7%AB%AF%E2%80%93%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">4.4.</span> <span class="nav-text">客户端请求服务端–客户端</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93%E4%B8%80%E4%B8%8B"><span class="nav-number">4.4.1.</span> <span class="nav-text">小结一下</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%A4%84%E7%90%86%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82"><span class="nav-number">4.5.</span> <span class="nav-text">注册中心处理客户端请求</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-1"><span class="nav-number">4.5.1.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E5%A4%84%E7%90%86%E5%AE%A2%E6%88%B7%E7%AB%AF%E8%AF%B7%E6%B1%82"><span class="nav-number">4.6.</span> <span class="nav-text">服务端处理客户端请求</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#DGC"><span class="nav-number">4.7.</span> <span class="nav-text">DGC</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A2%8E%E7%A2%8E%E5%BF%B5"><span class="nav-number">6.</span> <span class="nav-text">碎碎念</span></a></li></ol>
+    </div>
+</div>
+
+            </div>
+        </div>
+    
+</main>
+
+
+
+<!-- common -->
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/header-shrink.js"></script>
+
+<script src="/js/back2top.js"></script>
+
+<script src="/js/toggle-theme.js"></script>
+
+<script src="/js/code-block.js"></script>
+
+<script src="/js/main.js"></script>
+
+<script src="/js/libs/anime.min.js"></script>
+
+
+<!-- local-search -->
+
+    
+<script src="/js/local-search.js"></script>
+
+
+
+<!-- lazyload -->
+
+
+<div class="">
+    
+        <!-- post-helper -->
+        
+<script src="/js/post/post-helper.js"></script>
+
+
+        <!-- toc -->
+        
+            
+<script src="/js/post/toc.js"></script>
+
+        
+
+        <!-- copyright-info -->
+        
+
+        <!-- share -->
+        
+    
+
+    <!-- categories page -->
+    
+
+    <!-- links page -->
+    
+
+    <!-- photos page -->
+    
+
+    <!-- tools page -->
+    
+</div>
+
+<!-- mermaid -->
+
+
+<!-- pjax -->
+
+
+
+</body>
+</html>
