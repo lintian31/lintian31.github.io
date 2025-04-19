@@ -3534,4 +3534,153 @@
         <tag>学习</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Java-Fastjson基础</title>
+    <url>/2025/04/19/Java-Fastjson%E5%9F%BA%E7%A1%80/</url>
+    <content><![CDATA[<h3 id="Fastjson简介"><a href="#Fastjson简介" class="headerlink" title="Fastjson简介"></a>Fastjson简介</h3><p>Fastjson 是一个 Java 库，可以将 Java 对象转换为 JSON 格式，当然它也可以将 JSON 字符串转换为 Java 对象。</p>
+<p>Fastjson 可以操作任何 Java 对象，即使是一些预先存在的没有源码的对象。</p>
+<p>Fastjson 源码地址：<a class="link"   href="https://github.com/alibaba/fastjson" >https://github.com/alibaba/fastjson<i class="fas fa-external-link-alt"></i></a></p>
+<p>Fastjson 中文 Wiki：<a class="link"   href="https://github.com/alibaba/fastjson/wiki/Quick-Start-CN" >https://github.com/alibaba/fastjson/wiki/Quick-Start-CN<i class="fas fa-external-link-alt"></i></a></p>
+<p>提供两个主要接口来分别实现序列化和反序列化操作。</p>
+<p><code>JSON.toJSONString</code> 将 Java 对象转换为 json 对象，序列化的过程。</p>
+<p><code>JSON.parseObject/JSON.parse</code> 将 json 对象重新变回 Java 对象；反序列化的过程</p>
+<p>能够把json理解成字符串</p>
+<h3 id="Demo"><a href="#Demo" class="headerlink" title="Demo"></a>Demo</h3><p>简单看一下是怎么序列化反序列化的</p>
+<p>先导入依赖</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;dependency&gt;  </span><br><span class="line"> &lt;groupId&gt;com.alibaba&lt;/groupId&gt;  </span><br><span class="line"> &lt;artifactId&gt;fastjson&lt;/artifactId&gt;  </span><br><span class="line"> &lt;version&gt;1.2.24&lt;/version&gt;  </span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>先写一个human类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">human</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">human</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;构造函数&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;getName&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setName</span><span class="params">(String name)</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;setName&quot;</span>);</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getAge</span><span class="params">()</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;getAge&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setAge</span><span class="params">(<span class="type">int</span> age)</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;setAge&quot;</span>);</span><br><span class="line">        <span class="built_in">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h4><p>写一个humanSerialize</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSON;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.serializer.SerializerFeature;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">humanSerialize</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">human</span> <span class="variable">human</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">human</span>();</span><br><span class="line">        human.setName(<span class="string">&quot;Flow&quot;</span>);</span><br><span class="line">        <span class="type">String</span> <span class="variable">jsonString</span> <span class="operator">=</span> JSON.toJSONString(human, SerializerFeature.WriteClassName);</span><br><span class="line">        System.out.println(jsonString);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>下个断点看这个过程</p>
+<p>会先到JSON这个类，然后<code>toJSONString()</code>-&gt;<code>new SerializeWriter()</code>，序列化在这里完成的，里面定义了一些初值，赋值给 out 变量，这个 out 变量后续作为 <code>JSONSerializer</code> 类构造的参数</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250419174523.png" ></p>
+<p>JSON里面有很多个static变量，其中就有一个<code>DEFAULT_TYPE_KEY</code>值为<code>@type</code></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250419174737.png" ></p>
+<p>然后后面就是toString了，看一下运行结果</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">构造函数</span><br><span class="line">setName</span><br><span class="line">getAge</span><br><span class="line">getName</span><br><span class="line">&#123;<span class="string">&quot;@type&quot;</span>:<span class="string">&quot;human&quot;</span>,<span class="string">&quot;age&quot;</span>:<span class="number">0</span>,<span class="string">&quot;name&quot;</span>:<span class="string">&quot;Flow&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码重点在</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">jsonString</span> <span class="operator">=</span> JSON.toJSONString(human, SerializerFeature.WriteClassName);</span><br></pre></td></tr></table></figure>
+
+<p>主要是第二个参数，<code>SerializerFeature.WriteClassName</code>是 <code>JSON.toJSONString()</code> 里一个设置属性值，设置之后可以在后面序列化数据多加一个@type，也就是写上被序列化的类名，type可以指定反序列化的类，并调用<code>getter</code>&#x2F;<code>setter</code>&#x2F;<code>is</code> 方法。</p>
+<blockquote>
+<p>Fastjson 接受的 JSON 可以通过@type字段来指定该JSON应当还原成何种类型的对象，在反序列化的时候方便操作。</p>
+</blockquote>
+<p>没有设置<code>SerializerFeature.WriteClassName</code>是输出：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">构造函数</span><br><span class="line">setName</span><br><span class="line">getAge</span><br><span class="line">getName</span><br><span class="line">&#123;<span class="string">&quot;age&quot;</span>:<span class="number">0</span>,<span class="string">&quot;name&quot;</span>:<span class="string">&quot;Flow&quot;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="反序列化"><a href="#反序列化" class="headerlink" title="反序列化"></a>反序列化</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSON;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.parser.Feature;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">humanUnSerialize</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">jsonString</span> <span class="operator">=</span> <span class="string">&quot;&#123;\&quot;@type\&quot;:\&quot;human\&quot;,\&quot;age\&quot;:0,\&quot;name\&quot;:\&quot;Flow\&quot;&#125;&quot;</span>;</span><br><span class="line">        <span class="type">human</span> <span class="variable">human</span> <span class="operator">=</span> JSON.parseObject(jsonString, human.class, Feature.SupportNonPublicField);</span><br><span class="line">        System.out.println(human);</span><br><span class="line">        System.out.println(human.getClass().getName());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行结果就这样</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">构造函数</span><br><span class="line">setAge</span><br><span class="line">setName</span><br><span class="line">human@6659c656</span><br><span class="line">human</span><br></pre></td></tr></table></figure>
+
+<p>大概就是这么用</p>
+<h3 id="一些基础知识"><a href="#一些基础知识" class="headerlink" title="一些基础知识"></a>一些基础知识</h3><h4 id="反序列化时的-Feature-SupportNonPublicField-参数"><a href="#反序列化时的-Feature-SupportNonPublicField-参数" class="headerlink" title="反序列化时的 Feature.SupportNonPublicField 参数"></a>反序列化时的 Feature.SupportNonPublicField 参数</h4><p>前面示例中反序列化的时候没办法获取到age的值，因为他是private的，如果要还原出private属性的话，需要在<code>JSON.parseObject</code>&#x2F;<code>JSON.parse</code>中加上<strong>Feature.SupportNonPublicField</strong>参数</p>
+<p>现在把human类里面的setAge函数注释掉，此时name是public，age是private，做一个对比</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">===没有Feature.SupportNonPublicField===</span><br><span class="line">构造函数</span><br><span class="line">setName</span><br><span class="line">human@6659c656</span><br><span class="line">getName</span><br><span class="line">Flow</span><br><span class="line">getAge</span><br><span class="line">0</span><br><span class="line">====有Feature.SupportNonPublicField====</span><br><span class="line">构造函数</span><br><span class="line">setName</span><br><span class="line">human@6659c656</span><br><span class="line">getName</span><br><span class="line">Flow</span><br><span class="line">getAge</span><br><span class="line">20</span><br></pre></td></tr></table></figure>
+
+<p>所以总的来说，把json传到JSON.parseObject()进行反序列化，如果要内容里面的私有变量被成功地还原出来，要加上<strong>Feature.SupportNonPublicField</strong>参数</p>
+<h4 id="只进行-JSON-parseObject-jsonString"><a href="#只进行-JSON-parseObject-jsonString" class="headerlink" title="只进行 JSON.parseObject(jsonString)"></a>只进行 JSON.parseObject(jsonString)</h4><p>看一下parseObject()的指定或不指定对反序列化类型之间的差异</p>
+<p>修改human类，添加两个private成员变量，且所有的私有成员变量都不定义setter方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Properties;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">human</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> String address;</span><br><span class="line">    <span class="keyword">private</span> Properties properties;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">human</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;构造函数&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;getName&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setName</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;setName&quot;</span>);</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getAge</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;getAge&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> age;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getAddress</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;getAddress&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> address;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> Properties <span class="title function_">getProperties</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;getProperties&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> properties;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在的反序列化代码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSON;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.parser.Feature;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">humanUnSerialize</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">jsonString</span> <span class="operator">=</span><span class="string">&quot;&#123;\&quot;@type\&quot;:\&quot;human\&quot;,\&quot;age\&quot;:20,&quot;</span> +</span><br><span class="line">                <span class="string">&quot;\&quot;name\&quot;:\&quot;Flow\&quot;,\&quot;address\&quot;:\&quot;china\&quot;,\&quot;properties\&quot;:&#123;&#125;&#125;&quot;</span>;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> JSON.parseObject(jsonString);</span><br><span class="line">        System.out.println(obj);</span><br><span class="line">        System.out.println(obj.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">构造函数</span><br><span class="line">setName</span><br><span class="line">getProperties</span><br><span class="line">getAddress</span><br><span class="line">getAge</span><br><span class="line">getName</span><br><span class="line">getProperties</span><br><span class="line">&#123;&quot;name&quot;:&quot;Flow&quot;,&quot;age&quot;:0&#125;</span><br><span class="line">class com.alibaba.fastjson.JSONObject</span><br></pre></td></tr></table></figure>
+
+<p>可以看到调用了构造函数，public属性变量的setter函数，所有变量的getter函数，getProperties还被调用了两次，最后得到的obj是JSONObject类型，这算反序列化失败了</p>
+<p>现在把语句改成</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> JSON.parseObject(jsonString,human.class);</span><br></pre></td></tr></table></figure>
+
+<p>输出变成，这样就算成功了</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">构造函数</span><br><span class="line">setName</span><br><span class="line">getProperties</span><br><span class="line">human@2cdf8d8a</span><br><span class="line">class human</span><br></pre></td></tr></table></figure>
+
+<p>我问ai为什么，它说</p>
+<blockquote>
+<p>是的，将代码改为 <code>Object obj = JSON.parseObject(jsonString, human.class);</code> 后，Fastjson 能够成功将 JSON 反序列化为 <code>human</code> 类的对象。以下是具体原因和机制分析：</p>
+<p><strong>1. 显式指定目标类的作用</strong></p>
+<p>通过 <code>JSON.parseObject(jsonString, human.class)</code> <strong>明确告知 Fastjson 目标类</strong>，此时 Fastjson 的行为会发生变化：</p>
+<ul>
+<li><strong>绕过 <code>@type</code> 的自动解析</strong>：即使 JSON 中包含 <code>@type</code> 字段，Fastjson 也会优先使用你传入的 <code>human.class</code> 作为目标类。</li>
+<li><strong>直接实例化 <code>human</code> 对象</strong>：Fastjson 会通过反射创建 <code>human</code> 类的实例，并尝试将 JSON 字段映射到该类的字段或 setter 方法。</li>
+</ul>
+<p><strong>2. 原代码失败的原因</strong></p>
+<p>原代码 <code>JSON.parseObject(jsonString)</code> 未指定目标类，Fastjson 会尝试根据 JSON 中的 <code>@type</code> 字段动态加载类：</p>
+<ul>
+<li><strong>依赖 <code>@type</code> 的类加载机制</strong>：<code>@type</code> 字段的值 <code>human</code> 需要对应一个全限定类名（如 <code>com.example.human</code>），且该类必须在类路径中可访问。</li>
+<li>原代码的问题：<ul>
+<li>如果 <code>human</code> 类未正确定义或未被正确加载，Fastjson 无法找到该类，会回退到通用 <code>JSONObject</code>。</li>
+<li>即使 <code>human</code> 类存在，某些 Fastjson 版本默认禁用 <code>@type</code> 功能（出于安全考虑），导致动态类加载失败。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="parse与parseObject区别"><a href="#parse与parseObject区别" class="headerlink" title="parse与parseObject区别"></a>parse与parseObject区别</h4><p>两者主要的区别就是<code>parseObject()</code>返回的是JSONObject而<code>parse()</code>返回的是实际类型的对象，当在没有对应类的定义的情况下，一般情况下都会使用<code>JSON.parseObject()</code>来获取数据。</p>
+<blockquote>
+<p>FastJson中的 <code>parse()</code> 和 <code>parseObject()</code> 方法都可以用来将JSON字符串反序列化成Java对象，<code>parseObject()</code> 本质上也是调用 <code>parse()</code> 进行反序列化的。但是 <code>parseObject()</code> 会额外的将Java对象转为 JSONObject对象，即 <code>JSON.toJSON()</code>。所以进行反序列化时的细节区别在于，<code>parse()</code> 会识别并调用目标类的 <code>setter</code> 方法及某些特定条件的 <code>getter</code> 方法，而 <code>parseObject()</code> 由于多执行了 <code>JSON.toJSON(obj)</code>，所以在处理过程中会调用反序列化目标类的所有 <code>setter</code> 和 <code>getter</code> 方法。</p>
+</blockquote>
+<p>所以使用parse()的时候他会自动反序列化得到特定的类，不用想parseObject()一样指定第二个参数，看看效果</p>
+<p>现在的代码是</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">humanUnSerialize</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">jsonString</span> <span class="operator">=</span><span class="string">&quot;&#123;\&quot;@type\&quot;:\&quot;human\&quot;,\&quot;age\&quot;:20,&quot;</span> +</span><br><span class="line">                <span class="string">&quot;\&quot;name\&quot;:\&quot;Flow\&quot;,\&quot;address\&quot;:\&quot;china\&quot;,\&quot;properties\&quot;:&#123;&#125;&#125;&quot;</span>;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> JSON.parse(jsonString);</span><br><span class="line">        System.out.println(obj);</span><br><span class="line">        System.out.println(obj.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">构造函数</span><br><span class="line">setName</span><br><span class="line">getProperties</span><br><span class="line">human@2cdf8d8a</span><br><span class="line">class human</span><br></pre></td></tr></table></figure>
+
+<p>所以就是要用 <code>parseObject</code>，里面的参数需要是 <code>Object.class</code></p>
+<h3 id="Fastjson反序列化原理"><a href="#Fastjson反序列化原理" class="headerlink" title="Fastjson反序列化原理"></a>Fastjson反序列化原理</h3><blockquote>
+<p>fastjson 在反序列化的时候会去找我们在 <code>@type</code> 中规定的类是哪个类，然后在反序列化的时候会自动调用这些 setter 与 getter 方法的调用，注意！并不是所有的 setter 和 getter 方法。</p>
+</blockquote>
+<p>fastjson会对下列要求的setter和getter方法进行调用</p>
+<p>满足条件的setter：</p>
+<ul>
+<li>非静态函数</li>
+<li>返回类型为void或当前类</li>
+<li>参数个数为1个</li>
+</ul>
+<p>满足条件的getter：</p>
+<ul>
+<li>非静态方法</li>
+<li>无参数</li>
+<li><strong>返回值类型继承自Collection或Map或AtomicBoolean或AtomicInteger或AtomicLong</strong></li>
+</ul>
+<h4 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h4><p>通过fastjson反序列化漏洞，攻击者可以传入恶意构造的json内容，程序对他反序列化后得到恶意类执行力恶意类中的恶意函数，从而导致代码执行</p>
+<p>fastjson用parse()&#x2F;parseObject()反序列化的时候可以指定类型，如果刚好指定的类型有很多子类，有很多子函数，就比较有利用空间。</p>
+<blockquote>
+<p>例如，如果指定类型为Object或JSONObject，则可以反序列化出来任意类。例如代码写<code>Object o = JSON.parseObject(poc,Object.class)</code>就可以反序列化出Object类或其任意子类，而Object又是任意类的父类，所以就可以反序列化出所有类。</p>
+</blockquote>
+<h4 id="如何触发恶意函数？"><a href="#如何触发恶意函数？" class="headerlink" title="如何触发恶意函数？"></a>如何触发恶意函数？</h4><p>某种情况下，反序列化后会把反序列化得到的类中的<strong>构造函数，getter，setter都执行一遍</strong>，如果这三个里面存在恶意函数，这就是反序列化漏洞所在！所以触发方式就在这三个里面</p>
+<p>所以利用反序列化漏洞的关键：</p>
+<ul>
+<li>某个类的构造函数、<code>setter</code>方法、<code>getter</code>方法中的某一个存在危险操作，比如造成命令执行；</li>
+<li>可以控制该漏洞函数的变量（一般就是该类的属性）；</li>
+</ul>
+<h4 id="Poc"><a href="#Poc" class="headerlink" title="Poc"></a>Poc</h4><p>如果反序列化指定的类型的是Object.class，也就是代码是</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> JSON.parseObject(jsonstring, Object.class, Feature.SupportNonPublicField);</span><br></pre></td></tr></table></figure>
+
+<p>反序列化得到的类的构造函数、所有属性的<code>setter</code>方法、properties私有属性的<code>getter</code>方法都会被调用</p>
+<p>现在做个尝试，改一下human.java里面的getter函数</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> Properties <span class="title function_">getProperties</span><span class="params">()</span> <span class="keyword">throws</span> IOException &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;getProperties&quot;</span>);</span><br><span class="line">        Runtime.getRuntime().exec(<span class="string">&quot;open -a calculator&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> properties;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>再执行代码就跳出计算机</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSON;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.parser.Feature;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">humanUnSerialize</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">jsonString</span> <span class="operator">=</span><span class="string">&quot;&#123;\&quot;@type\&quot;:\&quot;human\&quot;,\&quot;age\&quot;:20,&quot;</span> +</span><br><span class="line">                <span class="string">&quot;\&quot;name\&quot;:\&quot;Flow\&quot;,\&quot;address\&quot;:\&quot;china\&quot;,\&quot;properties\&quot;:&#123;&#125;&#125;&quot;</span>;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> JSON.parseObject(jsonString,Object.class,Feature.SupportNonPublicField);</span><br><span class="line">        System.out.println(obj);</span><br><span class="line">        System.out.println(obj.getClass());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当前反序列化里面指定的类是Object.class，他是所有类的父类，所以他的子类的human的getter函数存在恶意函数，当@type指向human类是反序列化就会触发漏洞</p>
+<p>如果你知道这个类本事就有问题，直接指定类名也是可以的</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> JSON.parseObject(jsonString,human.class,Feature.SupportNonPublicField);</span><br></pre></td></tr></table></figure>
+
+<p>看代码触发语句就是</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250419195740.png" ></p>
+<h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p><a class="link"   href="https://drun1baby.top/2022/08/04/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96Fastjson%E7%AF%8701-Fastjson%E5%9F%BA%E7%A1%80" >https://drun1baby.top/2022/08/04/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96Fastjson%E7%AF%8701-Fastjson%E5%9F%BA%E7%A1%80<i class="fas fa-external-link-alt"></i></a></p>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>学习</tag>
+      </tags>
+  </entry>
 </search>
