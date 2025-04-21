@@ -3784,6 +3784,9 @@
     <title>Log4j2复现笔记</title>
     <url>/2025/04/20/Log4j2%E5%A4%8D%E7%8E%B0%E7%AC%94%E8%AE%B0/</url>
     <content><![CDATA[<p>学一下经典</p>
+<p>主要参考</p>
+<p><a class="link"   href="https://drun1baby.top/2022/08/09/Log4j2%E5%A4%8D%E7%8E%B0" >https://drun1baby.top/2022/08/09/Log4j2%E5%A4%8D%E7%8E%B0<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   href="https://www.cnblogs.com/zpchcbd/p/16200105.html" >https://www.cnblogs.com/zpchcbd/p/16200105.html<i class="fas fa-external-link-alt"></i></a></p>
 <h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><ul>
 <li>jdk8u65</li>
 <li>Log4j2 2.14.1</li>
