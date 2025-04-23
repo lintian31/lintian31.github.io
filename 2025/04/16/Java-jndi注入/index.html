@@ -222,7 +222,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Sat Apr 19 2025 16:53:10 GMT+0800">2025-04-19</span>
+                <span class="datetime" data-updated="Thu Apr 24 2025 00:23:37 GMT+0800">2025-04-24</span>
             </span>
         
 
@@ -373,6 +373,9 @@
 <p>继续往下调试可以看到，查找 <code>forceString</code> 的内容中是否存在”&#x3D;”号，不存在的话就调用属性的默认 setter 方法，存在的话就取键值、其中键是属性名而对应的值是其指定的 setter 方法。如此，<strong>之前设置的 <code>forceString</code> 的值就可以强制将 x 属性的 setter 方法转换为调用我们指定的 eval() 方法了，这是 <code>BeanFactory</code> 类能进行利用的关键点！</strong>之后，就是获取 beanClass 即 <code>javax.el.ELProcessor</code> 类的 eval() 方法并和 x 属性一同缓存到 forced 这个 HashMap 中：</p>
 </blockquote>
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250419150850.png" ></p>
+<p>（4.23更新）<code>getObjectInstance()</code>后面这些操作对应到前面服务端的代码意思大概是</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">resourceRef.add(<span class="keyword">new</span> <span class="title class_">StringRefAddr</span>(<span class="string">&quot;forceString&quot;</span>, <span class="string">&quot;x=eval&quot;</span>));</span><br><span class="line"><span class="comment">// 利用forceString把x和eval绑定到一起</span></span><br><span class="line">resourceRef.add(<span class="keyword">new</span> <span class="title class_">StringRefAddr</span>(<span class="string">&quot;x&quot;</span>,<span class="string">&quot;Runtime.getRuntime().exec(&#x27;open -a calculator&#x27;)&quot;</span> ));</span><br><span class="line"><span class="comment">// 把恶意语句绑到x，前面x已经和eval绑了，这里作用也就是帮恶意语句和eval绑到一起</span></span><br></pre></td></tr></table></figure>
+
 <p>后面就是多个dowhile语句，遍历获取ResourceRef实例addr属性的值，获取到addrType的值为x时退出当前循环，然后调用<code>getContent()</code>获取我们传进去的恶意表达式</p>
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250419151149.png" ></p>
 <p>然后从前面的缓存forced中取出key为x的值即javax.el.ELProcessor类的eval()方法并赋值给method变量，最后带着这些参数走到invoke，实现反射调用执行</p>
@@ -385,6 +388,9 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ref.add(<span class="keyword">new</span> <span class="title class_">StringRefAddr</span>(<span class="string">&quot;x&quot;</span>, <span class="string">&quot;\&quot;\&quot;.getClass().forName(\&quot;javax.script.ScriptEngineManager\&quot;).newInstance().getEngineByName(\&quot;JavaScript\&quot;).eval(\&quot;new java.lang.ProcessBuilder[&#x27;(java.lang.String[])&#x27;]([&#x27;open&#x27;,&#x27;-a&#x27;,&#x27;Calculator&#x27;]).start()\&quot;)&quot;</span>));</span><br></pre></td></tr></table></figure>
 
 <p>差不多也是反射调用命令执行，但是没有外层的eval也是没用，目前个人认为这个没有直接写Runtime方便</p>
+<hr>
+<p>（4.23更新）本来今天想要写一个用ldap实现绕过的，就在上面的方法换个ldap的壳，实践发现在服务端把ResourceRef和ldap绑到一起，到客户端获取数据的过程（主要是Obj.decodeObject()方法，不是很确定），会把对象变成Reference类，这会导致进入BeanFactory.getObjectInstance()方法后就被卡在第一句的类型判断，直接没得玩。</p>
+<p>问了ai，这个问题似乎无解，rmi和ldap两个方式进入的decodeObject不是同一个，留个钩子，等明天请教一下大佬。</p>
 <h4 id="利用LDAP返回序列化数据绕过"><a href="#利用LDAP返回序列化数据绕过" class="headerlink" title="利用LDAP返回序列化数据绕过"></a>利用LDAP返回序列化数据绕过</h4><p>LDAP服务端除了返回JNDI Reference这种方法之外，还可以通过返回序列化的对象，JNDI注入依然会对该对象进行反序列化操作，利用反序列化Gadget完成命令执行。</p>
 <blockquote>
 <p>如果 Java 对象的 javaSerializedData 属性值不为空，则客户端的 <code>obj.decodeObject()</code> 方法就会对这个字段的内容进行反序列化。此时，如果服务端 ClassPath 中存在反序列化咯多功能利用 Gadget 如 CommonsCollections 库，那么就可以结合该 Gadget 实现反序列化漏洞攻击。</p>

