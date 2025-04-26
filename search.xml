@@ -3956,6 +3956,190 @@
   <entry>
     <title>Spring开发扫盲</title>
     <url>/2025/04/24/Spring%E5%BC%80%E5%8F%91%E6%89%AB%E7%9B%B2/</url>
-    <content><![CDATA[]]></content>
+    <content><![CDATA[<p><del>虽然已经进入夏天，但是让我们来学习一下春天！</del></p>
+<p>从头开始看黑马的视频太耗费时间，不要求自己一接触就所有知识点都很熟悉，能了解开发框架的65%就满足。<del>后面遇到不会的知识点再回炉加深印象</del></p>
+<p>所以我选择站在前人的肩膀上学习</p>
+<p>全文主要参考：<a class="link"   href="https://drun1baby.top/2022/08/18/Spring%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0/" >https://drun1baby.top/2022/08/18/Spring%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0/<i class="fas fa-external-link-alt"></i></a></p>
+<p>有些比较理论的知识点可能会直接复制粘贴，本文为本人学习笔记，可能不具有任何学习参考作用，注意甄别，如果有错误的地方，十分欢迎指正🙏</p>
+<p>说是扫盲，之前也接触过Spring框架的漏洞，但是具体实现还是不了解，所以这里先写几个自己的盲点，看写完这篇笔记最后会不会扫盲成功：</p>
+<ul>
+<li>Spring和SpringBoot，SpringCloud之间的区别是什么</li>
+<li>那些听起来高大上的编程思想代称（比如IOC）究竟是什么意思</li>
+<li>简单写一个Spring的demo</li>
+<li>怎么实现和数据库的连接</li>
+<li>平时遇到的Swagger页面是怎么实现的，为什么会泄漏，如何通过修改配置修复未授权访问漏洞</li>
+</ul>
+<p>​	。。。</p>
+<h3 id="Spring简介"><a href="#Spring简介" class="headerlink" title="Spring简介"></a>Spring简介</h3><p>Spring是一个轻量级的Java 开发框架，简单来说，Spring是一个分层的JavaSE&#x2F;EE full-stack(一站式) 轻量级开源框架。Spring 的理念：不去重新发明轮子。其核心是控制反转（IOC）和面向切面（AOP）。</p>
+<h4 id="组成"><a href="#组成" class="headerlink" title="组成"></a>组成</h4><p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250424161618.png" ></p>
+<p>Spring作为一个框架，本身有很多功能快，如果我们要实现功能，可以直接通过配置框架来完成业务，Spring支持的一些功能如上图</p>
+<ul>
+<li>最低下是core，</li>
+<li>往上走开始支持IOC，AOP编程思想</li>
+<li>支持ORM（数据库处理语句）</li>
+<li>也支持很多Web，比如web application 、servlet等</li>
+</ul>
+<p>学习路线 Spring -&gt; SpringBoot -&gt; SpringCloud</p>
+<p>传统Spring也有痛点</p>
+<ul>
+<li>配置繁琐：需要手动配置数据源、事务管理器、MVC 组件等。</li>
+<li>依赖冲突：不同模块的依赖版本需要手动协调。</li>
+<li>部署复杂：需打包 WAR 并部署到外部服务器。</li>
+</ul>
+<p>所以出现了Spring boot，这个后面再接触</p>
+<p>因此我引申出了一些疑问，Spring、SpringBoot、SpringCloud这三个之间的区别是什么，AI答道：</p>
+<ul>
+<li><strong>Spring</strong> → 地基（IOC、AOP）。</li>
+<li><strong>Spring Boot</strong> → 快速盖房子的工具（自动配置、内嵌服务器）。</li>
+<li><strong>Spring Cloud</strong> → 盖楼房的整体方案（解决水电、电梯、消防等系统问题）。</li>
+</ul>
+<h4 id="概念扫盲"><a href="#概念扫盲" class="headerlink" title="概念扫盲"></a>概念扫盲</h4><h5 id="IOC、AOC分别是什么意思"><a href="#IOC、AOC分别是什么意思" class="headerlink" title="IOC、AOC分别是什么意思"></a>IOC、AOC分别是什么意思</h5><p><strong>IOC（Inversion of Control 控制反转）</strong></p>
+<p>核心思想：<strong>别自己动手，让别人帮你安排！</strong></p>
+<p><strong>生活例子：点餐 vs 自己做饭</strong></p>
+<ul>
+<li><strong>传统方式（没有IOC）</strong>：就像你自己去超市买菜、切菜、炒菜，全程自己控制流程。</li>
+<li><strong>IOC方式</strong>：你去餐厅点菜，告诉服务员你要什么（比如“一份宫保鸡丁”），厨房会自动做好端给你。你不需要关心鸡丁怎么切、火候怎么控制，你只关心“吃什么”。</li>
+</ul>
+<p><strong>在代码中：</strong></p>
+<ul>
+<li><strong>没有IOC</strong>：A类要用B类，直接在A类里 <code>new B()</code>（自己动手做）。</li>
+<li><strong>有IOC</strong>：A类说“我需要一个B”，由IOC容器（比如Spring框架）自动把B的实例“注入”给A。A不用自己创建B，只管用。</li>
+</ul>
+<p><strong>好处</strong>：代码更灵活！如果你想换一个B的实现类（比如从MySQL换成Oracle数据库），只需要改配置文件，不用改A的代码。</p>
+<hr>
+<p><strong>AOC（Aspect Oriented Programming 面向切面编程）</strong></p>
+<p>核心思想：<strong>别到处复制粘贴重复代码！</strong></p>
+<p><strong>生活例子：安检</strong></p>
+<ul>
+<li>假设你进地铁、进机场、进商场都要安检。传统做法是每个入口都放一台安检机（重复代码）。</li>
+<li>AOP的做法是：把安检逻辑抽成一个“切面”，自动在所有入口前插入安检步骤。</li>
+</ul>
+<p><strong>在代码中：</strong></p>
+<ul>
+<li><strong>没有AOP</strong>：每个方法里都要写日志、权限检查、事务处理代码，重复又臃肿。</li>
+<li><strong>有AOP</strong>：把这些公共逻辑（比如日志）写成一个“切面”，然后告诉框架：“在<strong>所有Service方法执行前</strong>自动打日志”。代码变得干净！</li>
+</ul>
+<p><strong>如何实现？</strong></p>
+<ul>
+<li><strong>动态代理</strong>：框架会在运行时“偷偷”在你的代码前后插入逻辑（比如日志），但你写的代码里完全看不到这些重复内容。</li>
+</ul>
+<p><strong>好处</strong>：解耦！修改日志逻辑时，只需改切面代码，所有用到的地方自动生效。</p>
+<blockquote>
+<p>关于这两个概念，详细可以参考这篇文章 <a class="link"   href="https://javaguide.cn/system-design/framework/spring/ioc-and-aop.html" >https://javaguide.cn/system-design/framework/spring/ioc-and-aop.html<i class="fas fa-external-link-alt"></i></a></p>
+</blockquote>
+<h5 id="分布式系统"><a href="#分布式系统" class="headerlink" title="分布式系统"></a>分布式系统</h5><p><strong>定义</strong>：</p>
+<p>多个计算机（节点）通过网络协同工作，对外表现为一个整体系统的技术架构。</p>
+<p><strong>​核心特点​</strong>​：</p>
+<ul>
+<li><strong>资源分散</strong>：数据、计算任务分布在不同的机器上。</li>
+<li><strong>透明性</strong>：用户感觉不到背后是多台机器在协作。</li>
+<li><strong>容错性</strong>：部分机器故障时，系统仍能运行（比如你的微信消息不会因为某台服务器宕机而丢失）。</li>
+</ul>
+<p><strong>技术场景</strong>：</p>
+<ul>
+<li><strong>分布式数据库</strong>：数据分片存储在不同服务器（如MySQL分库分表）。</li>
+<li><strong>分布式计算</strong>：Hadoop 将大数据任务拆分到多台机器处理。</li>
+<li><strong>分布式缓存</strong>：Redis 集群缓存数据，分摊压力。</li>
+</ul>
+<hr>
+<h5 id="微服务"><a href="#微服务" class="headerlink" title="微服务"></a>微服务</h5><p><strong>定义</strong>：</p>
+<p>一种<strong>架构风格</strong>，将大型应用拆分为多个独立的小服务，每个服务专注一个业务功能，独立开发、部署、扩展。<br>​<strong>​核心特点​</strong>​：</p>
+<ul>
+<li><strong>单一职责</strong>：每个服务只做一件事（比如用户服务只管注册登录）。</li>
+<li><strong>独立部署</strong>：修改用户服务后，无需重新部署整个系统。</li>
+<li><strong>技术异构</strong>：不同服务可以用不同技术栈（比如订单服务用Java，支付服务用Go）。</li>
+</ul>
+<p><strong>技术场景</strong>：</p>
+<ul>
+<li>电商系统拆分为微服务：<ul>
+<li>用户服务、订单服务、库存服务、支付服务各自独立。</li>
+<li>服务之间通过 REST API 或消息队列（如RabbitMQ）通信。</li>
+</ul>
+</li>
+</ul>
+<p><del>好了现在概念扫盲以后不能说不知道这几个是什么了</del></p>
+<p>下面进入实践环节</p>
+<h3 id="Spring核心之一–IOC"><a href="#Spring核心之一–IOC" class="headerlink" title="Spring核心之一–IOC"></a>Spring核心之一–IOC</h3><h4 id="传统思想实现"><a href="#传统思想实现" class="headerlink" title="传统思想实现"></a>传统思想实现</h4><p>传统的编程思想：<code>Controller</code> 层写接口，去调用 <code>Service</code> 层，<code>Service</code> 层里面有一个 <code>Service</code> 接口，还有一个 <code>ServiceImpl</code> 的实现类，具体的业务是写在 ServiceImpl 里面的。<code>Service</code> 层去调用 <code>Dao</code> 层，也就是我们的实体类，我们的 <code>Dao</code> 层有一个 <code>Dao</code> 的抽象接口，还有一个 <code>DaoImpl</code> 的实现类。</p>
+<p>大致流程就是 <code>Controller</code> 调 <code>Service</code> 调 <code>Dao</code></p>
+<p>先写Dao层</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> traditional.Dao;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">UserDAO</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">getUser</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> traditional.Dao;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> traditional.Dao.UserDAO;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserDAOImpl</span> <span class="keyword">implements</span> <span class="title class_">UserDAO</span> &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">getUser</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;输出获取用户数据&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Service层</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> traditional.Service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line">    <span class="keyword">void</span> <span class="title function_">getUser</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> traditional.Service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> traditional.Dao.UserDAO;</span><br><span class="line"><span class="keyword">import</span> traditional.Dao.UserDAOImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">UserDAO</span> <span class="variable">userDAO</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UserDAOImpl</span>();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">getUser</span><span class="params">()</span> &#123;</span><br><span class="line">        userDAO.getUser();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后来一个test文件去调用</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> traditional;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> traditional.Service.UserService;</span><br><span class="line"><span class="keyword">import</span> traditional.Service.UserServiceImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestApplication</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">UserService</span> <span class="variable">userService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UserServiceImpl</span>();</span><br><span class="line">        userService.getUser();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>new的是service，调试跟进会跟到最里面的DAO层</p>
+<p>运行结果，也可以在图片里看到我的文件结构</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250424172614.png" ></p>
+<h4 id="IOC处理情景"><a href="#IOC处理情景" class="headerlink" title="IOC处理情景"></a>IOC处理情景</h4><p>如果现在来了一个新需求，要我们用MySql获取到User，我们应该把<code>UserServiceImpl</code>作修改</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="type">UserDAO</span> <span class="variable">userDAO</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UserDAOImpl</span>();</span><br><span class="line"> 修改成</span><br><span class="line"><span class="keyword">private</span> <span class="type">UserDAO</span> <span class="variable">userDAO</span> <span class="operator">=</span> <span class="keyword">new</span> 对应的 DAOImpl 类</span><br></pre></td></tr></table></figure>
+
+<p>看起来只是修改一个地方，但是本质上还是会修改到DAO层，现在只有一个getUser()，如果方法多了，来个getName()，geyAge()…修改起来就很麻烦了。</p>
+<p>所以引入了IOC思想，我们在UserServiceImpl.Java里面引入一个setter方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> traditional.Service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> traditional.Dao.UserDAO;</span><br><span class="line"><span class="keyword">import</span> traditional.Dao.UserDAOImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">UserService</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> UserDAO userDAO;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">getUserDAO</span><span class="params">(UserDAO userDAO)</span>&#123;</span><br><span class="line">        <span class="built_in">this</span>.userDAO = userDAO;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">getUser</span><span class="params">()</span> &#123;</span><br><span class="line">        userDAO.getUser();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对应的TestApplication.java改一个调用方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> traditional;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> traditional.Dao.MysqlUserDAOImpl;</span><br><span class="line"><span class="keyword">import</span> traditional.Service.UserService;</span><br><span class="line"><span class="keyword">import</span> traditional.Service.UserServiceImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestApplication</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">UserServiceImpl</span> <span class="variable">userService</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">UserServiceImpl</span>();</span><br><span class="line">        userService.getUserDAO(<span class="keyword">new</span> <span class="title class_">MysqlUserDAOImpl</span>());</span><br><span class="line">        userService.getUser();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>也要新建对应的<code>MysqlUserDAOImpl</code>接口</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> traditional.Dao;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MysqlUserDAOImpl</span> <span class="keyword">implements</span> <span class="title class_">UserDAO</span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">getUser</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;通过 MySQL 的方式获取 User&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在再运行就是打印</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">通过 MySQL 的方式获取 User</span><br></pre></td></tr></table></figure>
+
+<p>相比原来传统的做法，<strong>UserServiceImpl自己控制了依赖（UserDAO）怎么来的</strong>。现在的思路就是多一个setter方法，</p>
+<ul>
+<li><strong>UserServiceImpl没有自己创建UserDAO对象</strong>，而是通过<strong>外部传入（注入）</strong>。</li>
+<li><strong>控制权从UserServiceImpl自己new，变成了外部传入</strong>，所以这就是<strong>控制反转（IOC）</strong>。</li>
+</ul>
+<blockquote>
+<p>Spring容器在初始化时先读取配置文件，根据配置文件或元数据创建与组织对象存入容器中，程序使用时再从Ioc容器中取出需要的对象。</p>
+<p>采用XML方式配置Bean的时候，Bean的定义信息是和实现分离的，而采用注解的方式可以把两者合为一体，Bean的定义信息直接以注解的形式定义在实现类中，从而达到了零配置的目的。</p>
+<p><strong>控制反转是一种通过描述（XML或注解）并通过第三方去生产或获取特定对象的方式。在Spring中实现控制反转的是IoC容器，其实现方法是依赖注入（Dependency Injection,DI）。</strong></p>
+</blockquote>
+<h4 id="Spring通过xml装配"><a href="#Spring通过xml装配" class="headerlink" title="Spring通过xml装配"></a>Spring通过xml装配</h4><p>写一个hello类</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Hello</span> &#123;  </span><br><span class="line">    <span class="keyword">private</span> String name;  </span><br><span class="line">  </span><br><span class="line"> <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;  </span><br><span class="line">        <span class="keyword">return</span> name;  </span><br><span class="line"> &#125;  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setName</span><span class="params">(String name)</span> &#123;  </span><br><span class="line">        <span class="built_in">this</span>.name = name;  </span><br><span class="line"> &#125;  </span><br><span class="line">  </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">show</span><span class="params">()</span>&#123;  </span><br><span class="line">        System.out.println(<span class="string">&quot;Hello,&quot;</span>+ name );  </span><br><span class="line"> &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>再来一个bean.xml</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="string"><span class="tag"> http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--bean就是java对象 , 由Spring创建和管理--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;hello&quot;</span> <span class="attr">class</span>=<span class="string">&quot;traditional.Dao.Hello&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;name&quot;</span> <span class="attr">value</span>=<span class="string">&quot;Spring&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span> </span><br></pre></td></tr></table></figure>
+
+<p>然后运行test</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"><span class="keyword">import</span> traditional.Dao.Hello;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testHelloBean</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="comment">// 解析beans.xml文件，生成管理相应的Bean对象  </span></span><br><span class="line">        <span class="type">ApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassPathXmlApplicationContext</span>(<span class="string">&quot;beans.xml&quot;</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// getBean: 参数即为spring配置文件中bean的id</span></span><br><span class="line">        <span class="type">Hello</span> <span class="variable">hello</span> <span class="operator">=</span> (Hello) context.getBean(<span class="string">&quot;hello&quot;</span>);</span><br><span class="line">        hello.show();</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 验证name属性已被正确注入</span></span><br><span class="line">        System.out.println(<span class="string">&quot;Name property: &quot;</span> + hello.getName());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行结果</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250426231536.png" ></p>
+<p>我的理解：代码解析beans.xml，获得里面对应的bean对象，下一句context从那么多bean里面（假设有很多）拿到那个叫”hello”的获取对象，而不是像传统那样自己的new，下一句正常调用Hello里面的方法</p>
+<ul>
+<li>控制 : 谁来控制对象的创建 , 传统应用程序的对象是由程序本身控制创建的 , 使用Spring后 , 对象是由Spring来创建的</li>
+<li>反转 : 程序本身不创建对象 , 而变成被动的接收对象 .</li>
+</ul>
+<h4 id="利用IOC的思想装配"><a href="#利用IOC的思想装配" class="headerlink" title="利用IOC的思想装配"></a>利用IOC的思想装配</h4><p>新写一个beans.xml</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;mysqlImpl&quot;</span> <span class="attr">class</span>=<span class="string">&quot;traditional.Dao.MysqlUserDAOImpl&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;oracleImpl&quot;</span> <span class="attr">class</span>=<span class="string">&quot;traditional.Dao.OracleUserDAOImpl&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;UserServiceImpl&quot;</span> <span class="attr">class</span>=<span class="string">&quot;traditional.Service.UserServiceImpl&quot;</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--ref引用spring中已经创建很好的对象--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--value是一个具体的值,基本数据类型--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;userDAO&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;oracleImpl&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>对应的test</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;</span><br><span class="line"><span class="keyword">import</span> traditional.Dao.Hello;</span><br><span class="line"><span class="keyword">import</span> traditional.Service.UserServiceImpl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">test</span> &#123;</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testHelloBean</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">ApplicationContext</span> <span class="variable">context</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassPathXmlApplicationContext</span>(<span class="string">&quot;beans.xml&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 需要什么就直接get什么！</span></span><br><span class="line">        <span class="type">UserServiceImpl</span> <span class="variable">userServiceImpl</span> <span class="operator">=</span> (UserServiceImpl) context.getBean(<span class="string">&quot;UserServiceImpl&quot;</span>);</span><br><span class="line">        userServiceImpl.getUser();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250426235937.png" ></p>
+<p>如果要换成用mysql方式获取，修改ref成这样即可</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;userDAO&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;mysqlImpl&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>小结：</p>
+<ul>
+<li>所有类都要到xml里面装配</li>
+<li>所有bean用容器获取</li>
+<li>容器里面取得的 bean，拿出来就是一个对象，用对象调用方法即可</li>
+</ul>
+<h4 id="IOC创建对象"><a href="#IOC创建对象" class="headerlink" title="IOC创建对象"></a>IOC创建对象</h4><h5 id="利用无参构造方法"><a href="#利用无参构造方法" class="headerlink" title="利用无参构造方法"></a>利用无参构造方法</h5><p>待更新。。。</p>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>学习</tag>
+      </tags>
   </entry>
 </search>
