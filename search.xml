@@ -4831,4 +4831,312 @@
         <tag>学习笔记</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Java代码审计基础-SQL注入</title>
+    <url>/2025/05/09/Java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E5%9F%BA%E7%A1%80-SQL%E6%B3%A8%E5%85%A5/</url>
+    <content><![CDATA[<p>开新的坑，我很期待的学习部分</p>
+<p>本文使用的项目：</p>
+<p><a class="link"   href="https://github.com/JoyChou93/java-sec-code" >https://github.com/JoyChou93/java-sec-code<i class="fas fa-external-link-alt"></i></a></p>
+<p>本文主要参考文章：</p>
+<p><a class="link"   href="https://xz.aliyun.com/news/11118" >https://xz.aliyun.com/news/11118<i class="fas fa-external-link-alt"></i></a></p>
+<p><a class="link"   href="https://drun1baby.top/2022/09/14/Java-OWASP-%E4%B8%AD%E7%9A%84-SQL-%E6%B3%A8%E5%85%A5%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1" >https://drun1baby.top/2022/09/14/Java-OWASP-%E4%B8%AD%E7%9A%84-SQL-%E6%B3%A8%E5%85%A5%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1<i class="fas fa-external-link-alt"></i></a></p>
+<h3 id="JDBC场景的SQL注入"><a href="#JDBC场景的SQL注入" class="headerlink" title="JDBC场景的SQL注入"></a><strong>JDBC场景的SQL注入</strong></h3><p>jdbc有两种方式执行sql语句，分别为PreparedStatement和Statement</p>
+<p>Statement实现</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">checkUserQuery</span> <span class="operator">=</span> <span class="string">&quot;select userid from xxx where userid = &#x27;&quot;</span> + username_reg + <span class="string">&quot;&#x27;&quot;</span>;  </span><br><span class="line"></span><br><span class="line"><span class="type">Statement</span> <span class="variable">statement</span> <span class="operator">=</span> connection.createStatement();  </span><br><span class="line"></span><br><span class="line"><span class="type">ResultSet</span> <span class="variable">resultSet</span> <span class="operator">=</span> statement.executeQuery(checkUserQuery);</span><br></pre></td></tr></table></figure>
+
+<p>Statement会直接拼接sql语句，几乎所有的Statement拼接都会导致sql注入</p>
+<p>所以有更安全的PreparedStatement，会对SQL语句进行<strong>预编译</strong>，一般实现</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">var</span> <span class="variable">statement</span> <span class="operator">=</span> connection.prepareStatement(<span class="string">&quot;select password from sql_challenge_users where userid = ? and password = ?&quot;</span>); </span><br><span class="line"></span><br><span class="line">statement.setString(<span class="number">1</span>, username_login);  </span><br><span class="line">statement.setString(<span class="number">2</span>, password_login);  </span><br><span class="line"></span><br><span class="line"><span class="type">var</span> <span class="variable">resultSet</span> <span class="operator">=</span> statement.executeQuery();</span><br></pre></td></tr></table></figure>
+
+<h4 id="Statement的SQL注入"><a href="#Statement的SQL注入" class="headerlink" title="Statement的SQL注入"></a>Statement的SQL注入</h4><p>现在看项目代码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250509212649.png" ></p>
+<p>这里就直接用了Statement拼接，当访问url <code>http://localhost:8080/sqli/jdbc/vuln?username=1</code>时，后端sql语句变成</p>
+<p><u>select * from users where username &#x3D; 1</u></p>
+<p>这个username可控，直接用paylaod <code>username=123&#39; or &#39;1&#39;=&#39;1</code>拼接就好了</p>
+<h4 id="Statement的SQL注入修复手段–预编译"><a href="#Statement的SQL注入修复手段–预编译" class="headerlink" title="Statement的SQL注入修复手段–预编译"></a>Statement的SQL注入修复手段–预编译</h4><p>项目代码后面 &#x2F;jdbc&#x2F;sec 接口写了修复方式，现在变成</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">sql</span> <span class="operator">=</span> <span class="string">&quot;select * from users where username = ?&quot;</span>;</span><br><span class="line"><span class="type">PreparedStatement</span> <span class="variable">st</span> <span class="operator">=</span> con.prepareStatement(sql);</span><br><span class="line">st.setString(<span class="number">1</span>, username);</span><br><span class="line"><span class="type">ResultSet</span> <span class="variable">rs</span> <span class="operator">=</span> st.executeQuery();</span><br></pre></td></tr></table></figure>
+
+<p>语句变成这样</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250509214123.png" ></p>
+<p>看一下究竟为什么这么写会修复sql注入，跟进<code>executeQuery()</code>方法看一下</p>
+<p>在775行这个<code>executeInternal()</code>方法查看</p>
+<blockquote>
+<p>一般 <code>Internal</code> 结尾的方法都是一些内部处理的方法</p>
+</blockquote>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250509214619.png" ></p>
+<p>跟进去主要做了两件事，一是返回查询结果，二是返回查询时间（不截图了），然后这些结果包含在result里面，最后返回一个rs给程序</p>
+<p>但是要明确的是 <strong>在预编译中，输入和SQL语句是完全分开的</strong></p>
+<p>这里我再找了<a class="link"   href="https://www.cnblogs.com/Createsequence/p/16963891.html" >别的文章<i class="fas fa-external-link-alt"></i></a>了解一下预编译究竟是怎么回事</p>
+<p>进到<code>executeQuery()</code>发现此时的语句后半部份有一个转义</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250510001751.png" ></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#x27;admin\&#x27; union select * from users&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>可以看日志最后执行的sql语句就是</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250510002243.png" ></p>
+<p>后面在这个方法里有一句</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">Message</span> <span class="variable">sendPacket</span> <span class="operator">=</span> ((PreparedQuery&lt;?&gt;) <span class="built_in">this</span>.query).fillSendPacket();</span><br></pre></td></tr></table></figure>
+
+<p>经过fillSendPacket()处理后查看sendPacket内容是字节数组，转成字符串看到的内容就是</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">select * from users where username = &#x27;admin\&#x27; union select * from users&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>所以说转义在 <code>preparedStatement.setString</code> 方法调用的时候完成，而 <code>PreparedStatement</code> 在<strong>发起请求前就把转义后的参数和 SQL 模板进行了格式化，最后发送到 MySQL 的时候就是一条普通的 SQL</strong>。</p>
+<p>可以说这是“假的预编译”，因为本质是对传入的数据转义而已</p>
+<h5 id="真的预编译"><a href="#真的预编译" class="headerlink" title="真的预编译"></a>真的预编译</h5><p>在jdbc连接路由地方加入参数<code>useServerPrepStmts=true</code>会开启真正的预编译</p>
+<p>还是一样的payload</p>
+<p>这里因为暂时找不到数据库日志，只能看到服务器日志，语句变成了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250510004359.png" ></p>
+<p>参考文章给的例子</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">Execute</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> s_user <span class="keyword">where</span> username <span class="operator">=</span> <span class="string">&#x27;王五\&#x27;</span> <span class="keyword">union</span> <span class="keyword">select</span> <span class="operator">*</span> <span class="keyword">from</span> s_user<span class="string">&#x27;</span></span><br><span class="line"><span class="string">Prepare select * from s_user where username = ?</span></span><br></pre></td></tr></table></figure>
+
+<p>这个时候经过fillSendPacket()处理后查看sendPacket的内容是null</p>
+<p>再到后面有一个 <code>NativeSession.execSQL</code>再进行具体实现</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> &lt;T <span class="keyword">extends</span> <span class="title class_">Resultset</span>&gt; T <span class="title function_">execSQL</span><span class="params">(Query callingQuery, String query, <span class="type">int</span> maxRows, NativePacketPayload packet, <span class="type">boolean</span> streamResults,</span></span><br><span class="line"><span class="params">                                       ProtocolEntityFactory&lt;T, NativePacketPayload&gt; resultSetFactory, ColumnDefinition cachedMetadata, <span class="type">boolean</span> isBatch)</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ... ...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 如果 sendPacket 为 null，则调用 sendQueryString 方法，把原始 sql 和参数序列化为二进制数据包</span></span><br><span class="line">        <span class="keyword">return</span> packet == <span class="literal">null</span></span><br><span class="line">            ? ((NativeProtocol) <span class="built_in">this</span>.protocol).sendQueryString(callingQuery, query, <span class="built_in">this</span>.characterEncoding.getValue(), maxRows, streamResults, cachedMetadata, resultSetFactory)</span><br><span class="line">            <span class="comment">// 否则调用 sendQueryPacket 方法，直接发送数据包</span></span><br><span class="line">            : ((NativeProtocol) <span class="built_in">this</span>.protocol).sendQueryPacket(callingQuery, packet, maxRows, streamResults, cachedMetadata, resultSetFactory);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ... ...</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>这里有个小思考，“假的预编译”本质用的是转义，那是不是有可能绕过呢🤔。目前本人手法还太少常见方法还没办法绕过，先记着，说不定以后哪天就想到了</li>
+</ul>
+<h4 id="JDBC易产生的漏洞点"><a href="#JDBC易产生的漏洞点" class="headerlink" title="JDBC易产生的漏洞点"></a>JDBC易产生的漏洞点</h4><h5 id="未使用占位符"><a href="#未使用占位符" class="headerlink" title="未使用占位符"></a>未使用占位符</h5><ul>
+<li>PreparedStatement 只有在使用”?”作为占位符才能预防sql注入，直接拼接仍会存在sql注入漏洞</li>
+</ul>
+<h5 id="使用in语句"><a href="#使用in语句" class="headerlink" title="使用in语句"></a>使用in语句</h5><p>存在这样的场景</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">String <span class="keyword">sql</span> <span class="operator">=</span> &quot;delete from users where id in(&quot;<span class="operator">+</span>delIds<span class="operator">+</span>&quot;); //存在sql注入</span><br></pre></td></tr></table></figure>
+
+<p>由于无法确定delIds含有对象个数而直接拼接sql语句提前闭合，造成sql注入</p>
+<p>比如构造<code>1) OR 1=1 -- </code>，变成</p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">DELETE</span> <span class="keyword">FROM</span> users <span class="keyword">WHERE</span> id <span class="keyword">IN</span>(<span class="number">1</span>) <span class="keyword">OR</span> <span class="number">1</span><span class="operator">=</span><span class="number">1</span> <span class="comment">-- );</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>解决方法是为遍历传入的 对象个数，使用“?”占位符</li>
+</ul>
+<h5 id="使用like语句"><a href="#使用like语句" class="headerlink" title="使用like语句"></a>使用like语句</h5><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line">String <span class="keyword">sql</span> <span class="operator">=</span> &quot;select * from users where password like &#x27;%&quot; <span class="operator">+</span> con <span class="operator">+</span> &quot;%&#x27;&quot;; <span class="operator">/</span><span class="operator">/</span>存在<span class="keyword">sql</span>注入</span><br></pre></td></tr></table></figure>
+
+<p>例如构造<code>&#39; OR &#39;1&#39;=&#39;1&#39; -- </code></p>
+<figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> users <span class="keyword">WHERE</span> password <span class="keyword">LIKE</span> <span class="string">&#x27;%&#x27;</span> <span class="keyword">OR</span> <span class="string">&#x27;1&#x27;</span><span class="operator">=</span><span class="string">&#x27;1&#x27;</span> <span class="comment">-- %&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>防御：参数化查询，输入校验</li>
+</ul>
+<h5 id="和"><a href="#和" class="headerlink" title="%和_"></a>%和_</h5><ul>
+<li>没有手动过滤 <code>%</code></li>
+</ul>
+<p>预编译是不能处理这个符号的， 所以需要手动过滤，否则会造成慢查询，造成 dos。</p>
+<h5 id="Order-by、from-等关键字无法预编译"><a href="#Order-by、from-等关键字无法预编译" class="headerlink" title="Order by、from 等关键字无法预编译"></a>Order by、from 等关键字无法预编译</h5><p>根据前面的内容，似乎只需要对要传参的位置使用占位符进行预编译时似乎就可以完全防止 SQL 注入，但是如果是order by，from这种就没办法预编译，原因有2点</p>
+<ol>
+<li><p>JDBC的预编译占位符（<code>?</code>）会将传入的参数视为<strong>字符串值</strong>，自动添加单引号包裹。例如：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">PreparedStatement</span> <span class="variable">pstmt</span> <span class="operator">=</span> connection.prepareStatement(<span class="string">&quot;SELECT * FROM users ORDER BY ?&quot;</span>);</span><br><span class="line">pstmt.setString(<span class="number">1</span>, <span class="string">&quot;username&quot;</span>);  <span class="comment">// 实际SQL变为：ORDER BY &#x27;username&#x27;</span></span><br></pre></td></tr></table></figure>
+
+<p>此时，数据库会将<code>&#39;username&#39;</code>视为字符串常量而非字段名，导致排序逻辑错误或语法报错</p>
+</li>
+<li><p><strong>语句结构化</strong></p>
+<p>简单理解就是前面那些能够预编译的语句是把查询语句结构固定住，我们只需要传入参数进去就可以，但是如果语句有order by，查询语句的结构会根据order by后面的字段改变，结构存在动态性，而预编译要求语句提前固定</p>
+</li>
+</ol>
+<ul>
+<li><strong>解决方法</strong>就是提前做参数过滤了</li>
+</ul>
+<h3 id="Mybatis-下的-SQL-注入"><a href="#Mybatis-下的-SQL-注入" class="headerlink" title="Mybatis 下的 SQL 注入"></a>Mybatis 下的 SQL 注入</h3><blockquote>
+<p>SQL 语句一般是写在 Mapper 里面的，正常的应该是 Controller 层调 Service 层调 pojo 层，SQL 语句是写在 Mapper 文件里面的。所以如果是从代码审计的角度来看的话，我们可以直接来看 Mapper 层的代码。</p>
+</blockquote>
+<p>mybatis的注入一一般是<code>$&#123;Parameter&#125;</code></p>
+<p>看一下项目里的例子</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// mapper里语句的定义</span></span><br><span class="line"><span class="meta">@Select(&quot;select * from users where username = &#x27;$&#123;username&#125;&#x27;&quot;)</span></span><br><span class="line">List&lt;User&gt; <span class="title function_">findByUserNameVuln01</span><span class="params">(<span class="meta">@Param(&quot;username&quot;)</span> String username)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// controller调用</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/mybatis/vuln01&quot;)</span></span><br><span class="line"><span class="keyword">public</span> List&lt;User&gt; <span class="title function_">mybatisVuln01</span><span class="params">(<span class="meta">@RequestParam(&quot;username&quot;)</span> String username)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> userMapper.findByUserNameVuln01(username);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里的尝试漏洞的原因是<code>$&#123;username&#125;</code>是直接拼接的，这点喝之前的jdbc一样</p>
+<p>payload <code>admin&#39; or &#39;1&#39;=&#39;1</code></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250518140535.png" ></p>
+<h4 id="Mybatis下的SQL注入防护-—-预编译"><a href="#Mybatis下的SQL注入防护-—-预编译" class="headerlink" title="Mybatis下的SQL注入防护 — 预编译"></a>Mybatis下的SQL注入防护 — 预编译</h4><p>换成用 <code>#&#123;parameter&#125;</code></p>
+<p>项目里的修复方案</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// mapper</span></span><br><span class="line"><span class="meta">@Select(&quot;select * from users where username = #&#123;username&#125;&quot;)</span></span><br><span class="line">User <span class="title function_">findByUserName</span><span class="params">(<span class="meta">@Param(&quot;username&quot;)</span> String username)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// controller</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/mybatis/sec01&quot;)</span></span><br><span class="line"><span class="keyword">public</span> User <span class="title function_">mybatisSec01</span><span class="params">(<span class="meta">@RequestParam(&quot;username&quot;)</span> String username)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> userMapper.findByUserName(username);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样就能防御</p>
+<h4 id="Mybatis易产生sql注入的情况"><a href="#Mybatis易产生sql注入的情况" class="headerlink" title="Mybatis易产生sql注入的情况"></a>Mybatis易产生sql注入的情况</h4><h5 id="like关键字的模糊查询"><a href="#like关键字的模糊查询" class="headerlink" title="like关键字的模糊查询"></a>like关键字的模糊查询</h5><p>用到like，使用<code>#&#123;&#125;</code>会报错，就有程序员把#改成%，这样就容易产生拼接问题</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;findByUserNameVuln02&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;String&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;User&quot;</span>&gt;</span></span><br><span class="line">    select * from users where username like &#x27;%$&#123;_parameter&#125;%&#x27;</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>测试效果</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250518141208.png" ></p>
+<p>正确写法</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;findByUserNamesec&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;String&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;User&quot;</span>&gt;</span></span><br><span class="line">    select * from users where username like concat(&#x27;%&#x27;,#&#123;_parameter&#125;, &#x27;%&#x27;)</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>不同数据库的写法</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">mysql:</span><br><span class="line">    select * from users where username like concat(&#x27;%&#x27;,#&#123;username&#125;,&#x27;%&#x27;)</span><br><span class="line">oracle:</span><br><span class="line">    select * from users where username like &#x27;%&#x27;||#&#123;username&#125;||&#x27;%&#x27;</span><br><span class="line">sqlserver:</span><br><span class="line">    select * from users where username like &#x27;%&#x27;+#&#123;username&#125;+&#x27;%&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>还是要用#，为了不报错，还是要用到concat在前后拼接%</p>
+<h5 id="使用in语句-1"><a href="#使用in语句-1" class="headerlink" title="使用in语句"></a>使用in语句</h5><p>查询语句中有in直接使用<code>#&#123;&#125;</code>也是会报错，直接用<code>%&#123;&#125;</code>则会导致拼接</p>
+<p>我们现在在mapper的xml配置文件多添加</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;findByUserNameVuln04&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;String&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;User&quot;</span>&gt;</span></span><br><span class="line">    select * from users where id in ($&#123;_parameter&#125;)</span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// http://localhost:8080/sqli/mybatis/vuln04?id=1)%20or%201=1%23</span></span><br><span class="line"><span class="meta">@GetMapping(&quot;/mybatis/vuln04&quot;)</span></span><br><span class="line"><span class="keyword">public</span> List&lt;User&gt; <span class="title function_">mybatisVuln04</span><span class="params">(<span class="meta">@RequestParam(&quot;id&quot;)</span> String id)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> userMapper.findByUserNameVuln04(id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250518143702.png" ></p>
+<p><strong>正确修复</strong>应该是使用<code>foreach</code>，而不是简单地把#换成%</p>
+<p>定义一个新的接口</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/mybatis/sec04&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> List&lt;User&gt; <span class="title function_">mybatisSec04</span><span class="params">(<span class="meta">@RequestParam(&quot;id&quot;)</span> List id)</span>&#123;  </span><br><span class="line">    <span class="keyword">return</span> userMapper.findByIdSec04(id);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后xml里面这么改</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;findByIdSec04&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;String&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;User&quot;</span>&gt;</span>  </span><br><span class="line"> SELECT  </span><br><span class="line"> * from users WHERE id IN <span class="tag">&lt;<span class="name">foreach</span> <span class="attr">collection</span>=<span class="string">&quot;id&quot;</span> <span class="attr">item</span>=<span class="string">&quot;id&quot;</span> <span class="attr">open</span>=<span class="string">&quot;(&quot;</span> <span class="attr">close</span>=<span class="string">&quot;)&quot;</span> <span class="attr">separator</span>=<span class="string">&quot;,&quot;</span>&gt;</span>  </span><br><span class="line"> #&#123;id&#125;  </span><br><span class="line"> <span class="tag">&lt;/<span class="name">foreach</span>&gt;</span>  </span><br><span class="line"><span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>现在就可以成功防护啦</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250518144114.png" ></p>
+<p>原理就是foreach可以把查找的每一个要查询的字符分割，再配合#{}如果有特殊的字符也会转义</p>
+<h5 id="使用order-by"><a href="#使用order-by" class="headerlink" title="使用order by"></a>使用order by</h5><p>和前面jdbc同理，和#{}一起使用会报错，解决方法还是要提前做好参数过滤</p>
+<h3 id="Mybatis-Plus-的-SQL-注入"><a href="#Mybatis-Plus-的-SQL-注入" class="headerlink" title="Mybatis-Plus 的 SQL 注入"></a>Mybatis-Plus 的 SQL 注入</h3><p>这里换了个项目</p>
+<p><a class="link"   href="https://github.com/Drun1baby/JavaSecurityLearning/tree/main/JavaSecurity/Java%20%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/CodeReview/JavaSec-Code/MybatisPluSqli" >https://github.com/Drun1baby/JavaSecurityLearning/tree/main/JavaSecurity/Java%20%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/CodeReview/JavaSec-Code/MybatisPluSqli<i class="fas fa-external-link-alt"></i></a></p>
+<p>部署完成</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250518153805.png" ></p>
+<h4 id="使用apply语句拼接sql"><a href="#使用apply语句拼接sql" class="headerlink" title="使用apply语句拼接sql"></a>使用apply语句拼接sql</h4><h5 id="理想的apply漏洞场景"><a href="#理想的apply漏洞场景" class="headerlink" title="理想的apply漏洞场景"></a>理想的apply漏洞场景</h5><p>一种纯拼接的场景，很白给，实践中出现的概率非常小</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/mybatis_plus/mpVuln02&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> List&lt;Employee&gt; <span class="title function_">mpVuln02</span><span class="params">( String id)</span> &#123;  </span><br><span class="line">    QueryWrapper&lt;Employee&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();  </span><br><span class="line"> 		wrapper.apply(<span class="string">&quot;id=&quot;</span>+id);  </span><br><span class="line"> <span class="keyword">return</span> employeeMapper.selectList(wrapper);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实际中直接使用<code>selectList()</code>就非常白给，几乎不可能这么写</p>
+<p>如果真这么写了，那注入效果</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250518154026.png" ></p>
+<h5 id="实际的apply使用场景"><a href="#实际的apply使用场景" class="headerlink" title="实际的apply使用场景"></a>实际的apply使用场景</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/mybatis_plus/mpVuln01&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> Employee <span class="title function_">mpVuln01</span><span class="params">(String name, String id)</span> &#123;  </span><br><span class="line">    QueryWrapper&lt;Employee&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();  </span><br><span class="line"> 		wrapper.eq(<span class="string">&quot;name&quot;</span>,name).apply(<span class="string">&quot;id=&quot;</span>+id);  </span><br><span class="line">		<span class="type">Employee</span> <span class="variable">employee</span> <span class="operator">=</span> employeeMapper.selectOne(wrapper);  </span><br><span class="line">		<span class="keyword">return</span> employee;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>apply()</code>算一个多参请求，要有id和name配合来确定数据</p>
+<p>假设现在payload这么写</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?name=drunkbaby&amp;id=1%20and%20extractvalue(1,concat(0x7e,(select%20database()),0x7e))</span><br></pre></td></tr></table></figure>
+
+<p>只有报错注入才可能成功，前面那些or 1&#x3D;1 的拼接没办法实现</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Employee employee = employeeMapper.selectOne(wrapper);  </span><br></pre></td></tr></table></figure>
+
+<p>这里使用了<code>selectOne()</code>，只有一行数据出来</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250518154451.png" ></p>
+<p>虽然客户端只看到报错，但是看服务端数据</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250518154548.png" ></p>
+<p>这里成功打印出数据库，报错注入是可行的，在实际场景中如果遇到会打印报错信息的业务，我们就有机会sql注入</p>
+<h5 id="apply场景的防护"><a href="#apply场景的防护" class="headerlink" title="apply场景的防护"></a>apply场景的防护</h5><p>还是用预编译</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/mybatis_plus/mpSec02&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> List&lt;Employee&gt; <span class="title function_">mpSec02</span><span class="params">( String id)</span> &#123;  </span><br><span class="line">    QueryWrapper&lt;Employee&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();  </span><br><span class="line">		wrapper.apply(<span class="string">&quot;id=&#123;0&#125;&quot;</span>,id);  	</span><br><span class="line"> 		<span class="keyword">return</span> employeeMapper.selectList(wrapper);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>很简单，要 apply 的地方加上 <code>&#123;0&#125;</code> 即可</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250518155209.png" ></p>
+<p>后端现在看到这样的数据</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250518155149.png" ></p>
+<h4 id="last方法产生的sql注入"><a href="#last方法产生的sql注入" class="headerlink" title="last方法产生的sql注入"></a>last方法产生的sql注入</h4><p><code>last()</code>方法经过重写，有两个实现方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">last(String lastSql)</span><br><span class="line">last(<span class="type">boolean</span> condition, String lastSql)</span><br></pre></td></tr></table></figure>
+
+<p>在lastsql我们可以直接写sql语句，新写一个接口</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/mybatis_plus/last&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> List&lt;Employee&gt; <span class="title function_">mpVuln03</span><span class="params">( String id)</span> &#123;  </span><br><span class="line">    QueryWrapper&lt;Employee&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();  </span><br><span class="line"> wrapper.last(<span class="string">&quot;order by &quot;</span> + id);  </span><br><span class="line"> <span class="keyword">return</span> employeeMapper.selectList(wrapper);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样也是会尝试拼接问题，它无视优化规则，直接拼接到语句最后</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20250518155921.png" ></p>
+<h4 id="exists-notExists-拼接产生的SQL-注入"><a href="#exists-notExists-拼接产生的SQL-注入" class="headerlink" title="exists&#x2F;notExists 拼接产生的SQL 注入"></a>exists&#x2F;notExists 拼接产生的SQL 注入</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">exists(String existsSql)</span><br><span class="line">exists(<span class="type">boolean</span> condition, String existsSql)</span><br><span class="line"></span><br><span class="line">notExists(String notExistsSql)</span><br><span class="line">notExists(<span class="type">boolean</span> condition, String notExistsSql)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>exists运算符用于判断查询子句是否有记录，如果有一条或多条记录存在返回 True，否则返回 False</p>
+</blockquote>
+<p>也是直接拼接</p>
+<p>两个接口分别这么写</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/mybatis_plus/mpVuln04&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> List&lt;Employee&gt; <span class="title function_">mpVuln04</span><span class="params">( String id)</span> &#123;  </span><br><span class="line">    QueryWrapper&lt;Employee&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();  </span><br><span class="line"> wrapper.exists(<span class="string">&quot;select * from employees where id = &quot;</span> + id);  </span><br><span class="line"> <span class="keyword">return</span> employeeMapper.selectList(wrapper);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/mybatis_plus/mpVuln05&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> List&lt;Employee&gt; <span class="title function_">mpVuln05</span><span class="params">( String id)</span> &#123;  </span><br><span class="line">    QueryWrapper&lt;Employee&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();  </span><br><span class="line"> wrapper.notExists(<span class="string">&quot;select * from employees where id = &quot;</span> + id);  </span><br><span class="line"> <span class="keyword">return</span> employeeMapper.selectList(wrapper);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="having语句"><a href="#having语句" class="headerlink" title="having语句"></a>having语句</h4><blockquote>
+<p>在 SQL 中增加 HAVING 子句原因是，WHERE 关键字无法与聚合函数一起使用。</p>
+<p>HAVING 子句可以让我们筛选分组后的各组数据。</p>
+</blockquote>
+<p>在mybatis_plus中</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">having(String sqlHaving, Object... params)</span><br><span class="line">having(<span class="type">boolean</span> condition, String sqlHaving, Object... params)</span><br></pre></td></tr></table></figure>
+
+<p>接口</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/mybatis_plus/mpVuln06&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> List&lt;Employee&gt; <span class="title function_">mpVuln06</span><span class="params">( String id)</span> &#123;  </span><br><span class="line">    QueryWrapper&lt;Employee&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();  </span><br><span class="line">		wrapper.select().groupBy(<span class="string">&quot;id&quot;</span>).having(<span class="string">&quot;id &gt;&quot;</span> + id);  </span><br><span class="line">		<span class="keyword">return</span> employeeMapper.selectList(wrapper);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Order-by语句"><a href="#Order-by语句" class="headerlink" title="Order by语句"></a>Order by语句</h4><p>orderBy</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">orderBy(<span class="type">boolean</span> condition, <span class="type">boolean</span> isAsc, R... columns)</span><br></pre></td></tr></table></figure>
+
+<p>orderByAsc</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">orderByAsc(R... columns)</span><br><span class="line">orderByAsc(<span class="type">boolean</span> condition, R... columns)</span><br></pre></td></tr></table></figure>
+
+<p>orderByDesc</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">orderByDesc(R... columns)</span><br></pre></td></tr></table></figure>
+
+<p>接口</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> List&lt;Employee&gt; <span class="title function_">orderby01</span><span class="params">( String id)</span> &#123;  </span><br><span class="line">    QueryWrapper&lt;Employee&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();  </span><br><span class="line"> wrapper.select().orderBy(<span class="literal">true</span>, <span class="literal">true</span>, id);  </span><br><span class="line"> <span class="keyword">return</span> employeeMapper.selectList(wrapper);  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/mybatis_plus/orderby02&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> List&lt;Employee&gt; <span class="title function_">orderby02</span><span class="params">( String id)</span> &#123;  </span><br><span class="line">    QueryWrapper&lt;Employee&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();  </span><br><span class="line"> wrapper.select().orderByAsc(id);  </span><br><span class="line"> <span class="keyword">return</span> employeeMapper.selectList(wrapper);  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/mybatis_plus/orderby03&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> List&lt;Employee&gt; <span class="title function_">orderby03</span><span class="params">( String id)</span> &#123;  </span><br><span class="line">    QueryWrapper&lt;Employee&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();  </span><br><span class="line"> wrapper.select().orderByDesc(id);  </span><br><span class="line"> <span class="keyword">return</span> employeeMapper.selectList(wrapper);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="group-by"><a href="#group-by" class="headerlink" title="group by"></a>group by</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">groupBy(R... columns)</span><br><span class="line">groupBy(<span class="type">boolean</span> condition, R... columns)</span><br></pre></td></tr></table></figure>
+
+<p>和order by原理一样</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/mybatis_plus/groupBy&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> List&lt;Employee&gt; <span class="title function_">groupBy</span><span class="params">( String id)</span> &#123;  </span><br><span class="line">    QueryWrapper&lt;Employee&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();  </span><br><span class="line"> wrapper.select().groupBy(id);  </span><br><span class="line"> <span class="keyword">return</span> employeeMapper.selectList(wrapper);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="inSql-notinSql"><a href="#inSql-notinSql" class="headerlink" title="inSql&#x2F;notinSql"></a>inSql&#x2F;notinSql</h4><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">inSql(R column, String inValue)</span><br><span class="line">inSql(<span class="type">boolean</span> condition, R column, String inValue)</span><br><span class="line"></span><br><span class="line">notInSql(R column, String inValue)</span><br><span class="line">notInSql(<span class="type">boolean</span> condition, R column, String inValue)</span><br></pre></td></tr></table></figure>
+
+<p>接口</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/mybatis_plus/insql&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> List&lt;Employee&gt; <span class="title function_">inSql</span><span class="params">( String id)</span> &#123;  </span><br><span class="line">    QueryWrapper&lt;Employee&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();  </span><br><span class="line"> wrapper.select().inSql(id, <span class="string">&quot;select * from employees where id &gt;&quot;</span> + id);  </span><br><span class="line"> <span class="keyword">return</span> employeeMapper.selectList(wrapper);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/mybatis_plus/notinSql&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> List&lt;Employee&gt; <span class="title function_">notinSql</span><span class="params">( String id)</span> &#123;  </span><br><span class="line">    QueryWrapper&lt;Employee&gt; wrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();  </span><br><span class="line"> wrapper.select().notInSql(id, <span class="string">&quot;select * from employees where id &gt;&quot;</span> + id);  </span><br><span class="line"> <span class="keyword">return</span> employeeMapper.selectList(wrapper);  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Wrapper自定义sql"><a href="#Wrapper自定义sql" class="headerlink" title="Wrapper自定义sql"></a>Wrapper自定义sql</h4><p>和前面一样 不赘述</p>
+<h4 id="分页插件到SQL注入"><a href="#分页插件到SQL注入" class="headerlink" title="分页插件到SQL注入"></a>分页插件到SQL注入</h4><p>一个分页插件是自带的<code>addOrder()</code>，还有一个是order by</p>
+<p>先配置分页插件</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">package</span> com.drunkbaby.config;  </span><br><span class="line">  </span><br><span class="line"><span class="keyword">import</span> com.baomidou.mybatisplus.annotation.DbType;  </span><br><span class="line"><span class="keyword">import</span> com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;  </span><br><span class="line"><span class="keyword">import</span> com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;  </span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Bean;  </span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;  </span><br><span class="line">  </span><br><span class="line"><span class="meta">@Configuration</span>  </span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MybatisPlusConfig</span> &#123;  </span><br><span class="line">  </span><br><span class="line">    <span class="comment">/**  </span></span><br><span class="line"><span class="comment"> * 注册插件  </span></span><br><span class="line"><span class="comment"> */</span>  </span><br><span class="line"> <span class="meta">@Bean</span>  </span><br><span class="line"> <span class="keyword">public</span> MybatisPlusInterceptor <span class="title function_">mybatisPlusInterceptor</span><span class="params">()</span> &#123;  </span><br><span class="line">  </span><br><span class="line">        <span class="type">MybatisPlusInterceptor</span> <span class="variable">interceptor</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">MybatisPlusInterceptor</span>();  </span><br><span class="line"> <span class="comment">// 添加分页插件  </span></span><br><span class="line"> <span class="type">PaginationInnerInterceptor</span> <span class="variable">pageInterceptor</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PaginationInnerInterceptor</span>();  </span><br><span class="line"> <span class="comment">// 设置请求的页面大于最大页后操作，true调回到首页，false继续请求。默认false  </span></span><br><span class="line"> pageInterceptor.setOverflow(<span class="literal">false</span>);  </span><br><span class="line"> <span class="comment">// 单页分页条数限制，默认无限制  </span></span><br><span class="line"> pageInterceptor.setMaxLimit(<span class="number">500L</span>);  </span><br><span class="line"> <span class="comment">// 设置数据库类型  </span></span><br><span class="line"> pageInterceptor.setDbType(DbType.MYSQL);  </span><br><span class="line">  </span><br><span class="line"> interceptor.addInnerInterceptor(pageInterceptor);  </span><br><span class="line"> <span class="keyword">return</span> interceptor;  </span><br><span class="line"> &#125;  </span><br><span class="line">  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="addOrder"><a href="#addOrder" class="headerlink" title="addOrder()"></a>addOrder()</h5><blockquote>
+<p> 在 MyBatis-Plus 的分页插件中，<code>addOrder</code> 方法用于 <strong>动态添加排序规则</strong>，允许开发者为分页查询指定排序字段及顺序</p>
+</blockquote>
+<p>接口</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/mybatis_plus/PageVul01&quot;)</span>  </span><br><span class="line"><span class="keyword">public</span> List&lt;Person&gt; <span class="title function_">mybatisPlusPageVuln01</span><span class="params">(Long page, Long size, String id)</span>&#123;  </span><br><span class="line">    QueryWrapper&lt;Person&gt; queryWrapper = <span class="keyword">new</span> <span class="title class_">QueryWrapper</span>&lt;&gt;();  </span><br><span class="line"> Page&lt;Person&gt; personPage = <span class="keyword">new</span> <span class="title class_">Page</span>&lt;&gt;(<span class="number">1</span>,<span class="number">2</span>);  </span><br><span class="line"> personPage.addOrder(OrderItem.asc(id));  </span><br><span class="line"> IPage&lt;Person&gt; iPage= personMapper.selectPage(personPage, queryWrapper);  </span><br><span class="line"> List&lt;Person&gt; people = iPage.getRecords();  </span><br><span class="line"> <span class="keyword">return</span> people;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Page&lt;Person&gt; personPage = new Page&lt;&gt;(1,2);  // 里面的参数可以自定义</span><br></pre></td></tr></table></figure>
+
+<p>payload也是比较有要求</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">?id=1%20and%20extractvalue(1,concat(0x7e,(select%20database()),0x7e)))</span><br><span class="line"></span><br><span class="line">// 或者是</span><br><span class="line">?id=1&#x27; and sleep(5)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p> 必须是通过盲注的形式，如果是普通的注入，是不会有回显的；因为这里分页查找，size 就把你的数据数量限定死了，如果超过这个数据就会报错，所以只能盲注。</p>
+</blockquote>
+<h5 id="pagehelper"><a href="#pagehelper" class="headerlink" title="pagehelper"></a>pagehelper</h5><p>原理和order by一样</p>
+<blockquote>
+<p>因为Order by排序时不能进行预编译处理，所以在使用插件时需要额外注意如下function，同样会存在SQL注入风险：</p>
+<ul>
+<li>com.github.pagehelper.Page<ul>
+<li>主要是setOrderBy(java.lang.String)方法</li>
+</ul>
+</li>
+<li>com.github.pagehelper.page.PageMethod<ul>
+<li>主要是startPage(int,int,java.lang.String)方法</li>
+</ul>
+</li>
+<li>com.github.pagehelper.PageHelper<ul>
+<li>主要是startPage(int,int,java.lang.String)方法</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h4 id="Mybatis-plus-sql注入的修复"><a href="#Mybatis-plus-sql注入的修复" class="headerlink" title="Mybatis plus sql注入的修复"></a>Mybatis plus sql注入的修复</h4><p>写好过滤 </p>
+<h3 id="Hibernate-框架下的-SQL-注入"><a href="#Hibernate-框架下的-SQL-注入" class="headerlink" title="Hibernate 框架下的 SQL 注入"></a>Hibernate 框架下的 SQL 注入</h3><blockquote>
+<p>Hibernate 是一个开放源代码的对象关系映射框架，它对JDBC进行了非常轻量级的对象封装，使得 Java 程序员可以随心所欲的使用对象编程思维来操纵数据库。</p>
+<p>Hibernate 可以使用 hql 来执行 SQL 语句，也可以直接执行 SQL 语句，无论是哪种方式都有可能导致 SQL 注入</p>
+</blockquote>
+<h4 id="HQL"><a href="#HQL" class="headerlink" title="HQL"></a>HQL</h4><p>比较好理解，存在这样的语句有sql注入问题</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">String hql = &quot;from People where username = &#x27;&quot; + username + &quot;&#x27; and password = &#x27;&quot; + password + &quot;&#x27;&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>如果要避免，有下面几种方法</p>
+<h5 id="命名参数"><a href="#命名参数" class="headerlink" title="命名参数"></a>命名参数</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Query&lt;User&gt; query = session.createQuery(<span class="string">&quot;from users name = ?1&quot;</span>, User.class);</span><br><span class="line"><span class="type">String</span> <span class="variable">parameter</span> <span class="operator">=</span> <span class="string">&quot;g1ts&quot;</span>;</span><br><span class="line">Query&lt;User&gt; query = session.createQuery(<span class="string">&quot;from users name = :name&quot;</span>, User.class);</span><br><span class="line">query.setParameter(<span class="string">&quot;name&quot;</span>, parameter);</span><br></pre></td></tr></table></figure>
+
+<h5 id="位置参数"><a href="#位置参数" class="headerlink" title="位置参数"></a>位置参数</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">parameter</span> <span class="operator">=</span> <span class="string">&quot;g1ts&quot;</span>;</span><br><span class="line">Query&lt;User&gt; query = session.createQuery(<span class="string">&quot;from users name = ?1&quot;</span>, User.class);</span><br><span class="line">query.setParameter(<span class="number">1</span>, parameter);</span><br></pre></td></tr></table></figure>
+
+<h5 id="命名参数列表"><a href="#命名参数列表" class="headerlink" title="命名参数列表"></a>命名参数列表</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">List&lt;String&gt; names = Arrays.asList(<span class="string">&quot;g1ts&quot;</span>, <span class="string">&quot;g2ts&quot;</span>);</span><br><span class="line">Query&lt;User&gt; query = session.createQuery(<span class="string">&quot;from users where name in (:names)&quot;</span>, User.class);</span><br><span class="line">query.setParameter(<span class="string">&quot;names&quot;</span>, names);</span><br></pre></td></tr></table></figure>
+
+<h5 id="类实例"><a href="#类实例" class="headerlink" title="类实例"></a>类实例</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">user1.setName(<span class="string">&quot;g1ts&quot;</span>);</span><br><span class="line">Query&lt;User&gt; query = session.createQuery(<span class="string">&quot;from users where name =:name&quot;</span>, User.class);</span><br><span class="line">query.setProperties(user1);</span><br></pre></td></tr></table></figure>
+
+<h5 id="HQL拼接"><a href="#HQL拼接" class="headerlink" title="HQL拼接"></a>HQL拼接</h5><blockquote>
+<p>这种方式是最常用，而且容易忽视且容易被注入的，通常做法就是对参数的特殊字符进行过滤，推荐大家使用 Spring工具包的StringEscapeUtils.escapeSql()方法对参数进行过滤：</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.commons.lang.StringEscapeUtils;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">  <span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> StringEscapeUtils.escapeSql(<span class="string">&quot;&#x27;&quot;</span>);</span><br><span class="line">  System.out.println(str);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="SQL"><a href="#SQL" class="headerlink" title="SQL"></a>SQL</h4><blockquote>
+<p>Hibernate支持使用原生SQL语句执行，所以其风险和JDBC是一致的，直接使用拼接的方法时会导致SQL注入</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">Query&lt;People&gt; query = session.createNativeQuery(<span class="string">&quot;select * from user where username = &#x27;&quot;</span> + username + <span class="string">&quot;&#x27; and password = &#x27;&quot;</span> + password + <span class="string">&quot;&#x27;&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>正确写法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">parameter</span> <span class="operator">=</span> <span class="string">&quot;g1ts&quot;</span>;</span><br><span class="line">Query&lt;User&gt; query = session.createNativeQuery(<span class="string">&quot;select * from user where name = :name&quot;</span>);</span><br><span class="line">query.setParameter(<span class="string">&quot;name&quot;</span>,parameter);</span><br></pre></td></tr></table></figure>
+
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>写完这个笔记算是接触了三个主要数据库连接方法对应会尝试sql注入的点，主要就是给用户自由拼接的空子，防御靠预编译和参数过滤，印象比较深的是这个order by为什么不能预编译的问题。除此之外细节看这些东西是比较细的，如果以后真的自己审计，记住几个重点查看的地方，和项目漏洞寻找思路。</p>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>学习</tag>
+        <tag>代码审计</tag>
+      </tags>
+  </entry>
 </search>
